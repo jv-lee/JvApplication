@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -94,6 +95,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
                         if (eventBase.getOption().equals(phoneNumber)) {
                             mList.add((SmsBean.Sms) eventBase.getObj());
                             mAdapter.notifyDataSetChanged();
+                            Log.i("TAG", "这是新增加得代码");
 //                            mAdapter.notifyItemInserted(mList.size());
                         }
                     }

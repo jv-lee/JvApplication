@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_sms_layout"
+    android:layout_width="match_parent"
+    android:layout_height="85dp"
+    android:background="@drawable/selected_sms_item"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="15dp">
+
+    <FrameLayout
+        android:id="@+id/item_sms_icon_layout"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_icon_bg">
+
+        <TextView
+            android:id="@+id/item_sms_textIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/colorAccent"
+            android:textSize="26sp" />
+
+        <ImageView
+            android:id="@+id/item_sms_imgIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_sms_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10086"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/item_sms_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="您的为好4180卡12月消费勒多说钱你知道嘛？不知道也没关系"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/item_sms_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:55" />
+
+    </LinearLayout>
+
+</LinearLayout>

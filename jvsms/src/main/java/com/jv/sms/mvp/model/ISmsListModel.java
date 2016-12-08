@@ -15,6 +15,6 @@ public interface ISmsListModel {
 
     boolean deleteSmsListById(String id);
 
-    SmsBean refreshSmsList(String thread_id);
+    List<SmsBean> refreshSmsList(String thread_id);
 
 }

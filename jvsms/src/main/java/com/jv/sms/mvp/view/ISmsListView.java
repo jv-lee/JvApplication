@@ -11,7 +11,7 @@ import java.util.List;
 public interface ISmsListView {
 
 
-    void refreshSmsList(SmsBean list);
+    void refreshSmsList(List<SmsBean> list);
 
     void showSmsListSuccess();
 

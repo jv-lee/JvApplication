@@ -75,11 +75,11 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         }
 
         private void initData(SmsBean bean) {
-            mMessage.setText(bean.getListSms().get(0).getSmsBody());
-            mDate.setText(TimeUtils.getChineseTimeString2(bean.getListSms().get(bean.getListSms().size() - 1).getDate()));
+            mMessage.setText(bean.getSmsBody());
+            mDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
 
             //判断当前name是否为数字
-            String name = bean.getListSms().get(0).getName();
+            String name = bean.getName();
             if (!Pattern.compile("[0-9]*").matcher(name).matches()) {
                 mIcon.setText(name.substring(0, 1));
             } else {
@@ -96,7 +96,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                     mListener.onLayoutClick(mList.get(getLayoutPosition()));
                     break;
                 case R.id.item_sms_icon_layout:
-                    mListener.onIconClick(mList.get(getLayoutPosition()).getListSms().get(mList.get(getLayoutPosition()).getListSms().size() - 1));
+                    mListener.onIconClick(mList.get(getLayoutPosition()));
                     break;
             }
         }
@@ -105,7 +105,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         public boolean onLongClick(View view) {
             switch (view.getId()) {
                 case R.id.item_sms_layout:
-                    mListener.onLongLayoutClick(mList.get(getLayoutPosition()),getLayoutPosition());
+                    mListener.onLongLayoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
                     break;
             }
             return false;
@@ -114,11 +114,11 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
     public interface OnSmsDataListener {
 
-        void onIconClick(SmsBean.Sms bean);
+        void onIconClick(SmsBean bean);
 
         void onLayoutClick(SmsBean bean);
 
-        void onLongLayoutClick(SmsBean bean,int position);
+        void onLongLayoutClick(SmsBean bean, int position);
 
     }
 

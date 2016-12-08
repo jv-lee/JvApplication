@@ -37,17 +37,16 @@ public class SmsListModel implements ISmsListModel {
 
     @SuppressLint("LongLogTag")
     @Override
-    public SmsBean refreshSmsList(String thread_id) {
-        SmsBean smsBean;
-        List<SmsBean.Sms> smsList = new ArrayList<>();
+    public List<SmsBean> refreshSmsList(String threadId) {
+        List<SmsBean> smsList = new ArrayList<>();
 
         try {
             ContentResolver cr = JvApplication.getInstance().getContentResolver();
             String[] projection = new String[]{"_id", "address", "person",
-                    "body", "date", "type", "thread_id"};
+                    "body", "date", "type", "thread_id", "read"};
 
             //获取当前短信对话游标对象
-            Cursor cur = cr.query(Uri.parse("content://sms/"), projection, "thread_id=?", new String[]{thread_id}, "date asc");
+            Cursor cur = cr.query(Uri.parse("content://sms/"), projection, "thread_id=?", new String[]{threadId}, "date asc");
 
             if (cur.moveToFirst()) {
                 do {
@@ -56,6 +55,8 @@ public class SmsListModel implements ISmsListModel {
                     String smsBody = cur.getString(cur.getColumnIndex("body"));
                     int typeId = cur.getInt(cur.getColumnIndex("type"));
                     String name = SmsUtils.getPeopleNameFromPerson(phoneNumber, JvApplication.getInstance());
+                    String thread_id = cur.getString(cur.getColumnIndex("thread_id"));
+                    int read = cur.getInt(cur.getColumnIndex("read"));
 
                     //获取短信时间进行格式化
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -63,15 +64,22 @@ public class SmsListModel implements ISmsListModel {
                     String date = dateFormat.format(d);
 
                     //设置短信收发类型
-                    SmsBean.Sms.Type type;
+                    SmsBean.Type type = null;
                     if (typeId == 1) { //接收的短信类型
-                        type = SmsBean.Sms.Type.RECEIVE;
+                        type = SmsBean.Type.RECEIVE;
                     } else if (typeId == 2) { //发送的短信类型
-                        type = SmsBean.Sms.Type.SEND;
-                    } else {//草稿的短信类型
-                        type = SmsBean.Sms.Type.DRAFT;
+                        type = SmsBean.Type.SEND;
                     }
-                    SmsBean.Sms sms = new SmsBean.Sms(id, name, phoneNumber, smsBody, date, type);
+
+                    //设置读取状态
+                    SmsBean.ReadType readType = null;
+                    if (read == 0) {
+                        readType = SmsBean.ReadType.notRead;
+                    } else if (read == 1) {
+                        readType = SmsBean.ReadType.isRead;
+                    }
+
+                    SmsBean sms = new SmsBean(id, name, phoneNumber, smsBody, date, type, thread_id, readType);
                     smsList.add(sms);
 
                     if (smsBody == null) smsBody = "";
@@ -79,11 +87,11 @@ public class SmsListModel implements ISmsListModel {
             }
 
             //设置时间显示格式
-            for (SmsBean.Sms sms : smsList) {
+            for (SmsBean sms : smsList) {
                 sms.setShowDate(TimeUtils.isShowTime(sms.getDate()));
             }
 
-            return new SmsBean(thread_id, smsList);
+            return smsList;
         } catch (SQLiteException ex) {
             Log.e("SQLiteException in getSmsInPhone", ex.getMessage());
         }

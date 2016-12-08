@@ -39,14 +39,14 @@ public class SmsListPresenter implements ISmsListPresenter {
         Observable.just(thread_id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
-                .map(new Func1<String, SmsBean>() {
+                .map(new Func1<String, List<SmsBean>>() {
                     @Override
-                    public SmsBean call(String thread_id) {
+                    public List<SmsBean> call(String thread_id) {
                         return mModel.refreshSmsList(thread_id);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SmsBean>() {
+                .subscribe(new Subscriber<List<SmsBean>>() {
                     @Override
                     public void onCompleted() {
                         mView.showSmsListSuccess();
@@ -59,7 +59,7 @@ public class SmsListPresenter implements ISmsListPresenter {
                     }
 
                     @Override
-                    public void onNext(SmsBean bean) {
+                    public void onNext(List<SmsBean> bean) {
                         mView.refreshSmsList(bean);
                     }
                 });

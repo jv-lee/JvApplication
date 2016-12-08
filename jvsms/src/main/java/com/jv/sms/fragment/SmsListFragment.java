@@ -46,7 +46,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
 
     private RecyclerView mRcvContainer;
 
-    private List<SmsBean.Sms> mList;
+    private List<SmsBean> mList;
     private SmsListDataAdapter mAdapter;
 
     private String title, thread_id, phoneNumber;
@@ -93,7 +93,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
                     @Override
                     public void call(EventBase eventBase) {
                         if (eventBase.getOption().equals(phoneNumber)) {
-                            mList.add((SmsBean.Sms) eventBase.getObj());
+                            mList.add((SmsBean) eventBase.getObj());
                             mAdapter.notifyDataSetChanged();
                         }
                     }
@@ -101,15 +101,15 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
     }
 
     @Override
-    public void refreshSmsList(SmsBean list) {
+    public void refreshSmsList(List<SmsBean> list) {
         if (mList == null) {
-            mList = list.getListSms();
+            mList = list;
             mAdapter = new SmsListDataAdapter(getActivity(), mList);
             mRcvContainer.setAdapter(mAdapter);
             mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
         } else {
             mList.clear();
-            mList = list.getListSms();
+            mList = list;
             mAdapter.notifyDataSetChanged();
             mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
         }

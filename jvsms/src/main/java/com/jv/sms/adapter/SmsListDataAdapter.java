@@ -29,11 +29,11 @@ import static com.jv.sms.utils.TimeUtils.getChineseTimeString2;
 
 public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<SmsBean.Sms> mList;
+    private List<SmsBean> mList;
     private Context mContext;
     public SmsListUiFlagBean smsListUiFlagBean;
 
-    public SmsListDataAdapter(Context context, List<SmsBean.Sms> list) {
+    public SmsListDataAdapter(Context context, List<SmsBean> list) {
         mContext = context;
         mList = list;
         smsListUiFlagBean = new SmsListUiFlagBean(mList.size());
@@ -49,10 +49,10 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        if (viewType == SmsBean.Sms.Type.SEND.ordinal()) {
+        if (viewType == SmsBean.Type.SEND.ordinal()) {
             view = LayoutInflater.from(mContext).inflate(R.layout.item_send_sms, parent, false);
             return new SmsListDataSendHolder(view);
-        } else if (viewType == SmsBean.Sms.Type.RECEIVE.ordinal()) {
+        } else if (viewType == SmsBean.Type.RECEIVE.ordinal()) {
             view = LayoutInflater.from(mContext).inflate(R.layout.item_receive_sms, parent, false);
             return new SmsListDataReceiveHolder(view);
         }
@@ -62,9 +62,9 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     //设置收发短信布局Holder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == SmsBean.Sms.Type.SEND.ordinal()) {
+        if (getItemViewType(position) == SmsBean.Type.SEND.ordinal()) {
             ((SmsListDataSendHolder) holder).setItemData(mList.get(position));
-        } else if (getItemViewType(position) == SmsBean.Sms.Type.RECEIVE.ordinal()) {
+        } else if (getItemViewType(position) == SmsBean.Type.RECEIVE.ordinal()) {
             ((SmsListDataReceiveHolder) holder).setItemData(mList.get(position));
         }
     }
@@ -118,7 +118,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             });
         }
 
-        public void setItemData(SmsBean.Sms bean) {
+        public void setItemData(SmsBean bean) {
             if (bean.getShowDate() == true) {
                 tvDate.setText(getChineseTimeString(bean.getDate()));
                 tvDate.setVisibility(View.VISIBLE);
@@ -199,7 +199,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             });
         }
 
-        public void setItemData(SmsBean.Sms bean) {
+        public void setItemData(SmsBean bean) {
             //设置短信组 是否显示时间头
             if (bean.getShowDate() == true) {
                 tvDate.setVisibility(View.VISIBLE);

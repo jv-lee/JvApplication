@@ -37,7 +37,7 @@ public class SmsReceiver extends BroadcastReceiver {
             StringBuilder builder = new StringBuilder();
             Bundle bundle = intent.getExtras();
 
-            SmsBean.Sms sms = new SmsBean.Sms();
+            SmsBean sms = new SmsBean();
 
             if (bundle != null) {
                 Object[] pdus = (Object[]) bundle.get("pdus");
@@ -52,7 +52,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     sms.setDate(TimeUtils.milliseconds2String(curMsg.getTimestampMillis()));
                     sms.setPhoneNumber(curMsg.getDisplayOriginatingAddress());
                     sms.setSmsBody(curMsg.getDisplayMessageBody());
-                    sms.setType(SmsBean.Sms.Type.RECEIVE);
+                    sms.setType(SmsBean.Type.RECEIVE);
                     sms.setName(SmsUtils.getPeopleNameFromPerson(sms.getPhoneNumber(), context));
                     addSmsToDB(context, curMsg.getDisplayOriginatingAddress(), curMsg.getDisplayMessageBody(), curMsg.getTimestampMillis());
                 }

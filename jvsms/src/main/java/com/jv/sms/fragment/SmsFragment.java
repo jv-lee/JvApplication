@@ -102,16 +102,16 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
     }
 
     @Override
-    public void onIconClick(SmsBean.Sms bean) {
+    public void onIconClick(SmsBean bean) {
         Toast.makeText(getActivity(), "这是短信" + bean.getDate(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onLayoutClick(SmsBean bean) {
         Intent intent = new Intent(getActivity(), SmsListActivity.class);
-        intent.putExtra("title", bean.getListSms().get(0).getName());
+        intent.putExtra("title", bean.getName());
         intent.putExtra("thread_id", bean.getThread_id());
-        intent.putExtra("phone_number", bean.getListSms().get(0).getPhoneNumber());
+        intent.putExtra("phone_number", bean.getPhoneNumber());
         startActivity(intent);
     }
 

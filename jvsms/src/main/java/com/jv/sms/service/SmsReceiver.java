@@ -34,17 +34,17 @@ public class SmsReceiver extends BroadcastReceiver {
 
 
         if (SMS_DELIVER.equals(intent.getAction())) {
-            StringBuilder builder = new StringBuilder();
             Bundle bundle = intent.getExtras();
 
             SmsBean sms = new SmsBean();
 
             if (bundle != null) {
                 Object[] pdus = (Object[]) bundle.get("pdus");
+                String format = bundle.getString("format");
                 SmsMessage[] msg = new SmsMessage[pdus.length];
 
                 for (int i = 0; i < pdus.length; i++) {
-                    msg[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+                    msg[i] = SmsMessage.createFromPdu((byte[]) pdus[i], format);
                 }
 
                 //获取短信内容并存入数据库
@@ -54,7 +54,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     sms.setSmsBody(curMsg.getDisplayMessageBody());
                     sms.setType(SmsBean.Type.RECEIVE);
                     sms.setName(SmsUtils.getPeopleNameFromPerson(sms.getPhoneNumber(), context));
-                    addSmsToDB(context, curMsg.getDisplayOriginatingAddress(), curMsg.getDisplayMessageBody(), curMsg.getTimestampMillis());
+                    addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), curMsg.getTimestampMillis());
                 }
 
                 //通过RxBus发送新短信通知

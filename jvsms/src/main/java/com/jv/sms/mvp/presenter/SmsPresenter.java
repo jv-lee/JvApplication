@@ -14,6 +14,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -36,14 +37,13 @@ public class SmsPresenter implements ISmsPresenter {
     public void findSmsAll() {
 
         Observable.just(JvApplication.getInstance())
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.io())
                 .map(new Func1<Context, List<SmsBean>>() {
                     @Override
                     public List<SmsBean> call(Context context1) {
                         return mSmsModel.findSmsAll(context1);
                     }
                 })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<SmsBean>>() {
                     @Override
@@ -59,18 +59,48 @@ public class SmsPresenter implements ISmsPresenter {
 
                     @Override
                     public void onNext(List<SmsBean> smsBean) {
-                        mSmsView.setData(smsBean);
+                        if (smsBean.size() == 0) {
+                            mSmsView.setDataError();
+                        } else {
+                            mSmsView.setData(smsBean);
+                        }
                     }
                 });
-
     }
 
     @Override
-    public void removeSmsByThreadId( String id) {
-        if(mSmsModel.removeSmsByThreadId(id)){
+    public void removeSmsByThreadId(String id) {
+        if (mSmsModel.removeSmsByThreadId(id)) {
             mSmsView.removeDataSuccess();
-        }else{
+        } else {
             mSmsView.removeDataError();
         }
+    }
+
+    @Override
+    public void getNewSms() {
+        Observable.create(new Observable.OnSubscribe<SmsBean>() {
+            @Override
+            public void call(Subscriber<? super SmsBean> subscriber) {
+                subscriber.onNext(mSmsModel.getNewSms());
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<SmsBean>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(SmsBean smsBean) {
+                        mSmsView.setNewSms(smsBean);
+                    }
+                });
     }
 }

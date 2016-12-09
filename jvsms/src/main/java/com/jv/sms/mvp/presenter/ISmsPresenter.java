@@ -12,4 +12,6 @@ public interface ISmsPresenter {
 
     void removeSmsByThreadId(String id);
 
+    void getNewSms();
+
 }

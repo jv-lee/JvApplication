@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,12 +21,15 @@ import com.jv.sms.utils.SmsUtils;
 
 
 public class SmsActivity extends AppCompatActivity implements SearchView.OnSuggestionListener,
-        View.OnClickListener, SearchView.OnCloseListener{
+        View.OnClickListener, SearchView.OnCloseListener, DataLoadLayoutListener {
 
     private TabLayout mTab;
     private ViewPager mViewPager;
     private SearchView mSearchView;
+    private FloatingActionButton fab;
     private TextView mTitle;
+    private ProgressBar mPbDataBar;
+    private LinearLayout mDataLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +38,6 @@ public class SmsActivity extends AppCompatActivity implements SearchView.OnSugge
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         initView();
         initUi();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-
     }
 
     private void initView() {
@@ -52,13 +45,16 @@ public class SmsActivity extends AppCompatActivity implements SearchView.OnSugge
         mTab = (TabLayout) findViewById(R.id.tab_Layout);
         mSearchView = (SearchView) findViewById(R.id.main_search);
         mTitle = (TextView) findViewById(R.id.main_title);
-        mSearchView.setOnSuggestionListener(this);
-        mSearchView.setOnSearchClickListener(this);
-        mSearchView.setOnCloseListener(this);
+        mPbDataBar = (ProgressBar) findViewById(R.id.pb_sms_loading);
+        mDataLayout = (LinearLayout) findViewById(R.id.ll_null_layout);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
     }
 
     private void initUi() {
-        SmsUiAdapter adapter = new SmsUiAdapter(getSupportFragmentManager(), this);
+        mSearchView.setOnSuggestionListener(this);
+        mSearchView.setOnSearchClickListener(this);
+        mSearchView.setOnCloseListener(this);
+        SmsUiAdapter adapter = new SmsUiAdapter(getSupportFragmentManager(), this,this);
         mViewPager.setAdapter(adapter);
         mTab.setupWithViewPager(mViewPager);
         adapter.setTabIcon(mTab);
@@ -87,6 +83,10 @@ public class SmsActivity extends AppCompatActivity implements SearchView.OnSugge
             case R.id.main_search:
                 mTitle.setText("");
                 break;
+            case R.id.fab:
+                Snackbar.make(fab, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                break;
         }
     }
 
@@ -97,4 +97,23 @@ public class SmsActivity extends AppCompatActivity implements SearchView.OnSugge
     }
 
 
+    @Override
+    public void showDataBar() {
+        mPbDataBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideDataBar() {
+        mPbDataBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showDataLayout() {
+        mDataLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideDataLayout() {
+        mDataLayout.setVisibility(View.GONE);
+    }
 }

@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.jv.sms.app.JvApplication;
+import com.jv.sms.bean.SmsBean;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +22,33 @@ import java.util.List;
  */
 
 public class SmsUtils {
+
+    /**
+     * 获取条短信内容并格式化 返回短信对象
+     * @param cur
+     * @return
+     */
+    public static SmsBean simpleSmsBean(Cursor cur) {
+        //获取短信各参数
+        String id = cur.getString(cur.getColumnIndex("_id"));
+        String phoneNumber = cur.getString(cur.getColumnIndex("address"));
+        String smsBody = cur.getString(cur.getColumnIndex("body"));
+        String name = SmsUtils.getPeopleNameFromPerson(phoneNumber, JvApplication.getInstance());
+        String thread_id = cur.getString(cur.getColumnIndex("thread_id"));
+
+        //获取状态参数
+        int typeId = cur.getInt(cur.getColumnIndex("type"));
+        int read = cur.getInt(cur.getColumnIndex("read"));
+
+        //获取短信时间进行格式化
+        String date = TimeUtils.milliseconds2String(cur.getLong(cur.getColumnIndex("date")));
+
+        //设置短信收发类型 读取状态
+        SmsBean.Type type = typeId == 1 ? SmsBean.Type.RECEIVE : SmsBean.Type.SEND;
+        SmsBean.ReadType readType = read == 0 ? SmsBean.ReadType.NOT_READ : SmsBean.ReadType.IS_READ;
+
+        return new SmsBean(id, name, phoneNumber, smsBody, date, type, thread_id, readType);
+    }
 
     /**
      * 获取当前手机所有短信会话ID
@@ -63,7 +93,7 @@ public class SmsUtils {
             return null;
         }
 
-        String strPerson = "null";
+        String strPerson;
         String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
 
         Uri uri_Person = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, address);  // address 手机号过滤

@@ -16,4 +16,6 @@ public interface ISmsModel {
 
     boolean removeSmsByThreadId(String id);
 
+    SmsBean getNewSms();
+
 }

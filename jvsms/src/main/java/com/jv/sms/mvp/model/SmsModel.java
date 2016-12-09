@@ -20,6 +20,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by Administrator on 2016/12/2.
  */
@@ -31,62 +37,23 @@ public class SmsModel implements ISmsModel {
 
     @SuppressLint("LongLogTag")
     @Override
-    public List<SmsBean> findSmsAll(Context context) {
+    public List<SmsBean> findSmsAll(final Context context) {
+        //create return Container ，get all session id
         smsBeanList = new ArrayList<>();
-
-        final String SMS_URI_ALL = "content://sms/";
-
-        //首先获取所有短信会话ID
         threads = SmsUtils.getThreadsId(context);
 
+        final ContentResolver cr = context.getContentResolver();
+        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read"};
+        final Uri uri = Uri.parse("content://sms/");
+
         try {
-            ContentResolver cr = context.getContentResolver();
-            String[] projection = new String[]{"_id", "address", "person",
-                    "body", "date", "type", "thread_id", "read"};
-            Uri uri = Uri.parse(SMS_URI_ALL);
 
             for (int i = 0; i < threads.size(); i++) {
                 Cursor cur = cr.query(uri, projection, "thread_id=?", new String[]{threads.get(i)}, "date desc limit 1");
 
                 if (cur.moveToFirst()) {
-
-                    do {
-                        String id = cur.getString(cur.getColumnIndex("_id"));
-                        String phoneNumber = cur.getString(cur.getColumnIndex("address"));
-                        String smsBody = cur.getString(cur.getColumnIndex("body"));
-                        int typeId = cur.getInt(cur.getColumnIndex("type"));
-                        String name = SmsUtils.getPeopleNameFromPerson(phoneNumber, context);
-                        String thread_id = cur.getString(cur.getColumnIndex("thread_id"));
-                        int read = cur.getInt(cur.getColumnIndex("read"));
-
-                        //获取短信时间进行格式化
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Date d = new Date(Long.parseLong(cur.getString(cur.getColumnIndex("date"))));
-                        String date = dateFormat.format(d);
-
-                        //设置短信收发类型
-                        SmsBean.Type type = null;
-                        if (typeId == 1) { //接收的短信类型
-                            type = SmsBean.Type.RECEIVE;
-                        } else if (typeId == 2) { //发送的短信类型
-                            type = SmsBean.Type.SEND;
-                        }
-
-                        //设置读取状态
-                        SmsBean.ReadType readType = null;
-                        if (read == 0) {
-                            readType = SmsBean.ReadType.notRead;
-                        } else if (read == 1) {
-                            readType = SmsBean.ReadType.isRead;
-                        }
-
-                        SmsBean sms = new SmsBean(id, name, phoneNumber, smsBody, date, type, thread_id, readType);
-                        smsBeanList.add(sms);
-
-                        if (smsBody == null) smsBody = "";
-                    } while (false);
+                    smsBeanList.add(SmsUtils.simpleSmsBean(cur));
                 }
-
                 cur.close();
                 cur = null;
             }
@@ -113,6 +80,19 @@ public class SmsModel implements ISmsModel {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public SmsBean getNewSms() {
+        final ContentResolver cr = JvApplication.getInstance().getContentResolver();
+        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read"};
+        final Uri uri = Uri.parse("content://sms/");
+
+        Cursor cur = cr.query(uri, projection, null, null, "date desc limit 1");
+        if (cur.moveToFirst()) {
+            return SmsUtils.simpleSmsBean(cur);
+        }
+        return null;
     }
 
 }

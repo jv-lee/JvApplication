@@ -9,13 +9,20 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.jv.sms.R;
+import com.jv.sms.activity.DataLoadLayoutListener;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ContactsFragment extends Fragment {
 
+    private DataLoadLayoutListener listener;
+
     public ContactsFragment() {
+    }
+
+    public ContactsFragment(DataLoadLayoutListener listener) {
+        this.listener = listener;
     }
 
 

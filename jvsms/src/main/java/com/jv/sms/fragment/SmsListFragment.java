@@ -94,7 +94,9 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
                     public void call(EventBase eventBase) {
                         if (eventBase.getOption().equals(phoneNumber)) {
                             mList.add((SmsBean) eventBase.getObj());
-                            mAdapter.notifyDataSetChanged();
+                            mAdapter.smsListUiFlagBean.updateSize(1);
+                            mAdapter.notifyItemChanged(mAdapter.getItemCount());
+                            mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
                         }
                     }
                 });

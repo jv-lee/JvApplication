@@ -705,27 +705,14 @@ public class TimeUtils {
         } else {
             long timeLong1 = TimeUtils.string2Milliseconds(timeList.get(0));
             long timeLong2 = TimeUtils.string2Milliseconds(time);
-            if ((timeLong2 - timeLong1) <= ConstUtils.HOUR) {
+            if ((timeLong2 - timeLong1) <= (ConstUtils.MIN * 20)) {
                 timeList.add(time);
                 return false;
-            }else{
+            } else {
                 timeList.clear();
                 timeList.add(time);
                 return true;
             }
-//            for (int i = 1; i <= timeList.size(); i++) {
-//                if (i == timeList.size()) {
-//                    long timeLong1 = TimeUtils.string2Milliseconds(timeList.get(0));
-//                    long timeLong2 = TimeUtils.string2Milliseconds(time);
-//                    if ((timeLong2 - timeLong1) <= ConstUtils.HOUR) {
-//                        timeList.add(time);
-//                        timeList2.add(j, time);
-//                    } else {
-//                        timeList.clear();
-//                        timeList.add(time);
-//                    }
-//                }
-//            }
         }
     }
 

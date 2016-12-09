@@ -1,6 +1,7 @@
 package com.jv.sms.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,34 +16,51 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.activity.DataLoadLayoutListener;
 import com.jv.sms.activity.SmsListActivity;
+import com.jv.sms.bean.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.adapter.SmsDataAdapter;
 import com.jv.sms.mvp.presenter.ISmsPresenter;
 import com.jv.sms.mvp.presenter.SmsPresenter;
 import com.jv.sms.mvp.view.ISmsView;
+import com.jv.sms.rx.RxBus;
 
 
 import java.util.List;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+
 /**
  * A simple {@link Fragment} subclass.
  */
+@SuppressLint("ValidFragment")
 public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.OnSmsDataListener {
 
     private RecyclerView mRecyclerContainer;
-    private ProgressBar mProgressBar;
     private ISmsPresenter mPresenter;
+
     private SmsDataAdapter mAdapter;
     private List<SmsBean> mList;
 
+    private DataLoadLayoutListener listener;
+    private Observable<EventBase> observable;
+
     public SmsFragment() {
+    }
+
+    public SmsFragment(DataLoadLayoutListener listener) {
+        this.listener = listener;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new SmsPresenter(this);
+        observable = RxBus.getInstance().register(this);
     }
 
     @Override
@@ -50,12 +68,13 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sms, container, false);
         initView(view);
+        rxEvent();
         return view;
     }
 
     private void initView(View view) {
+        listener.showDataBar();
         mRecyclerContainer = (RecyclerView) view.findViewById(R.id.sms_fragment_recycler_container);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.pb_loadDataBar);
         //解决嵌套滑动缓慢问题
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         layoutManager.setSmoothScrollbarEnabled(true);
@@ -65,6 +84,50 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
         mRecyclerContainer.setNestedScrollingEnabled(false);
         mRecyclerContainer.setItemAnimator(new DefaultItemAnimator());
         mPresenter.findSmsAll();
+    }
+
+    //RxBus事件监听函数
+    private void rxEvent() {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<EventBase>() {
+                    @Override
+                    public void call(final EventBase eventBase) {
+//                        Observable.from(mList)
+//                                .filter(new Func1<SmsBean, Boolean>() {
+//                                    @Override
+//                                    public Boolean call(SmsBean smsBean) {
+//                                        return smsBean.getPhoneNumber().equals(eventBase.getOption());
+//                                    }
+//                                })
+//                                .subscribe(new Action1<SmsBean>() {
+//                                    @Override
+//                                    public void call(SmsBean smsBean) {
+//                                        smsBean.setDate(((SmsBean) eventBase.getObj()).getDate());
+//                                        smsBean.setSmsBody(((SmsBean) eventBase.getObj()).getSmsBody());
+//                                        mList.remove(smsBean);
+//                                        mAdapter.notifyItemRemoved(0);
+//                                        mList.add(0, smsBean);
+//                                        mAdapter.notifyItemInserted(0);
+//                                    }
+//                                });
+                        boolean hasSms = true;
+                        for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                            if (mList.get(i).getPhoneNumber().equals(eventBase.getOption())) {
+                                hasSms = false;
+                                SmsBean smsBean = mList.get(i);
+                                smsBean.setDate(((SmsBean) eventBase.getObj()).getDate());
+                                smsBean.setSmsBody(((SmsBean) eventBase.getObj()).getSmsBody());
+                                mList.remove(i);
+                                mAdapter.notifyItemRemoved(i);
+                                mList.add(0, smsBean);
+                                mAdapter.notifyItemInserted(0);
+                            }
+                        }
+                        if (hasSms) {
+                            mPresenter.getNewSms();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -82,13 +145,14 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
 
     @Override
     public void setDataError() {
-        Toast.makeText(getActivity(), "加载数据失败", Toast.LENGTH_SHORT).show();
+        listener.hideDataBar();
+        listener.showDataLayout();
     }
 
     @Override
     public void setDataSuccess() {
-        mProgressBar.setVisibility(View.GONE);
-        Toast.makeText(getActivity(), "加载数据成功", Toast.LENGTH_SHORT).show();
+        listener.hideDataBar();
+        listener.hideDataLayout();
     }
 
     @Override
@@ -99,6 +163,12 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
     @Override
     public void removeDataSuccess() {
         Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setNewSms(SmsBean sms) {
+        mList.add(0, sms);
+        mAdapter.notifyItemInserted(0);
     }
 
     @Override
@@ -127,5 +197,6 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
         super.onDestroy();
         mList = null;
         mPresenter = null;
+        RxBus.getInstance().unregister(this);
     }
 }

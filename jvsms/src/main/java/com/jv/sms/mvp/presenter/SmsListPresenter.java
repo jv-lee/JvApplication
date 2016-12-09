@@ -37,14 +37,13 @@ public class SmsListPresenter implements ISmsListPresenter {
     @Override
     public void refreshSmsList(String thread_id) {
         Observable.just(thread_id)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.io())
                 .map(new Func1<String, List<SmsBean>>() {
                     @Override
                     public List<SmsBean> call(String thread_id) {
                         return mModel.refreshSmsList(thread_id);
                     }
                 })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<SmsBean>>() {
                     @Override

@@ -20,4 +20,6 @@ public interface ISmsView {
 
     void removeDataSuccess();
 
+    void setNewSms(SmsBean sms);
+
 }

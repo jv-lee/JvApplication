@@ -54,7 +54,9 @@ public class SmsReceiver extends BroadcastReceiver {
                     sms.setSmsBody(curMsg.getDisplayMessageBody());
                     sms.setType(SmsBean.Type.RECEIVE);
                     sms.setName(SmsUtils.getPeopleNameFromPerson(sms.getPhoneNumber(), context));
-                    addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), curMsg.getTimestampMillis());
+
+                    //添加接受短信至数据库
+                    SmsUtils.addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), curMsg.getTimestampMillis());
                 }
 
                 //通过RxBus发送新短信通知
@@ -63,18 +65,5 @@ public class SmsReceiver extends BroadcastReceiver {
         }
     }
 
-
-    /**
-     * 添加到系统短信数据库
-     */
-    private void addSmsToDB(Context context, String address, String content, long date) {
-        ContentValues values = new ContentValues();
-        values.put("date", date);
-        values.put("read", 0);//0为未读信息
-        values.put("type", 1);//1为收件箱信息
-        values.put("address", address);
-        values.put("body", content);
-        context.getContentResolver().insert(Uri.parse("content://sms"), values);
-    }
 
 }

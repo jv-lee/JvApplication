@@ -2,6 +2,12 @@ package com.jv.sms.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.jv.sms.R;
@@ -24,6 +32,7 @@ import com.jv.sms.mvp.presenter.ISmsListPresenter;
 import com.jv.sms.mvp.presenter.SmsListPresenter;
 import com.jv.sms.mvp.view.ISmsListView;
 import com.jv.sms.rx.RxBus;
+import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TimeUtils;
 
 
@@ -37,7 +46,7 @@ import rx.functions.Action1;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class SmsListFragment extends Fragment implements ISmsListView, View.OnTouchListener {
+public class SmsListFragment extends Fragment implements ISmsListView, View.OnTouchListener, View.OnClickListener {
 
     private ToolbarSetListener toolbarSetListener;
 
@@ -45,11 +54,15 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
     private Observable<EventBase> observable;
 
     private RecyclerView mRcvContainer;
+    private ImageView mIvSendSms;
+    private EditText mEtSmsContent;
 
     private List<SmsBean> mList;
     private SmsListDataAdapter mAdapter;
 
     private String title, thread_id, phoneNumber;
+
+    private final String SENT_SMS_ACTION = "send_sms_action_code";
 
     public SmsListFragment() {
     }
@@ -66,6 +79,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         phoneNumber = getActivity().getIntent().getStringExtra("phone_number");
         mPresenter = new SmsListPresenter(this);
         observable = RxBus.getInstance().register(this);
+        getActivity().registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
     }
 
     @Override
@@ -80,6 +94,9 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
 
     private void initView(View view) {
         mRcvContainer = (RecyclerView) view.findViewById(R.id.rcv_container);
+        mIvSendSms = (ImageView) view.findViewById(R.id.iv_send_sms);
+        mEtSmsContent = (EditText) view.findViewById(R.id.et_sms_content);
+        mIvSendSms.setOnClickListener(this);
         mRcvContainer.setOnTouchListener(this);
         mRcvContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRcvContainer.setItemAnimator(new DefaultItemAnimator());
@@ -137,6 +154,19 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         Toast.makeText(getActivity(), "delete sms error", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * 发送短信函数
+     *
+     * @param phoneNumber
+     * @param Content
+     */
+    public void sendSms(String phoneNumber, String Content) {
+        Intent sendIntent = new Intent(SENT_SMS_ACTION);
+        PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
+        SmsUtils.sendSms(sendPi, phoneNumber, Content);
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -148,6 +178,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         super.onDestroy();
         TimeUtils.clearTimeList();
         RxBus.getInstance().unregister(this);
+        getActivity().unregisterReceiver(sendMessage);
     }
 
     @Override
@@ -157,5 +188,27 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         }
         return false;
     }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_send_sms:
+                sendSms("5554", mEtSmsContent.getText().toString());
+                break;
+        }
+    }
+
+
+    BroadcastReceiver sendMessage = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (getResultCode() == Activity.RESULT_OK) {
+                Toast.makeText(context, "短信发送成功", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "短信发送失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
 }

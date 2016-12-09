@@ -1,12 +1,16 @@
 package com.jv.sms.utils;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.jv.sms.app.JvApplication;
@@ -24,7 +28,29 @@ import java.util.List;
 public class SmsUtils {
 
     /**
+     * 发送短信
+     */
+    public static void sendSms(PendingIntent sentPI, String phoneNumber, String Content) {
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(phoneNumber, null, Content, sentPI, null);
+    }
+
+    /**
+     * 添加到系统短信数据库
+     */
+    public static void addSmsToDB(Context context, String address, String content, long date) {
+        ContentValues values = new ContentValues();
+        values.put("date", date);
+        values.put("read", 0);//0为未读信息
+        values.put("type", 1);//1为收件箱信息
+        values.put("address", address);
+        values.put("body", content);
+        context.getContentResolver().insert(Uri.parse("content://sms"), values);
+    }
+
+    /**
      * 获取条短信内容并格式化 返回短信对象
+     *
      * @param cur
      * @return
      */

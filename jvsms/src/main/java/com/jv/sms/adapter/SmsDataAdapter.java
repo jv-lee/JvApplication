@@ -23,13 +23,17 @@ import java.util.regex.Pattern;
 public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataHolder> {
 
     private Context mContext;
-    private List<SmsBean> mList;
+    public List<SmsBean> mList;
     private OnSmsDataListener mListener;
 
     public SmsDataAdapter(Context context, List<SmsBean> list, OnSmsDataListener listener) {
         mContext = context;
         mList = list;
         mListener = listener;
+    }
+
+    public SmsBean getItemBean(int position) {
+        return mList.get(position);
     }
 
     @Override
@@ -90,8 +94,10 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             String name = bean.getName();
             if (!Pattern.compile("[0-9]*").matcher(name).matches()) {
                 mIcon.setText(name.substring(0, 1));
+                mIconImg.setImageDrawable(null);
             } else {
                 mIconImg.setImageResource(R.drawable.ic_person_light);
+                mIcon.setText("");
             }
             mNumber.setText(name);
 

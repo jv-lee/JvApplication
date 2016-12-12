@@ -40,7 +40,7 @@ public class SmsUtils {
      */
     public static void addSmsToDB(Context context, String address, String content, long date,int read,int type) {
         ContentValues values = new ContentValues();
-        values.put("date", date);
+//        values.put("date", date);
         values.put("read", read);//0为未读信息
         values.put("type", type);//1为收件箱信息
         values.put("address", address);

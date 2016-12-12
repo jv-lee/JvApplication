@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.jv.sms.R;
 import com.jv.sms.activity.DataLoadLayoutListener;
 import com.jv.sms.activity.SmsListActivity;
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.adapter.SmsDataAdapter;
@@ -25,6 +26,7 @@ import com.jv.sms.mvp.presenter.ISmsPresenter;
 import com.jv.sms.mvp.presenter.SmsPresenter;
 import com.jv.sms.mvp.view.ISmsView;
 import com.jv.sms.rx.RxBus;
+import com.jv.sms.utils.NotificationUtils;
 
 
 import java.util.List;
@@ -94,14 +96,14 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
                     public void call(final EventBase eventBase) {
                         boolean hasSms = true;
                         for (int i = 0; i < mAdapter.getItemCount(); i++) {
-                            if (mList.get(i).getPhoneNumber().equals(eventBase.getOption())) {
+                            if (mAdapter.getItemBean(i).getPhoneNumber().equals(eventBase.getOption())) {
                                 hasSms = false;
-                                SmsBean smsBean = mList.get(i);
+                                SmsBean smsBean = mAdapter.getItemBean(i);
                                 smsBean.setDate(((SmsBean) eventBase.getObj()).getDate());
                                 smsBean.setSmsBody(((SmsBean) eventBase.getObj()).getSmsBody());
-                                mList.remove(i);
+                                mAdapter.mList.remove(i);
                                 mAdapter.notifyItemRemoved(i);
-                                mList.add(0, smsBean);
+                                mAdapter.mList.add(0, smsBean);
                                 mAdapter.notifyItemInserted(0);
                             }
                         }
@@ -121,6 +123,7 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
         } else {
             mList.clear();
             mList = beanList;
+            mRecyclerContainer.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -149,7 +152,7 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
 
     @Override
     public void setNewSms(SmsBean sms) {
-        mList.add(0, sms);
+        mAdapter.mList.add(0, sms);
         mAdapter.notifyItemInserted(0);
     }
 
@@ -176,6 +179,12 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        NotificationUtils.clearNum();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mList = null;
@@ -185,13 +194,15 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
 
     /**
      * 修改显示已读状态
+     *
      * @param bean
      * @param position
      */
     public void updateReadState(SmsBean bean, int position) {
         bean.setReadType(SmsBean.ReadType.IS_READ);
-        mList.set(position, bean);
+        mAdapter.mList.set(position, bean);
         mAdapter.notifyItemChanged(position);
+        mPresenter.updateSmsState(bean);
     }
 
 }

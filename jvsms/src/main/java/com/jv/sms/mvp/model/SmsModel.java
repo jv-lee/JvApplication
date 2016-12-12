@@ -106,7 +106,7 @@ public class SmsModel implements ISmsModel {
         ContentValues contentValues = new ContentValues();
         contentValues.put("read", Constant.SMS_STATUS_IS_READ);
 
-        cr.update(uri, contentValues, "_id", new String[]{smsBean.getId()});
+        cr.update(uri, contentValues, "_id = ?", new String[]{smsBean.getId()});
 
     }
 

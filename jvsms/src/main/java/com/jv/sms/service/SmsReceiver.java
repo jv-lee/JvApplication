@@ -13,6 +13,7 @@ import com.jv.sms.bean.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.constant.Constant;
 import com.jv.sms.rx.RxBus;
+import com.jv.sms.utils.NotificationUtils;
 import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TimeUtils;
 
@@ -60,6 +61,8 @@ public class SmsReceiver extends BroadcastReceiver {
 
                 //通过RxBus发送新短信通知
                 RxBus.getInstance().post(new EventBase(sms.getPhoneNumber(), sms));
+
+                NotificationUtils.showNotification(sms.getName(), sms.getSmsBody());
             }
         }
     }

@@ -11,6 +11,8 @@ public class JvApplication extends Application {
 
     private static Context mContext;
 
+    public static String THIS_SMS_FRAGMENT_FLAG = "";
+
     public static Context getInstance() {
         return mContext;
     }

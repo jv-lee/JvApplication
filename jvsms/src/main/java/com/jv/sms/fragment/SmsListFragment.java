@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.jv.sms.R;
 import com.jv.sms.activity.ToolbarSetListener;
 import com.jv.sms.adapter.SmsListDataAdapter;
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.mvp.presenter.ISmsListPresenter;
@@ -78,6 +79,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         title = getActivity().getIntent().getStringExtra("title");
         thread_id = getActivity().getIntent().getStringExtra("thread_id");
         phoneNumber = getActivity().getIntent().getStringExtra("phone_number");
+        JvApplication.THIS_SMS_FRAGMENT_FLAG = phoneNumber;
         mPresenter = new SmsListPresenter(this);
         observable = RxBus.getInstance().register(this);
         getActivity().registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
@@ -189,6 +191,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         TimeUtils.clearTimeList();
         RxBus.getInstance().unregister(this);
         getActivity().unregisterReceiver(sendMessage);
+        JvApplication.THIS_SMS_FRAGMENT_FLAG = "";
     }
 
     @Override

@@ -103,4 +103,9 @@ public class SmsPresenter implements ISmsPresenter {
                     }
                 });
     }
+
+    @Override
+    public void updateSmsState(SmsBean smsBean) {
+        mSmsModel.updateSmsState(smsBean);
+    }
 }

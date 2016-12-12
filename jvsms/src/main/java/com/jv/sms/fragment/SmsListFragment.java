@@ -56,7 +56,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
     private Observable<EventBase> observable;
 
     private RecyclerView mRcvContainer;
-    private ImageView mIvSendSms;
+    private ImageView mIvSendSms, mIvAdd, mIvEmoji;
     private EditText mEtSmsContent;
 
     private List<SmsBean> mList;
@@ -99,6 +99,10 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         mRcvContainer = (RecyclerView) view.findViewById(R.id.rcv_container);
         mIvSendSms = (ImageView) view.findViewById(R.id.iv_send_sms);
         mEtSmsContent = (EditText) view.findViewById(R.id.et_sms_content);
+        mIvAdd = (ImageView) view.findViewById(R.id.iv_add_sms);
+        mIvEmoji = (ImageView) view.findViewById(R.id.iv_emoji_sms);
+        mIvAdd.setOnClickListener(this);
+        mIvEmoji.setOnClickListener(this);
         mIvSendSms.setOnClickListener(this);
         mRcvContainer.setOnTouchListener(this);
         mRcvContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -204,6 +208,12 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
                     PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
                     mPresenter.sendSms(sendPi, phoneNumber, content);
                 }
+                break;
+            case R.id.iv_add_sms:
+                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_emoji_sms:
+                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

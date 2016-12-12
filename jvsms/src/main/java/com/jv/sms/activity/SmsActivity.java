@@ -10,10 +10,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jv.sms.R;
 import com.jv.sms.adapter.SmsUiAdapter;
@@ -54,7 +56,7 @@ public class SmsActivity extends AppCompatActivity implements SearchView.OnSugge
         mSearchView.setOnSuggestionListener(this);
         mSearchView.setOnSearchClickListener(this);
         mSearchView.setOnCloseListener(this);
-        SmsUiAdapter adapter = new SmsUiAdapter(getSupportFragmentManager(), this,this);
+        SmsUiAdapter adapter = new SmsUiAdapter(getSupportFragmentManager(), this, this);
         mViewPager.setAdapter(adapter);
         mTab.setupWithViewPager(mViewPager);
         adapter.setTabIcon(mTab);
@@ -66,6 +68,18 @@ public class SmsActivity extends AppCompatActivity implements SearchView.OnSugge
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_settings:
+                Toast.makeText(this, "设置功能暂未开放", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_item_hideContacts:
+                Toast.makeText(this, "屏蔽功能暂未开放", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public boolean onSuggestionSelect(int position) {

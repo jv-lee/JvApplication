@@ -27,6 +27,7 @@
 
 
         <ImageView
+            android:id="@+id/iv_add_sms"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -47,6 +48,7 @@
             android:textSize="16sp" />
 
         <ImageView
+            android:id="@+id/iv_emoji_sms"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

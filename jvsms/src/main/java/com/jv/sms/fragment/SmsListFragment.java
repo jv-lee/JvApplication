@@ -26,14 +26,12 @@ import android.widget.Toast;
 import com.jv.sms.R;
 import com.jv.sms.activity.ToolbarSetListener;
 import com.jv.sms.adapter.SmsListDataAdapter;
-import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.mvp.presenter.ISmsListPresenter;
 import com.jv.sms.mvp.presenter.SmsListPresenter;
 import com.jv.sms.mvp.view.ISmsListView;
 import com.jv.sms.rx.RxBus;
-import com.jv.sms.utils.KeyboardUtils;
 import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TimeUtils;
 
@@ -56,7 +54,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
     private Observable<EventBase> observable;
 
     private RecyclerView mRcvContainer;
-    private ImageView mIvSendSms, mIvAdd, mIvEmoji;
+    private ImageView mIvSendSms;
     private EditText mEtSmsContent;
 
     private List<SmsBean> mList;
@@ -79,7 +77,6 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         title = getActivity().getIntent().getStringExtra("title");
         thread_id = getActivity().getIntent().getStringExtra("thread_id");
         phoneNumber = getActivity().getIntent().getStringExtra("phone_number");
-        JvApplication.THIS_SMS_FRAGMENT_FLAG = phoneNumber;
         mPresenter = new SmsListPresenter(this);
         observable = RxBus.getInstance().register(this);
         getActivity().registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
@@ -99,10 +96,6 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         mRcvContainer = (RecyclerView) view.findViewById(R.id.rcv_container);
         mIvSendSms = (ImageView) view.findViewById(R.id.iv_send_sms);
         mEtSmsContent = (EditText) view.findViewById(R.id.et_sms_content);
-        mIvAdd = (ImageView) view.findViewById(R.id.iv_add_sms);
-        mIvEmoji = (ImageView) view.findViewById(R.id.iv_emoji_sms);
-        mIvAdd.setOnClickListener(this);
-        mIvEmoji.setOnClickListener(this);
         mIvSendSms.setOnClickListener(this);
         mRcvContainer.setOnTouchListener(this);
         mRcvContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -117,7 +110,10 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
                     @Override
                     public void call(EventBase eventBase) {
                         if (eventBase.getOption().equals(phoneNumber)) {
-                            insertSmsListUi((SmsBean) eventBase.getObj());
+                            mList.add((SmsBean) eventBase.getObj());
+                            mAdapter.smsListUiFlagBean.updateSize(1);
+                            mAdapter.notifyItemChanged(mAdapter.getItemCount());
+                            mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
                         }
                     }
                 });
@@ -158,30 +154,18 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         Toast.makeText(getActivity(), "delete sms error", Toast.LENGTH_SHORT).show();
     }
 
-
-    @Override
-    public void sendSmsSuccess() {
-        Toast.makeText(getActivity(), "send sms success", Toast.LENGTH_SHORT).show();
+    /**
+     * 发送短信函数
+     *
+     * @param phoneNumber
+     * @param Content
+     */
+    public void sendSms(String phoneNumber, String Content) {
+        Intent sendIntent = new Intent(SENT_SMS_ACTION);
+        PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
+        SmsUtils.sendSms(sendPi, phoneNumber, Content);
     }
 
-    @Override
-    public void sendSmsError() {
-        Toast.makeText(getActivity(), "send sms error", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void sendSmsLoading(SmsBean smsBean) {
-        //设置发送短信内容至显示
-        RxBus.getInstance().post(new EventBase(smsBean.getPhoneNumber(), smsBean));
-        mEtSmsContent.setText("");
-    }
-
-    public void insertSmsListUi(SmsBean smsBean) {
-        mList.add(smsBean);
-        mAdapter.smsListUiFlagBean.updateSize(1);
-        mAdapter.notifyItemInserted(mAdapter.getItemCount());
-        mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
-    }
 
     @Override
     public void onResume() {
@@ -195,47 +179,36 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         TimeUtils.clearTimeList();
         RxBus.getInstance().unregister(this);
         getActivity().unregisterReceiver(sendMessage);
-        JvApplication.THIS_SMS_FRAGMENT_FLAG = "";
     }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            mAdapter.clearSelectMessageState();
+        }
+        return false;
+    }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_send_sms:
-                String content = mEtSmsContent.getText().toString();
-                if (content.length() > 0) {
-                    Intent sendIntent = new Intent(SENT_SMS_ACTION);
-                    PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
-                    mPresenter.sendSms(sendPi, phoneNumber, content);
-                }
-                break;
-            case R.id.iv_add_sms:
-                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.iv_emoji_sms:
-                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
+                sendSms("5554", mEtSmsContent.getText().toString());
                 break;
         }
     }
 
-    //发送短信状态回调广播
+
     BroadcastReceiver sendMessage = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (getResultCode() == Activity.RESULT_OK) {
-                mPresenter.sendSmsSuccess();
+                Toast.makeText(context, "短信发送成功", Toast.LENGTH_SHORT).show();
             } else {
-                mPresenter.sendSmsError();
+                Toast.makeText(context, "短信发送失败", Toast.LENGTH_SHORT).show();
             }
         }
     };
-
-    @Override
-    public boolean onTouch(View v, MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mAdapter.clearSelectMessageState();
-        }
-        return false;
-    }
 
 }

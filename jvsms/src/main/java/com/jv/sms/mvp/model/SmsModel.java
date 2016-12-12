@@ -69,13 +69,7 @@ public class SmsModel implements ISmsModel {
 
     @Override
     public boolean removeSmsByThreadId(String id) {
-        Context context = JvApplication.getInstance();
-
-        if (SmsWriteOpUtil.isWriteEnabled(context)) {
-            SmsWriteOpUtil.setWriteEnabled(context, true);
-        }
-
-        ContentResolver resolver = context.getContentResolver();
+        ContentResolver resolver = JvApplication.getInstance().getContentResolver();
         Uri uri = Uri.parse("content://sms/conversations/" + id);
         int result = resolver.delete(uri, null, null);
         if (result > 0) {

@@ -32,6 +32,7 @@ import com.jv.sms.mvp.presenter.ISmsListPresenter;
 import com.jv.sms.mvp.presenter.SmsListPresenter;
 import com.jv.sms.mvp.view.ISmsListView;
 import com.jv.sms.rx.RxBus;
+import com.jv.sms.utils.KeyboardUtils;
 import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TimeUtils;
 
@@ -110,10 +111,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
                     @Override
                     public void call(EventBase eventBase) {
                         if (eventBase.getOption().equals(phoneNumber)) {
-                            mList.add((SmsBean) eventBase.getObj());
-                            mAdapter.smsListUiFlagBean.updateSize(1);
-                            mAdapter.notifyItemChanged(mAdapter.getItemCount());
-                            mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
+                            insertSmsListUi((SmsBean) eventBase.getObj());
                         }
                     }
                 });
@@ -154,18 +152,30 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
         Toast.makeText(getActivity(), "delete sms error", Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * 发送短信函数
-     *
-     * @param phoneNumber
-     * @param Content
-     */
-    public void sendSms(String phoneNumber, String Content) {
-        Intent sendIntent = new Intent(SENT_SMS_ACTION);
-        PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
-        SmsUtils.sendSms(sendPi, phoneNumber, Content);
+
+    @Override
+    public void sendSmsSuccess() {
+        Toast.makeText(getActivity(), "send sms success", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void sendSmsError() {
+        Toast.makeText(getActivity(), "send sms error", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sendSmsLoading(SmsBean smsBean) {
+        //设置发送短信内容至显示
+        RxBus.getInstance().post(new EventBase(smsBean.getPhoneNumber(), smsBean));
+        mEtSmsContent.setText("");
+    }
+
+    public void insertSmsListUi(SmsBean smsBean) {
+        mList.add(smsBean);
+        mAdapter.smsListUiFlagBean.updateSize(1);
+        mAdapter.notifyItemInserted(mAdapter.getItemCount());
+        mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
+    }
 
     @Override
     public void onResume() {
@@ -182,33 +192,37 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnTo
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            mAdapter.clearSelectMessageState();
-        }
-        return false;
-    }
-
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_send_sms:
-                sendSms("5554", mEtSmsContent.getText().toString());
+                String content = mEtSmsContent.getText().toString();
+                if (content.length() > 0) {
+                    Intent sendIntent = new Intent(SENT_SMS_ACTION);
+                    PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
+                    mPresenter.sendSms(sendPi, phoneNumber, content);
+                }
                 break;
         }
     }
 
-
+    //发送短信状态回调广播
     BroadcastReceiver sendMessage = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (getResultCode() == Activity.RESULT_OK) {
-                Toast.makeText(context, "短信发送成功", Toast.LENGTH_SHORT).show();
+                mPresenter.sendSmsSuccess();
             } else {
-                Toast.makeText(context, "短信发送失败", Toast.LENGTH_SHORT).show();
+                mPresenter.sendSmsError();
             }
         }
     };
+
+    @Override
+    public boolean onTouch(View v, MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mAdapter.clearSelectMessageState();
+        }
+        return false;
+    }
 
 }

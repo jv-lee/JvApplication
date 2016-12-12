@@ -2,6 +2,7 @@ package com.jv.sms.mvp.model;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -11,6 +12,7 @@ import android.util.Log;
 
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
+import com.jv.sms.constant.Constant;
 import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.SmsWriteOpUtil;
 import com.jv.sms.utils.TimeUtils;
@@ -93,6 +95,19 @@ public class SmsModel implements ISmsModel {
             return SmsUtils.simpleSmsBean(cur);
         }
         return null;
+    }
+
+    @Override
+    public void updateSmsState(SmsBean smsBean) {
+
+        final ContentResolver cr = JvApplication.getInstance().getContentResolver();
+        final Uri uri = Uri.parse("content://sms/");
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("read", Constant.SMS_STATUS_IS_READ);
+
+        cr.update(uri, contentValues, "_id", new String[]{smsBean.getId()});
+
     }
 
 }

@@ -18,4 +18,6 @@ public interface ISmsModel {
 
     SmsBean getNewSms();
 
+    void updateSmsState(SmsBean smsBean);
+
 }

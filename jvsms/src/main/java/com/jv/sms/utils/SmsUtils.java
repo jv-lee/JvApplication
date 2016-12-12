@@ -38,11 +38,11 @@ public class SmsUtils {
     /**
      * 添加到系统短信数据库
      */
-    public static void addSmsToDB(Context context, String address, String content, long date) {
+    public static void addSmsToDB(Context context, String address, String content, long date,int read,int type) {
         ContentValues values = new ContentValues();
         values.put("date", date);
-        values.put("read", 0);//0为未读信息
-        values.put("type", 1);//1为收件箱信息
+        values.put("read", read);//0为未读信息
+        values.put("type", type);//1为收件箱信息
         values.put("address", address);
         values.put("body", content);
         context.getContentResolver().insert(Uri.parse("content://sms"), values);

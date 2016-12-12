@@ -1,9 +1,8 @@
 package com.jv.sms.mvp.model;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
@@ -12,12 +11,11 @@ import android.util.Log;
 
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
+import com.jv.sms.constant.Constant;
 import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TimeUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -62,6 +60,31 @@ public class SmsListModel implements ISmsListModel {
             Log.e("SQLiteException in getSmsInPhone", ex.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public SmsBean sendSms(PendingIntent sentPI,String phoneNumber, String content) {
+        //设置时间
+        long date = System.currentTimeMillis();
+        String dateStr = TimeUtils.milliseconds2String(date);
+
+        //发送短信
+        SmsUtils.sendSms(sentPI, phoneNumber, content);
+
+        //将发送短信保存至数据库
+        SmsUtils.addSmsToDB(JvApplication.getInstance(), phoneNumber, content, date, Constant.SMS_STATUS_IS_READ, Constant.SMS_STATUS_SEND);
+
+        //返回发送的短信对象
+        SmsBean sms = new SmsBean();
+        sms.setDate(dateStr);
+        sms.setSmsBody(content);
+        sms.setPhoneNumber(phoneNumber);
+        sms.setName(SmsUtils.getPeopleNameFromPerson(phoneNumber, JvApplication.getInstance()));
+        sms.setReadType(SmsBean.ReadType.IS_READ);
+        sms.setType(SmsBean.Type.SEND);
+        sms.setShowDate(TimeUtils.isShowTime(dateStr));
+        return sms;
+
     }
 
 

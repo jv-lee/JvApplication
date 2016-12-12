@@ -92,24 +92,6 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
                 .subscribe(new Action1<EventBase>() {
                     @Override
                     public void call(final EventBase eventBase) {
-//                        Observable.from(mList)
-//                                .filter(new Func1<SmsBean, Boolean>() {
-//                                    @Override
-//                                    public Boolean call(SmsBean smsBean) {
-//                                        return smsBean.getPhoneNumber().equals(eventBase.getOption());
-//                                    }
-//                                })
-//                                .subscribe(new Action1<SmsBean>() {
-//                                    @Override
-//                                    public void call(SmsBean smsBean) {
-//                                        smsBean.setDate(((SmsBean) eventBase.getObj()).getDate());
-//                                        smsBean.setSmsBody(((SmsBean) eventBase.getObj()).getSmsBody());
-//                                        mList.remove(smsBean);
-//                                        mAdapter.notifyItemRemoved(0);
-//                                        mList.add(0, smsBean);
-//                                        mAdapter.notifyItemInserted(0);
-//                                    }
-//                                });
                         boolean hasSms = true;
                         for (int i = 0; i < mAdapter.getItemCount(); i++) {
                             if (mList.get(i).getPhoneNumber().equals(eventBase.getOption())) {
@@ -177,12 +159,13 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
     }
 
     @Override
-    public void onLayoutClick(SmsBean bean) {
+    public void onLayoutClick(SmsBean bean, int position) {
         Intent intent = new Intent(getActivity(), SmsListActivity.class);
         intent.putExtra("title", bean.getName());
         intent.putExtra("thread_id", bean.getThread_id());
         intent.putExtra("phone_number", bean.getPhoneNumber());
         startActivity(intent);
+        updateReadState(bean, position);
     }
 
     @Override
@@ -199,4 +182,16 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
         mPresenter = null;
         RxBus.getInstance().unregister(this);
     }
+
+    /**
+     * 修改显示已读状态
+     * @param bean
+     * @param position
+     */
+    public void updateReadState(SmsBean bean, int position) {
+        bean.setReadType(SmsBean.ReadType.IS_READ);
+        mList.set(position, bean);
+        mAdapter.notifyItemChanged(position);
+    }
+
 }

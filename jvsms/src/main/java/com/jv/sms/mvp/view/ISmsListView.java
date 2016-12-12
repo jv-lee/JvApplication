@@ -21,4 +21,10 @@ public interface ISmsListView {
 
     void deleteSmsError();
 
+    void sendSmsLoading(SmsBean smsBean);
+
+    void sendSmsSuccess();
+
+    void sendSmsError();
+
 }

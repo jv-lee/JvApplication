@@ -78,6 +78,14 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             mMessage.setText(bean.getSmsBody());
             mDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
 
+            if (bean.getReadType().equals(SmsBean.ReadType.NOT_READ)) {
+                mNumber.getPaint().setFakeBoldText(true);
+                mMessage.getPaint().setFakeBoldText(true);
+            } else {
+                mMessage.getPaint().setFakeBoldText(false);
+                mNumber.getPaint().setFakeBoldText(false);
+            }
+
             //判断当前name是否为数字
             String name = bean.getName();
             if (!Pattern.compile("[0-9]*").matcher(name).matches()) {
@@ -93,7 +101,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.item_sms_layout:
-                    mListener.onLayoutClick(mList.get(getLayoutPosition()));
+                    mListener.onLayoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
                     break;
                 case R.id.item_sms_icon_layout:
                     mListener.onIconClick(mList.get(getLayoutPosition()));
@@ -116,7 +124,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
         void onIconClick(SmsBean bean);
 
-        void onLayoutClick(SmsBean bean);
+        void onLayoutClick(SmsBean bean, int position);
 
         void onLongLayoutClick(SmsBean bean, int position);
 

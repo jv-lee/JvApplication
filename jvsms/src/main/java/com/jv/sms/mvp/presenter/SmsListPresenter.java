@@ -1,6 +1,7 @@
 package com.jv.sms.mvp.presenter;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.util.Log;
 
 import com.jv.sms.bean.SmsBean;
@@ -71,5 +72,43 @@ public class SmsListPresenter implements ISmsListPresenter {
         } else {
             mView.deleteSmsError();
         }
+    }
+
+    @Override
+    public void sendSms(final PendingIntent sentPI, final String phoneNumber, final String content) {
+        Observable.create(new Observable.OnSubscribe<SmsBean>() {
+            @Override
+            public void call(Subscriber<? super SmsBean> subscriber) {
+                subscriber.onNext(mModel.sendSms(sentPI, phoneNumber, content));
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<SmsBean>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.sendSmsError();
+                    }
+
+                    @Override
+                    public void onNext(SmsBean smsBean) {
+                        mView.sendSmsLoading(smsBean);
+                    }
+                });
+    }
+
+    @Override
+    public void sendSmsSuccess() {
+        mView.sendSmsSuccess();
+    }
+
+    @Override
+    public void sendSmsError() {
+        mView.sendSmsError();
     }
 }

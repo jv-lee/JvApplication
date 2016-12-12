@@ -21,10 +21,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-        <FrameLayout
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:id="@+id/sms_list_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <FrameLayout
+        android:id="@+id/sms_list_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -18,65 +18,23 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="right"
-            app:layout_collapseMode="pin"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/main_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/app_name"
-                    android:textColor="#ffffff"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <android.support.v7.widget.SearchView
-                    android:id="@+id/main_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:iconifiedByDefault="true" />
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.Toolbar>
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tab_Layout"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:minHeight="56dp"
-            app:tabGravity="fill"
-            app:tabMode="fixed"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 
-
     <FrameLayout
+        android:id="@+id/act_sms_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewpager_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
         <ProgressBar
-            android:visibility="invisible"
             android:id="@+id/pb_sms_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:visibility="invisible" />
 
         <LinearLayout
             android:id="@+id/ll_null_layout"
@@ -98,11 +56,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
                 android:text="您的会话会显示在此处" />
-
-
         </LinearLayout>
-
-
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -113,6 +67,5 @@
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/colorPrimaryDark"
         app:srcCompat="@android:drawable/ic_dialog_email" />
-
 
 </android.support.design.widget.CoordinatorLayout>

@@ -100,26 +100,6 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnCl
         mRcvContainer = (RecyclerView) view.findViewById(R.id.rcv_container);
         mIvSendSms = (ImageView) view.findViewById(R.id.iv_send_sms);
         mEtSmsContent = (EditText) view.findViewById(R.id.et_sms_content);
-        mEtSmsContent.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().length() > 0) {
-                    mIvSendSms.setColorFilter(R.color.colorPrimary);
-                } else if (s.toString().length() == 0) {
-                    mIvSendSms.setColorFilter(R.color.colorSmsEditTextIcon);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
         mIvAdd = (ImageView) view.findViewById(R.id.iv_add_sms);
         mIvEmoji = (ImageView) view.findViewById(R.id.iv_emoji_sms);
         mIvAdd.setOnClickListener(this);

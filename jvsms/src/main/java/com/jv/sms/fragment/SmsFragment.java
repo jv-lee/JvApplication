@@ -3,22 +3,25 @@ package com.jv.sms.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.jv.sms.R;
 import com.jv.sms.activity.DataLoadLayoutListener;
 import com.jv.sms.activity.SmsListActivity;
-import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.adapter.SmsDataAdapter;
@@ -27,6 +30,7 @@ import com.jv.sms.mvp.presenter.SmsPresenter;
 import com.jv.sms.mvp.view.ISmsView;
 import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.NotificationUtils;
+import com.jv.sms.utils.SizeUtils;
 
 
 import java.util.List;
@@ -34,21 +38,23 @@ import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.OnSmsDataListener {
+public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.OnSmsDataListener, View.OnClickListener {
 
     private RecyclerView mRecyclerContainer;
-    private ISmsPresenter mPresenter;
+    private PopupWindow mPopupWindow;
+    private View popupView;
 
     private SmsDataAdapter mAdapter;
     private List<SmsBean> mList;
 
     private DataLoadLayoutListener listener;
+
+    private ISmsPresenter mPresenter;
     private Observable<EventBase> observable;
 
     public SmsFragment() {
@@ -77,6 +83,7 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
     private void initView(View view) {
         listener.showDataBar();
         mRecyclerContainer = (RecyclerView) view.findViewById(R.id.sms_fragment_recycler_container);
+        initPopupView();
         //解决嵌套滑动缓慢问题
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         layoutManager.setSmoothScrollbarEnabled(true);
@@ -173,9 +180,11 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
 
     @Override
     public void onLongLayoutClick(SmsBean bean, int position) {
-        mList.remove(bean);
-        mPresenter.removeSmsByThreadId(bean.getThread_id());
-        mAdapter.notifyItemRemoved(position);
+//        mList.remove(bean);
+//        mPresenter.removeSmsByThreadId(bean.getThread_id());
+//        mAdapter.notifyItemRemoved(position);
+//        listener.showSelectBar();
+        initPopupWindow();
     }
 
     @Override
@@ -205,4 +214,52 @@ public class SmsFragment extends Fragment implements ISmsView, SmsDataAdapter.On
         mPresenter.updateSmsState(bean);
     }
 
+    //创建弹窗布局设置点击监听
+    private void initPopupView() {
+        popupView = getActivity().getLayoutInflater().inflate(R.layout.layout_select_window_menu, null);
+        popupView.findViewById(R.id.iv_window_close).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_add).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_archive).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_delete).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_dnd).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_notification).setOnClickListener(this);
+    }
+
+    public void initPopupWindow() {
+        //创建弹窗
+        mPopupWindow = new PopupWindow(popupView, Toolbar.LayoutParams.MATCH_PARENT, listener.getToolbarHeight());
+        mPopupWindow.setAnimationStyle(R.style.popup_window_anim);
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F8F8F8")));
+        // TODO: 2016/5/17 设置可以获取焦点
+        mPopupWindow.setFocusable(false);
+        // TODO: 2016/5/17 设置可以触摸弹出框以外的区域
+        mPopupWindow.setOutsideTouchable(false);
+        // TODO：更新popupwindow的状态
+        mPopupWindow.update();
+        mPopupWindow.showAtLocation(mRecyclerContainer, Gravity.TOP, 0, SizeUtils.getSubTitleHeight(getActivity()));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_window_close:
+                mPopupWindow.dismiss();
+                break;
+            case R.id.iv_window_archive:
+                Toast.makeText(getActivity(), "archive归档处理", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_window_delete:
+                Toast.makeText(getActivity(), "delete删除处理", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_window_notification:
+                Toast.makeText(getActivity(), "notification通知处理", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_window_add:
+                Toast.makeText(getActivity(), "add添加处理", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_window_dnd:
+                Toast.makeText(getActivity(), "dnd频闭处理", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 }

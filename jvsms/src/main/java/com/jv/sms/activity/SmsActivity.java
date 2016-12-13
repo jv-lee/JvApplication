@@ -1,65 +1,52 @@
 package com.jv.sms.activity;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jv.sms.R;
-import com.jv.sms.adapter.SmsUiAdapter;
-import com.jv.sms.utils.SmsUtils;
+import com.jv.sms.fragment.SmsFragment;
+import com.jv.sms.utils.SizeUtils;
 
 
-public class SmsActivity extends AppCompatActivity implements SearchView.OnSuggestionListener,
-        View.OnClickListener, SearchView.OnCloseListener, DataLoadLayoutListener {
+public class SmsActivity extends AppCompatActivity implements
+        View.OnClickListener, DataLoadLayoutListener {
 
-    private TabLayout mTab;
-    private ViewPager mViewPager;
-    private SearchView mSearchView;
     private FloatingActionButton fab;
-    private TextView mTitle;
     private ProgressBar mPbDataBar;
     private LinearLayout mDataLayout;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
         initView();
-        initUi();
+        getSupportFragmentManager().beginTransaction().add(R.id.act_sms_container, new SmsFragment(this)).commit();
     }
 
     private void initView() {
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_content);
-        mTab = (TabLayout) findViewById(R.id.tab_Layout);
-        mSearchView = (SearchView) findViewById(R.id.main_search);
-        mTitle = (TextView) findViewById(R.id.main_title);
         mPbDataBar = (ProgressBar) findViewById(R.id.pb_sms_loading);
         mDataLayout = (LinearLayout) findViewById(R.id.ll_null_layout);
         fab = (FloatingActionButton) findViewById(R.id.fab);
-    }
-
-    private void initUi() {
-        mSearchView.setOnSuggestionListener(this);
-        mSearchView.setOnSearchClickListener(this);
-        mSearchView.setOnCloseListener(this);
-        SmsUiAdapter adapter = new SmsUiAdapter(getSupportFragmentManager(), this, this);
-        mViewPager.setAdapter(adapter);
-        mTab.setupWithViewPager(mViewPager);
-        adapter.setTabIcon(mTab);
     }
 
     @Override
@@ -82,36 +69,6 @@ public class SmsActivity extends AppCompatActivity implements SearchView.OnSugge
     }
 
     @Override
-    public boolean onSuggestionSelect(int position) {
-        return false;
-    }
-
-    @Override
-    public boolean onSuggestionClick(int position) {
-        return false;
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.main_search:
-                mTitle.setText("");
-                break;
-            case R.id.fab:
-                Snackbar.make(fab, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                break;
-        }
-    }
-
-    @Override
-    public boolean onClose() {
-        mTitle.setText(R.string.app_name);
-        return false;
-    }
-
-
-    @Override
     public void showDataBar() {
         mPbDataBar.setVisibility(View.VISIBLE);
     }
@@ -130,4 +87,20 @@ public class SmsActivity extends AppCompatActivity implements SearchView.OnSugge
     public void hideDataLayout() {
         mDataLayout.setVisibility(View.GONE);
     }
+
+    @Override
+    public int getToolbarHeight() {
+        return mToolbar.getMeasuredHeight();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab:
+                Snackbar.make(fab, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                break;
+        }
+    }
+
+
 }

@@ -14,4 +14,6 @@ public interface DataLoadLayoutListener {
 
     void hideDataLayout();
 
+    int getToolbarHeight();
+
 }

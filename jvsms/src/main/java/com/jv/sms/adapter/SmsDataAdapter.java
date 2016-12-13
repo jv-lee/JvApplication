@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.jv.sms.R;
 import com.jv.sms.bean.SmsBean;
-import com.jv.sms.utils.ClickUtils;
+import com.jv.sms.bean.SmsUiFlagBean;
 import com.jv.sms.utils.TimeUtils;
 
 import java.util.List;
@@ -26,11 +26,13 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     private Context mContext;
     public List<SmsBean> mList;
     private OnSmsDataListener mListener;
+    private SmsUiFlagBean smsUiFlagBean;
 
     public SmsDataAdapter(Context context, List<SmsBean> list, OnSmsDataListener listener) {
         mContext = context;
         mList = list;
         mListener = listener;
+        smsUiFlagBean = new SmsUiFlagBean(list.size());
     }
 
     public SmsBean getItemBean(int position) {
@@ -91,16 +93,24 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                 mNumber.getPaint().setFakeBoldText(false);
             }
 
-            //判断当前name是否为数字
-            String name = bean.getName();
-            if (!Pattern.compile("[0-9]*").matcher(name).matches()) {
-                mIcon.setText(name.substring(0, 1));
-                mIconImg.setImageDrawable(null);
-            } else {
-                mIconImg.setImageResource(R.drawable.ic_person_light);
-                mIcon.setText("");
+            if (smsUiFlagBean.hasIconUi.get(getLayoutPosition())) {
+
+                //判断当前name是否为数字
+                String name = bean.getName();
+                if (!Pattern.compile("[0-9]*").matcher(name).matches()) {
+                    mIcon.setText(name.substring(0, 1));
+                    mIconImg.setImageDrawable(null);
+                } else {
+                    mIconImg.setImageResource(R.drawable.ic_person_light);
+                    mIcon.setText("");
+                }
+                mNumber.setText(name);
+            }else{
+
+//                mIconImg.setImageDrawable();
+//                mIcon = "";
+
             }
-            mNumber.setText(name);
 
         }
 
@@ -123,7 +133,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                     mListener.onLongLayoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
                     break;
             }
-            return false;
+            return true;
         }
     }
 

@@ -8,39 +8,41 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.jv.sms.R;
 import com.jv.sms.activity.ToolbarSetListener;
 import com.jv.sms.adapter.SmsListDataAdapter;
 import com.jv.sms.app.JvApplication;
-import com.jv.sms.bean.EventBase;
+import com.jv.sms.base.BaseFragment;
+import com.jv.sms.base.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.mvp.presenter.ISmsListPresenter;
 import com.jv.sms.mvp.presenter.SmsListPresenter;
 import com.jv.sms.mvp.view.ISmsListView;
 import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.ClickUtils;
+import com.jv.sms.utils.SizeUtils;
 import com.jv.sms.utils.TimeUtils;
-
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -49,16 +51,23 @@ import rx.functions.Action1;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class SmsListFragment extends Fragment implements ISmsListView, View.OnClickListener {
+public class SmsListFragment extends BaseFragment implements ISmsListView, View.OnClickListener, SmsListDataAdapter.OnSmsListAdapterListener {
+
+    @BindView(R.id.rv_smsListFragment_container)
+    RecyclerView rvSmsListFragmentContainer;
+    @BindView(R.id.iv_add_sms)
+    ImageView ivAddSms;
+    @BindView(R.id.et_sms_content)
+    EditText etSmsContent;
+    @BindView(R.id.iv_emoji_sms)
+    ImageView ivEmojiSms;
+    @BindView(R.id.iv_send_sms)
+    ImageView ivSendSms;
+    private PopupWindow mPopupWindow;
+    private View popupView;
 
     private ToolbarSetListener toolbarSetListener;
-
     private ISmsListPresenter mPresenter;
-    private Observable<EventBase> observable;
-
-    private RecyclerView mRcvContainer;
-    private ImageView mIvSendSms, mIvAdd, mIvEmoji;
-    private EditText mEtSmsContent;
 
     private List<SmsBean> mList;
     private SmsListDataAdapter mAdapter;
@@ -77,47 +86,58 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnCl
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         title = getActivity().getIntent().getStringExtra("title");
         thread_id = getActivity().getIntent().getStringExtra("thread_id");
         phoneNumber = getActivity().getIntent().getStringExtra("phone_number");
+
         JvApplication.THIS_SMS_FRAGMENT_FLAG = phoneNumber;
         mPresenter = new SmsListPresenter(this);
-        observable = RxBus.getInstance().register(this);
         getActivity().registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sms_list, container, false);
-        initView(view);
-        rxEvent();
-        return view;
+    public int getContentViewId() {
+        return R.layout.fragment_sms_list;
     }
 
+    @Override
+    public Observable<EventBase> getRxBus() {
+        return RxBus.getInstance().register(this);
+    }
 
-    private void initView(View view) {
-        mRcvContainer = (RecyclerView) view.findViewById(R.id.rcv_container);
-        mIvSendSms = (ImageView) view.findViewById(R.id.iv_send_sms);
-        mEtSmsContent = (EditText) view.findViewById(R.id.et_sms_content);
-        mIvAdd = (ImageView) view.findViewById(R.id.iv_add_sms);
-        mIvEmoji = (ImageView) view.findViewById(R.id.iv_emoji_sms);
-        mIvAdd.setOnClickListener(this);
-        mIvEmoji.setOnClickListener(this);
-        mIvSendSms.setOnClickListener(this);
-        mRcvContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRcvContainer.setItemAnimator(new DefaultItemAnimator());
+    @Override
+    protected void initAllView(Bundle savedInstanceState) {
+        initPopupView();
+        rvSmsListFragmentContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvSmsListFragmentContainer.setItemAnimator(new DefaultItemAnimator());
         mPresenter.refreshSmsList(thread_id);
     }
 
+    @OnClick({R.id.iv_add_sms, R.id.iv_emoji_sms, R.id.iv_send_sms})
+    public void ivOnClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_send_sms:
+                sendSms();
+                break;
+            case R.id.iv_add_sms:
+                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_emoji_sms:
+                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
     //RxBus事件监听函数
-    private void rxEvent() {
-        observable.observeOn(AndroidSchedulers.mainThread())
+    @Override
+    protected void rxEvent() {
+        mObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<EventBase>() {
                     @Override
                     public void call(EventBase eventBase) {
                         if (eventBase.getOption().equals(phoneNumber)) {
-                            insertSmsListUi((SmsBean) eventBase.getObj());
+                            mAdapter.insertSmsListUi((SmsBean) eventBase.getObj());
                         }
                     }
                 });
@@ -127,14 +147,14 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnCl
     public void refreshSmsList(List<SmsBean> list) {
         if (mList == null) {
             mList = list;
-            mAdapter = new SmsListDataAdapter(getActivity(), mList);
-            mRcvContainer.setAdapter(mAdapter);
-            mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
+            mAdapter = new SmsListDataAdapter(getActivity(), mList, this);
+            rvSmsListFragmentContainer.setAdapter(mAdapter);
+            rvSmsListFragmentContainer.scrollToPosition(mAdapter.getItemCount() - 1);
         } else {
             mList.clear();
             mList = list;
             mAdapter.notifyDataSetChanged();
-            mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
+            rvSmsListFragmentContainer.scrollToPosition(mAdapter.getItemCount() - 1);
         }
     }
 
@@ -158,7 +178,6 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnCl
         Toast.makeText(getActivity(), "delete sms error", Toast.LENGTH_SHORT).show();
     }
 
-
     @Override
     public void sendSmsSuccess() {
         Toast.makeText(getActivity(), "send sms success", Toast.LENGTH_SHORT).show();
@@ -173,14 +192,7 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnCl
     public void sendSmsLoading(SmsBean smsBean) {
         //设置发送短信内容至显示
         RxBus.getInstance().post(new EventBase(smsBean.getPhoneNumber(), smsBean));
-        mEtSmsContent.setText("");
-    }
-
-    public void insertSmsListUi(SmsBean smsBean) {
-        mList.add(smsBean);
-        mAdapter.smsListUiFlagBean.updateSize(1);
-        mAdapter.notifyItemInserted(mAdapter.getItemCount());
-        mRcvContainer.scrollToPosition(mAdapter.getItemCount() - 1);
+        etSmsContent.setText("");
     }
 
     @Override
@@ -193,30 +205,8 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnCl
     public void onDestroy() {
         super.onDestroy();
         TimeUtils.clearTimeList();
-        RxBus.getInstance().unregister(this);
         getActivity().unregisterReceiver(sendMessage);
         JvApplication.THIS_SMS_FRAGMENT_FLAG = "";
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_send_sms:
-                String content = mEtSmsContent.getText().toString();
-                if (content.length() > 0) {
-                    Intent sendIntent = new Intent(SENT_SMS_ACTION);
-                    PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
-                    mPresenter.sendSms(sendPi, phoneNumber, content);
-                    ClickUtils.sendMusic();
-                }
-                break;
-            case R.id.iv_add_sms:
-                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.iv_emoji_sms:
-                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
-                break;
-        }
     }
 
     //发送短信状态回调广播
@@ -230,5 +220,82 @@ public class SmsListFragment extends Fragment implements ISmsListView, View.OnCl
             }
         }
     };
+
+    public void sendSms() {
+        String content = etSmsContent.getText().toString();
+        if (content.length() > 0) {
+            Intent sendIntent = new Intent(SENT_SMS_ACTION);
+            PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
+            mPresenter.sendSms(sendPi, phoneNumber, content);
+            ClickUtils.sendMusic();
+        }
+    }
+
+    @Override
+    public RecyclerView getRvContainer() {
+        return rvSmsListFragmentContainer;
+    }
+
+    @Override
+    public PopupWindow getPopupWindow() {
+        return mPopupWindow;
+    }
+
+    @Override
+    public void getPopupWindowInit() {
+        initPopupWindow();
+    }
+
+    /************************************************
+     * 长按菜单
+     **************************************************************/
+
+    //创建弹窗布局设置点击监听
+    private void initPopupView() {
+        popupView = getActivity().getLayoutInflater().inflate(R.layout.layout_select_window_menu2, null);
+        popupView.findViewById(R.id.iv_window_close).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_attachment).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_forward).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_copy).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_info).setOnClickListener(this);
+        popupView.findViewById(R.id.iv_window_delete).setOnClickListener(this);
+    }
+
+    public void initPopupWindow() {
+        //创建弹窗
+        mPopupWindow = new PopupWindow(popupView, Toolbar.LayoutParams.MATCH_PARENT, toolbarSetListener.getToolbarHeight());
+        mPopupWindow.setAnimationStyle(R.style.popup_window_anim);
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F8F8F8")));
+        // TODO: 2016/5/17 设置可以获取焦点
+        mPopupWindow.setFocusable(false);
+        // TODO: 2016/5/17 设置可以触摸弹出框以外的区域
+        mPopupWindow.setOutsideTouchable(false);
+        // TODO：更新popupwindow的状态
+        mPopupWindow.update();
+        mPopupWindow.showAtLocation(rvSmsListFragmentContainer, Gravity.TOP, 0, SizeUtils.getSubTitleHeight(getActivity()));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_window_close:
+                break;
+            case R.id.iv_window_archive:
+                Toast.makeText(getActivity(), "archive归档处理", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_window_delete:
+                break;
+            case R.id.iv_window_notification:
+                Toast.makeText(getActivity(), "notification通知处理", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_window_add:
+                Toast.makeText(getActivity(), "add添加处理", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_window_dnd:
+                Toast.makeText(getActivity(), "dnd频闭处理", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
 
 }

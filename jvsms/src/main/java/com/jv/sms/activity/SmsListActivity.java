@@ -1,29 +1,31 @@
 package com.jv.sms.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 
 import com.jv.sms.R;
+import com.jv.sms.base.BaseActivity;
 import com.jv.sms.fragment.SmsListFragment;
 
-public class SmsListActivity extends AppCompatActivity implements ToolbarSetListener {
+import butterknife.BindView;
 
-    private Toolbar toolbar;
+public class SmsListActivity extends BaseActivity implements ToolbarSetListener {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sms_list);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportFragmentManager().beginTransaction().add(R.id.sms_list_content, new SmsListFragment(this)).commit();
-
+    public int getContentViewId() {
+        return R.layout.activity_sms_list;
     }
 
+    @Override
+    protected void initAllView(Bundle savedInstanceState) {
+        setSupportActionBar(toolbar);
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_smsList_container, new SmsListFragment(this)).commit();
+    }
 
 
     @Override
@@ -46,6 +48,11 @@ public class SmsListActivity extends AppCompatActivity implements ToolbarSetList
     @Override
     public void setToolbarTitle(String title) {
         toolbar.setTitle(title);
+    }
+
+    @Override
+    public int getToolbarHeight() {
+        return toolbar.getMeasuredHeight();
     }
 
 }

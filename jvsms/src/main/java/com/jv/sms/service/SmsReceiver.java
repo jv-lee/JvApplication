@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
-import com.jv.sms.bean.EventBase;
+import com.jv.sms.base.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.constant.Constant;
 import com.jv.sms.rx.RxBus;
@@ -29,8 +29,6 @@ public class SmsReceiver extends BroadcastReceiver {
     @TargetApi(Build.VERSION_CODES.N)
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        Toast.makeText(context, "进入", Toast.LENGTH_SHORT).show();
 
         if (SMS_DELIVER.equals(intent.getAction())) {
             Bundle bundle = intent.getExtras();

@@ -1,52 +1,47 @@
 package com.jv.sms.activity;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.base.BaseActivity;
 import com.jv.sms.fragment.SmsFragment;
-import com.jv.sms.utils.SizeUtils;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
-public class SmsActivity extends AppCompatActivity implements
+public class SmsActivity extends BaseActivity implements
         View.OnClickListener, DataLoadLayoutListener {
 
-    private FloatingActionButton fab;
-    private ProgressBar mPbDataBar;
-    private LinearLayout mDataLayout;
-    private Toolbar mToolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.pb_sms_loading)
+    ProgressBar pbSmsLoading;
+    @BindView(R.id.ll_sms_nullLayout)
+    LinearLayout llSmsNullLayout;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sms);
-
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-
-        initView();
-        getSupportFragmentManager().beginTransaction().add(R.id.act_sms_container, new SmsFragment(this)).commit();
+    public int getContentViewId() {
+        return R.layout.activity_sms;
     }
 
-    private void initView() {
-        mPbDataBar = (ProgressBar) findViewById(R.id.pb_sms_loading);
-        mDataLayout = (LinearLayout) findViewById(R.id.ll_null_layout);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+    @Override
+    protected void initAllView(Bundle savedInstanceState) {
+        setSupportActionBar(toolbar);
+
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_sms_container, new SmsFragment(this)).commit();
     }
 
     @Override
@@ -70,27 +65,27 @@ public class SmsActivity extends AppCompatActivity implements
 
     @Override
     public void showDataBar() {
-        mPbDataBar.setVisibility(View.VISIBLE);
+        pbSmsLoading.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideDataBar() {
-        mPbDataBar.setVisibility(View.GONE);
+        pbSmsLoading.setVisibility(View.GONE);
     }
 
     @Override
     public void showDataLayout() {
-        mDataLayout.setVisibility(View.VISIBLE);
+        llSmsNullLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideDataLayout() {
-        mDataLayout.setVisibility(View.GONE);
+        llSmsNullLayout.setVisibility(View.GONE);
     }
 
     @Override
     public int getToolbarHeight() {
-        return mToolbar.getMeasuredHeight();
+        return toolbar.getMeasuredHeight();
     }
 
     @Override
@@ -101,6 +96,5 @@ public class SmsActivity extends AppCompatActivity implements
                 break;
         }
     }
-
 
 }

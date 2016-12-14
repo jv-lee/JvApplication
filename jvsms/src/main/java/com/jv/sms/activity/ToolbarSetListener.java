@@ -7,4 +7,6 @@ package com.jv.sms.activity;
 public interface ToolbarSetListener {
 
     void setToolbarTitle(String title);
+
+    int getToolbarHeight();
 }

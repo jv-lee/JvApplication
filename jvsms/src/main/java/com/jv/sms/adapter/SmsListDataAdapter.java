@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.jv.sms.R;
@@ -31,11 +32,13 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private List<SmsBean> mList;
     private Context mContext;
+    private OnSmsListAdapterListener mListener;
     public SmsListUiFlagBean smsListUiFlagBean;
 
-    public SmsListDataAdapter(Context context, List<SmsBean> list) {
+    public SmsListDataAdapter(Context context, List<SmsBean> list, OnSmsListAdapterListener listener) {
         mContext = context;
         mList = list;
+        mListener = listener;
         smsListUiFlagBean = new SmsListUiFlagBean(mList.size());
     }
 
@@ -194,6 +197,8 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     smsListUiFlagBean.initHasMessageUi();
                     smsListUiFlagBean.hasMessageUi.set(getLayoutPosition(), false);
                     notifyDataSetChanged();
+                    mListener.getPopupWindowInit();
+
                     return true;
                 }
             });
@@ -242,6 +247,23 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return true;
         }
         return false;
+    }
+
+    public void insertSmsListUi(SmsBean smsBean) {
+        mList.add(smsBean);
+        smsListUiFlagBean.updateSize(1);
+        notifyItemInserted(getItemCount());
+        mListener.getRvContainer().scrollToPosition(getItemCount() - 1);
+    }
+
+    public interface OnSmsListAdapterListener {
+
+        RecyclerView getRvContainer();
+
+        PopupWindow getPopupWindow();
+
+        void getPopupWindowInit();
+
     }
 
 }

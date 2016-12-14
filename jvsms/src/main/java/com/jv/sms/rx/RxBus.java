@@ -3,7 +3,7 @@ package com.jv.sms.rx;
 
 import android.support.annotation.NonNull;
 
-import com.jv.sms.bean.EventBase;
+import com.jv.sms.base.EventBase;
 
 import java.util.Vector;
 

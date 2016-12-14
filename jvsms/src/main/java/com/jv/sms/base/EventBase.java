@@ -1,4 +1,4 @@
-package com.jv.sms.bean;
+package com.jv.sms.base;
 
 /**
  * Created by Administrator on 2016/11/29.

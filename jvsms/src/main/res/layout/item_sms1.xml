@@ -10,8 +10,8 @@
 
     <FrameLayout
         android:id="@+id/item_sms_icon_layout"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/sms_icon"
+        android:layout_height="@dimen/sms_icon"
         android:layout_gravity="center"
         android:background="@drawable/shape_icon_bg">
 
@@ -25,8 +25,9 @@
 
         <ImageView
             android:id="@+id/item_sms_imgIcon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center" />
 
     </FrameLayout>
 

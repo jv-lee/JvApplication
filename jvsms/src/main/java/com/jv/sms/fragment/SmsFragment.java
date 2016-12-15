@@ -2,7 +2,6 @@ package com.jv.sms.fragment;
 
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,15 +11,14 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.jv.sms.R;
-import com.jv.sms.activity.DataLoadLayoutListener;
-import com.jv.sms.activity.SmsListActivity;
+import com.jv.sms.interfaces.DataLoadLayoutListener;
 import com.jv.sms.adapter.SmsDataAdapter;
 import com.jv.sms.base.BaseFragment;
 import com.jv.sms.base.EventBase;
@@ -88,6 +86,11 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         rvSmsFragmentContainer.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         rvSmsFragmentContainer.setItemAnimator(new DefaultItemAnimator());
         mPresenter.findSmsAll();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
     }
 
     @Override

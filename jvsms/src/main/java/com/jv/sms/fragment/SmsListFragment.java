@@ -18,6 +18,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,7 +26,7 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.jv.sms.R;
-import com.jv.sms.activity.ToolbarSetListener;
+import com.jv.sms.interfaces.ToolbarSetListener;
 import com.jv.sms.adapter.SmsListDataAdapter;
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.base.BaseFragment;
@@ -112,6 +113,14 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         rvSmsListFragmentContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvSmsListFragmentContainer.setItemAnimator(new DefaultItemAnimator());
         mPresenter.refreshSmsList(thread_id);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == event.KEYCODE_BACK) {
+            return mAdapter.clearSelectMessageState();
+        }
+        return false;
     }
 
     @OnClick({R.id.iv_add_sms, R.id.iv_emoji_sms, R.id.iv_send_sms})
@@ -204,10 +213,11 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TimeUtils.clearTimeList();
-        getActivity().unregisterReceiver(sendMessage);
-        JvApplication.THIS_SMS_FRAGMENT_FLAG = "";
+        TimeUtils.clearTimeList();//清空列表时间差管理集合
+        getActivity().unregisterReceiver(sendMessage);//注销广播
+        JvApplication.THIS_SMS_FRAGMENT_FLAG = "";//将当前全局号码初始化
     }
+
 
     //发送短信状态回调广播
     BroadcastReceiver sendMessage = new BroadcastReceiver() {

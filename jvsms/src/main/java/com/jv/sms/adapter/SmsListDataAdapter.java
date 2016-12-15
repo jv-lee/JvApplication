@@ -34,6 +34,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Context mContext;
     private OnSmsListAdapterListener mListener;
     public SmsListUiFlagBean smsListUiFlagBean;
+    private int hasSelecting = -1;
 
     public SmsListDataAdapter(Context context, List<SmsBean> list, OnSmsListAdapterListener listener) {
         mContext = context;
@@ -92,36 +93,30 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvDate = (TextView) itemView.findViewById(R.id.send_msg_date);
             tvInfo = (TextView) itemView.findViewById(R.id.send_message_info);
             tvDate2 = (TextView) itemView.findViewById(R.id.send_message_date2);
+
             tvInfo.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    if (clearSelectMessageState()) {
-                        notifyDataSetChanged();
-                        return;
-                    }
-
-                    if (smsListUiFlagBean.hasDateUi.get(getLayoutPosition())) {
-                        smsListUiFlagBean.hasDateUi.set(getLayoutPosition(), false);
-                        notifyDataSetChanged();
-                    } else {
-                        smsListUiFlagBean.hasDateUi.set(getLayoutPosition(), true);
-                        notifyDataSetChanged();
-                    }
+                    onClickMessageClick(getLayoutPosition());
                 }
             });
             tvInfo.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    smsListUiFlagBean.initHasMessageUi();
-                    smsListUiFlagBean.hasMessageUi.set(getLayoutPosition(), false);
-                    notifyDataSetChanged();
+                    onLongMessageClick(getLayoutPosition());
                     return true;
                 }
             });
         }
 
+        /**
+         * 设置项数据
+         *
+         * @param bean
+         */
         public void setItemData(SmsBean bean) {
+            //设置当前列表时间差显示
             if (bean.getShowDate() == true) {
                 tvDate.setText(getChineseTimeString(bean.getDate()));
                 tvDate.setVisibility(View.VISIBLE);
@@ -129,6 +124,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 tvDate.setVisibility(View.GONE);
             }
 
+            //设置当前选中背景显示状态
             if (smsListUiFlagBean.hasMessageUi.get(getLayoutPosition())) {
                 tvInfo.setBackgroundResource(R.drawable.shape_message_white);
                 tvInfo.setTextColor(mContext.getResources().getColor(android.R.color.black));
@@ -137,6 +133,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 tvInfo.setTextColor(mContext.getResources().getColor(android.R.color.white));
             }
 
+            //设置当前点击显示第二时间
             if (smsListUiFlagBean.hasDateUi.get(getLayoutPosition())) {
                 tvDate2.setVisibility(View.GONE);
             } else {
@@ -173,20 +170,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvInfo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //拦截事件 判断当前是否有被选中的消息 做状态重置处理
-                    if (clearSelectMessageState()) {
-                        notifyDataSetChanged();
-                        return;
-                    }
-
-                    //改变短信时间显示状态
-                    if (smsListUiFlagBean.hasDateUi.get(getLayoutPosition())) {
-                        smsListUiFlagBean.hasDateUi.set(getLayoutPosition(), false);
-                        notifyDataSetChanged();
-                    } else {
-                        smsListUiFlagBean.hasDateUi.set(getLayoutPosition(), true);
-                        notifyDataSetChanged();
-                    }
+                    onClickMessageClick(getLayoutPosition());
                 }
             });
 
@@ -194,11 +178,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvInfo.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    smsListUiFlagBean.initHasMessageUi();
-                    smsListUiFlagBean.hasMessageUi.set(getLayoutPosition(), false);
-                    notifyDataSetChanged();
-                    mListener.getPopupWindowInit();
-
+                    onLongMessageClick(getLayoutPosition());
                     return true;
                 }
             });
@@ -241,14 +221,74 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
+    /**
+     * 短信内容 点击处理
+     *
+     * @param position
+     */
+    public void onClickMessageClick(int position) {
+        //拦截事件 判断当前是否有被选中的消息 做状态重置处理
+        if (clearSelectMessageState()) {
+            return;
+        }
+
+        //改变短信时间显示状态
+        if (smsListUiFlagBean.hasDateUi.get(position)) {
+            smsListUiFlagBean.hasDateUi.set(position, false);
+            notifyDataSetChanged();
+        } else {
+            smsListUiFlagBean.hasDateUi.set(position, true);
+            notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 短信内容长按选中处理
+     *
+     * @param position
+     */
+    public void onLongMessageClick(int position) {
+        //保存选中下标位置
+        hasSelecting = position;
+        //长按初始化其他选中状态 更改当前长按项为选中状态 通知更新
+        smsListUiFlagBean.initHasMessageUi();
+        smsListUiFlagBean.hasMessageUi.set(position, false);
+        notifyDataSetChanged();
+
+        //判断当前菜单窗口状态 做显示操作
+        if (mListener.getPopupWindow() == null) {
+            mListener.getPopupWindowInit();
+        } else {
+            if (!mListener.getPopupWindow().isShowing()) {
+                mListener.getPopupWindowInit();
+            }
+        }
+    }
+
+    /**
+     * 清空消息选中状态
+     *
+     * @return
+     */
     public boolean clearSelectMessageState() {
         if (smsListUiFlagBean.extendHasMessageUi()) {
+            //初始化选中状态
             smsListUiFlagBean.initHasMessageUi();
+            hasSelecting = -1;
+
+            //关闭选择菜单 更新显示状态
+            mListener.getPopupWindow().dismiss();
+            notifyDataSetChanged();
             return true;
         }
         return false;
     }
 
+    /**
+     * 新增短信至当前适配器
+     *
+     * @param smsBean
+     */
     public void insertSmsListUi(SmsBean smsBean) {
         mList.add(smsBean);
         smsListUiFlagBean.updateSize(1);

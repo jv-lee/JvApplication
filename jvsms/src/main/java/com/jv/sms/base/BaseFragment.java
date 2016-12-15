@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void initAllView(Bundle savedInstanceState);
 
+    public abstract boolean onKeyDown(int keyCode, KeyEvent event);
+
     protected abstract void rxEvent();
 
     @Override
@@ -51,8 +54,14 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         RxBus.getInstance().unregister(this);
     }
+
 }

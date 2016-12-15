@@ -14,9 +14,9 @@ import android.widget.Toast;
 import com.jv.sms.R;
 import com.jv.sms.base.BaseActivity;
 import com.jv.sms.fragment.SmsFragment;
+import com.jv.sms.interfaces.DataLoadLayoutListener;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class SmsActivity extends BaseActivity implements

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jv.sms.R;
-import com.jv.sms.activity.DataLoadLayoutListener;
+import com.jv.sms.interfaces.DataLoadLayoutListener;
 import com.jv.sms.fragment.ContactsFragment;
 import com.jv.sms.fragment.SmsFragment;
 

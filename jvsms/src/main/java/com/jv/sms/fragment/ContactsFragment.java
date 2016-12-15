@@ -6,10 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.jv.sms.R;
-import com.jv.sms.activity.DataLoadLayoutListener;
+import com.jv.sms.interfaces.DataLoadLayoutListener;
 
 /**
  * A simple {@link Fragment} subclass.

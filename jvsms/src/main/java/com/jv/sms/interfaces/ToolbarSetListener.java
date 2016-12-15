@@ -1,4 +1,4 @@
-package com.jv.sms.activity;
+package com.jv.sms.interfaces;
 
 /**
  * Created by Administrator on 2016/12/5.

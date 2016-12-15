@@ -1,13 +1,16 @@
 package com.jv.sms.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 
 import com.jv.sms.R;
 import com.jv.sms.base.BaseActivity;
 import com.jv.sms.fragment.SmsListFragment;
+import com.jv.sms.interfaces.ToolbarSetListener;
 
 import butterknife.BindView;
 
@@ -15,6 +18,8 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener 
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    private Fragment mFragment;
 
     @Override
     public int getContentViewId() {
@@ -24,7 +29,8 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener 
     @Override
     protected void initAllView(Bundle savedInstanceState) {
         setSupportActionBar(toolbar);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_smsList_container, new SmsListFragment(this)).commit();
+        mFragment = new SmsListFragment(this);
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_smsList_container, mFragment).commit();
     }
 
 
@@ -53,6 +59,19 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener 
     @Override
     public int getToolbarHeight() {
         return toolbar.getMeasuredHeight();
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mFragment != null && mFragment instanceof SmsListFragment) {
+            if (!((SmsListFragment) mFragment).onKeyDown(keyCode, event)) {
+                finish();
+            } else {
+                return false;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

@@ -287,12 +287,10 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             //数据操作必须放在第一位 ， 否则会出现下标排序错误
             Log.i("thread_id=", getItemBean(positionArray[i]).getThread_id());
             mListener.getPresenter().removeSmsByThreadId(getItemBean(positionArray[i]).getThread_id());
-
             mList.remove(positionArray[i]);
             smsUiFlagBean.hasIconUi.remove(positionArray[i]);
             notifyItemRemoved(positionArray[i]);
         }
-
         mListener.getPopupWindow().dismiss();
 
     }

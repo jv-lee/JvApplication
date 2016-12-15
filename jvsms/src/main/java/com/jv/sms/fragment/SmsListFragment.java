@@ -291,21 +291,16 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
             case R.id.iv_window_close:
                 break;
             case R.id.iv_window_archive:
-                Toast.makeText(getActivity(), "archive归档处理", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.iv_window_delete:
                 break;
             case R.id.iv_window_notification:
-                Toast.makeText(getActivity(), "notification通知处理", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.iv_window_add:
-                Toast.makeText(getActivity(), "add添加处理", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.iv_window_dnd:
-                Toast.makeText(getActivity(), "dnd频闭处理", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
-
 
 }

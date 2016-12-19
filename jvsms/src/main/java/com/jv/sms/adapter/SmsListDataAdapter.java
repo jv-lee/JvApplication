@@ -2,7 +2,6 @@ package com.jv.sms.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +13,16 @@ import android.widget.TextView;
 import com.jv.sms.R;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsListUiFlagBean;
-import com.jv.sms.utils.ConstUtils;
-import com.jv.sms.utils.TimeUtils;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnLongClick;
+
 import static com.jv.sms.utils.TimeUtils.getChineseTimeString;
-import static com.jv.sms.utils.TimeUtils.getChineseTimeString2;
 
 
 /**
@@ -82,32 +83,27 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * 发送短信Item ViewHolder
      */
     public class SmsListDataSendHolder extends RecyclerView.ViewHolder {
-        private TextView tvDate, tvInfo, tvDate2;
+        @BindView(R.id.send_msg_date)
+        TextView tvDate;
+        @BindView(R.id.send_message_info)
+        TextView tvInfo;
+        @BindView(R.id.send_message_date2)
+        TextView tvDate2;
 
         public SmsListDataSendHolder(View itemView) {
             super(itemView);
-            initView(itemView);
+            ButterKnife.bind(this, itemView);
         }
 
-        private void initView(View itemView) {
-            tvDate = (TextView) itemView.findViewById(R.id.send_msg_date);
-            tvInfo = (TextView) itemView.findViewById(R.id.send_message_info);
-            tvDate2 = (TextView) itemView.findViewById(R.id.send_message_date2);
+        @OnClick(R.id.send_message_info)
+        public void sendMessageInfoClick() {
+            onClickMessageClick(getLayoutPosition());
+        }
 
-            tvInfo.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    onClickMessageClick(getLayoutPosition());
-                }
-            });
-            tvInfo.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    onLongMessageClick(getLayoutPosition());
-                    return true;
-                }
-            });
+        @OnLongClick(R.id.send_message_info)
+        public boolean sendMessageInfoLongClick() {
+            onLongMessageClick(getLayoutPosition());
+            return true;
         }
 
         /**
@@ -149,39 +145,35 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * 接受短信item ViewHolder
      */
     public class SmsListDataReceiveHolder extends RecyclerView.ViewHolder {
-        private TextView tvDate, tvInfo, tvIcon, tvDate2;
-        private ImageView ivIcon;
-        private FrameLayout flIcon;
+        @BindView(R.id.receive_msg_date)
+        TextView tvDate;
+        @BindView(R.id.receive_textIcon)
+        TextView tvIcon;
+        @BindView(R.id.receive_imgIcon)
+        ImageView ivIcon;
+        @BindView(R.id.item_sms_icon_layout)
+        FrameLayout flIcon;
+        @BindView(R.id.receive_message_info)
+        TextView tvInfo;
+        @BindView(R.id.receive_message_date2)
+        TextView tvDate2;
 
         public SmsListDataReceiveHolder(View itemView) {
             super(itemView);
-            initView(itemView);
+            ButterKnife.bind(this, itemView);
         }
 
-        private void initView(View itemView) {
-            tvDate = (TextView) itemView.findViewById(R.id.receive_msg_date);
-            tvDate2 = (TextView) itemView.findViewById(R.id.receive_message_date2);
-            tvInfo = (TextView) itemView.findViewById(R.id.receive_message_info);
-            tvIcon = (TextView) itemView.findViewById(R.id.receive_textIcon);
-            ivIcon = (ImageView) itemView.findViewById(R.id.receive_imgIcon);
-            flIcon = (FrameLayout) itemView.findViewById(R.id.item_sms_icon_layout);
+        //点击短信内容
+        @OnClick(R.id.receive_message_info)
+        public void sendMessageInfoClick() {
+            onClickMessageClick(getLayoutPosition());
+        }
 
-            //点击短信内容
-            tvInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onClickMessageClick(getLayoutPosition());
-                }
-            });
-
-            //短信内容 长按改变显示状态 -> 选中状态 刷新显示
-            tvInfo.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    onLongMessageClick(getLayoutPosition());
-                    return true;
-                }
-            });
+        //短信内容 长按改变显示状态 -> 选中状态 刷新显示
+        @OnLongClick(R.id.receive_message_info)
+        public boolean sendMessageInfoLongClick() {
+            onLongMessageClick(getLayoutPosition());
+            return true;
         }
 
         public void setItemData(SmsBean bean) {

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,13 +19,15 @@ import com.jv.sms.activity.SmsListActivity;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsUiFlagBean;
 import com.jv.sms.mvp.presenter.ISmsPresenter;
-import com.jv.sms.mvp.presenter.SmsPresenter;
 import com.jv.sms.utils.TimeUtils;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 /**
  * Created by 64118 on 2016/12/4.
@@ -64,75 +67,72 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         return mList.size();
     }
 
-    class SmsDataHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        private TextView mIcon, mNumber, mMessage, mDate;
-        private FrameLayout mIconLayout;
-        private ImageView mIconImg, mNotification;
+    class SmsDataHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.item_sms_textIcon)
+        TextView itemSmsTextIcon;
+        @BindView(R.id.item_sms_imgIcon)
+        ImageView itemSmsImgIcon;
+        @BindView(R.id.item_sms_icon_layout)
+        FrameLayout itemSmsIconLayout;
+        @BindView(R.id.item_sms_notification)
+        ImageView itemSmsNotification;
+        @BindView(R.id.item_sms_number)
+        TextView itemSmsNumber;
+        @BindView(R.id.item_sms_msg)
+        TextView itemSmsMsg;
+        @BindView(R.id.item_sms_date)
+        TextView itemSmsDate;
+        @BindView(R.id.item_sms_layout)
+        LinearLayout itemSmsLayout;
 
 
         public SmsDataHolder(View itemView) {
             super(itemView);
-            initView(itemView);
-            initListener(itemView);
-        }
-
-        private void initView(View itemView) {
-            mIcon = (TextView) itemView.findViewById(R.id.item_sms_textIcon);
-            mNumber = (TextView) itemView.findViewById(R.id.item_sms_number);
-            mMessage = (TextView) itemView.findViewById(R.id.item_sms_msg);
-            mDate = (TextView) itemView.findViewById(R.id.item_sms_date);
-            mIconLayout = (FrameLayout) itemView.findViewById(R.id.item_sms_icon_layout);
-            mIconImg = (ImageView) itemView.findViewById(R.id.item_sms_imgIcon);
-        }
-
-        private void initListener(View itemView) {
-            itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
-            mIconLayout.setOnClickListener(this);
+            ButterKnife.bind(this, itemView);
         }
 
         private void initData(SmsBean bean) {
-            mMessage.setText(bean.getSmsBody());
-            mDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
+            itemSmsMsg.setText(bean.getSmsBody());
+            itemSmsDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
 
             //设置当前消息是否已读样式
             if (bean.getReadType().equals(SmsBean.ReadType.NOT_READ)) {
-                mNumber.getPaint().setFakeBoldText(true);
-                mMessage.getPaint().setFakeBoldText(true);
+                itemSmsNumber.getPaint().setFakeBoldText(true);
+                itemSmsMsg.getPaint().setFakeBoldText(true);
             } else {
-                mMessage.getPaint().setFakeBoldText(false);
-                mNumber.getPaint().setFakeBoldText(false);
+                itemSmsMsg.getPaint().setFakeBoldText(false);
+                itemSmsNumber.getPaint().setFakeBoldText(false);
             }
 
             if (smsUiFlagBean.hasNotificationUi.get(getLayoutPosition())) {
-                mNotification.setVisibility(View.GONE);
+                itemSmsNotification.setVisibility(View.GONE);
             } else {
-                mNotification.setVisibility(View.VISIBLE);
+                itemSmsNotification.setVisibility(View.VISIBLE);
             }
 
             //判断当前name是否为数字
             String name = bean.getName();
             if (smsUiFlagBean.hasIconUi.get(getLayoutPosition())) {
                 if (!Pattern.compile("[0-9]*").matcher(name).matches()) {
-                    mIcon.setText(name.substring(0, 1));
-                    mIconImg.setImageDrawable(null);
-                    mIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
+                    itemSmsTextIcon.setText(name.substring(0, 1));
+                    itemSmsImgIcon.setImageDrawable(null);
+                    itemSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
                 } else {
-                    mIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
-                    mIconImg.setImageResource(R.drawable.ic_person_light);
-                    mIcon.setText("");
+                    itemSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
+                    itemSmsImgIcon.setImageResource(R.drawable.ic_person_light);
+                    itemSmsTextIcon.setText("");
                 }
             } else if (!smsUiFlagBean.hasIconUi.get(getLayoutPosition())) {
-                mIconLayout.setBackgroundResource(R.drawable.shape_icon_bg2);
-                mIconImg.setImageResource(R.mipmap.ic_checkmark_small_blue);
-                mIcon.setText("");
+                itemSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg2);
+                itemSmsImgIcon.setImageResource(R.mipmap.ic_checkmark_small_blue);
+                itemSmsTextIcon.setText("");
             }
-            mNumber.setText(name);
+            itemSmsNumber.setText(name);
 
         }
 
-        @Override
-        public void onClick(View view) {
+        @OnClick({R.id.item_sms_layout, R.id.item_sms_icon_layout})
+        public void onSmsLayoutClick(View view) {
             switch (view.getId()) {
                 case R.id.item_sms_layout:
                     layoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
@@ -143,15 +143,12 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             }
         }
 
-        @Override
-        public boolean onLongClick(View view) {
-            switch (view.getId()) {
-                case R.id.item_sms_layout:
-                    longLayoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
-                    break;
-            }
+        @OnLongClick(R.id.item_sms_layout)
+        public boolean onSmsLayoutLongClick() {
+            longLayoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
             return true;
         }
+
     }
 
     public interface OnSmsDataListener {
@@ -181,6 +178,11 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
      */
     public void longLayoutClick(SmsBean bean, int position) {
         notifySelectUiFlag(position);
+
+        //防止单选项清空时 继续走后续代码逻辑 导致重新显示菜单
+        if (!smsUiFlagBean.extendHasMessageUi()) {
+            return;
+        }
 
         if (mListener.getPopupWindow() == null) {
             mListener.getInitPopupWindow();
@@ -314,7 +316,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         for (int i = 0; i < positionArray.length; i++) {
             ids[i] = getItemBean(positionArray[i]).getId();
         }
-        
+
 
     }
 

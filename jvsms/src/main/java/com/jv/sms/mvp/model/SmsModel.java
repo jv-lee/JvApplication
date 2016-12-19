@@ -13,6 +13,8 @@ import android.util.Log;
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.constant.Constant;
+import com.jv.sms.db.dao.ISmsDao;
+import com.jv.sms.db.dao.SmsDaoImpl;
 import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.SmsWriteOpUtil;
 import com.jv.sms.utils.TimeUtils;
@@ -102,6 +104,18 @@ public class SmsModel implements ISmsModel {
 
         cr.update(uri, contentValues, "_id = ?", new String[]{smsBean.getId()});
 
+    }
+
+    @Override
+    public boolean insertSmsDB(String[] ids) {
+        ISmsDao dao = new SmsDaoImpl(JvApplication.getInstance());
+        return dao.save(ids);
+    }
+
+    @Override
+    public boolean deleteSmsDB(String[] ids) {
+        ISmsDao dao = new SmsDaoImpl(JvApplication.getInstance());
+        return dao.delete(ids);
     }
 
 }

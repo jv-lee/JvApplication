@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -147,12 +148,14 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public void setDataError() {
+        Toast.makeText(mContext, "数据加载错误或者为0", Toast.LENGTH_SHORT).show();
         listener.hideDataBar();
         listener.showDataLayout();
     }
 
     @Override
     public void setDataSuccess() {
+        Toast.makeText(mContext, "数据加载成功", Toast.LENGTH_SHORT).show();
         listener.hideDataBar();
         listener.hideDataLayout();
     }
@@ -170,6 +173,16 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     @Override
     public void setNewSms(SmsBean sms) {
         mAdapter.receiverSmsAdd(sms);
+    }
+
+    @Override
+    public void insertSmsNotificationSuccess() {
+
+    }
+
+    @Override
+    public void insertSmsNotificationError() {
+
     }
 
     @Override
@@ -197,9 +210,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         popupView = getActivity().getLayoutInflater().inflate(R.layout.layout_select_window_menu, null);
         popupView.findViewById(R.id.iv_window_close).setOnClickListener(this);
         popupView.findViewById(R.id.iv_window_add).setOnClickListener(this);
-        popupView.findViewById(R.id.iv_window_archive).setOnClickListener(this);
         popupView.findViewById(R.id.iv_window_delete).setOnClickListener(this);
-        popupView.findViewById(R.id.iv_window_dnd).setOnClickListener(this);
         popupView.findViewById(R.id.iv_window_notification).setOnClickListener(this);
     }
 
@@ -223,9 +234,6 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
             case R.id.iv_window_close:
                 mAdapter.closeWindowBtn();
                 break;
-            case R.id.iv_window_archive:
-                Toast.makeText(getActivity(), "archive归档处理", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.iv_window_delete:
                 mAdapter.deleteWindowBtn();
                 break;
@@ -234,9 +242,6 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                 break;
             case R.id.iv_window_add:
                 Toast.makeText(getActivity(), "add添加处理", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.iv_window_dnd:
-                Toast.makeText(getActivity(), "dnd频闭处理", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

@@ -19,4 +19,8 @@ public interface ISmsPresenter extends BasePresenter{
 
     void updateSmsState(SmsBean smsBean);
 
+    void insertSmsNotification(String[] ids);
+
+    void deleteSmsNotification(String[] ids);
+
 }

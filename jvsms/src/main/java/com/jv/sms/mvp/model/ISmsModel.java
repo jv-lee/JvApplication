@@ -20,4 +20,8 @@ public interface ISmsModel {
 
     void updateSmsState(SmsBean smsBean);
 
+    boolean insertSmsDB(String[] ids);
+
+    boolean deleteSmsDB(String[] ids);
+
 }

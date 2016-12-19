@@ -48,7 +48,6 @@ public class SmsPresenter implements ISmsPresenter {
                 .subscribe(new Subscriber<List<SmsBean>>() {
                     @Override
                     public void onCompleted() {
-                        mSmsView.setDataSuccess();
                     }
 
                     @Override
@@ -63,6 +62,7 @@ public class SmsPresenter implements ISmsPresenter {
                             mSmsView.setDataError();
                         } else {
                             mSmsView.setData(smsBean);
+                            mSmsView.setDataSuccess();
                         }
                     }
                 });
@@ -108,4 +108,42 @@ public class SmsPresenter implements ISmsPresenter {
     public void updateSmsState(SmsBean smsBean) {
         mSmsModel.updateSmsState(smsBean);
     }
+
+    @Override
+    public void insertSmsNotification(String[] ids) {
+        Observable.just(ids).map(new Func1<String[], Boolean>() {
+            @Override
+            public Boolean call(String[] strings) {
+                return mSmsModel.insertSmsDB(strings);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mSmsView.insertSmsNotificationError();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            mSmsView.insertSmsNotificationSuccess();
+                        } else {
+                            mSmsView.insertSmsNotificationError();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void deleteSmsNotification(String[] ids) {
+
+    }
+
 }

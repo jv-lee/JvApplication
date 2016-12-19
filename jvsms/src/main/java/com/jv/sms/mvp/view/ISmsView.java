@@ -22,4 +22,9 @@ public interface ISmsView {
 
     void setNewSms(SmsBean sms);
 
+    void insertSmsNotificationSuccess();
+
+    void insertSmsNotificationError();
+
+
 }

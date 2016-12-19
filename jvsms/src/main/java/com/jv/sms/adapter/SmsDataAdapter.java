@@ -21,7 +21,9 @@ import com.jv.sms.mvp.presenter.ISmsPresenter;
 import com.jv.sms.mvp.presenter.SmsPresenter;
 import com.jv.sms.utils.TimeUtils;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -65,7 +67,8 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     class SmsDataHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private TextView mIcon, mNumber, mMessage, mDate;
         private FrameLayout mIconLayout;
-        private ImageView mIconImg;
+        private ImageView mIconImg, mNotification;
+
 
         public SmsDataHolder(View itemView) {
             super(itemView);
@@ -92,12 +95,19 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             mMessage.setText(bean.getSmsBody());
             mDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
 
+            //设置当前消息是否已读样式
             if (bean.getReadType().equals(SmsBean.ReadType.NOT_READ)) {
                 mNumber.getPaint().setFakeBoldText(true);
                 mMessage.getPaint().setFakeBoldText(true);
             } else {
                 mMessage.getPaint().setFakeBoldText(false);
                 mNumber.getPaint().setFakeBoldText(false);
+            }
+
+            if (smsUiFlagBean.hasNotificationUi.get(getLayoutPosition())) {
+                mNotification.setVisibility(View.GONE);
+            } else {
+                mNotification.setVisibility(View.VISIBLE);
             }
 
             //判断当前name是否为数字
@@ -294,6 +304,19 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         }
 
         mListener.getPopupWindow().dismiss();
+
+    }
+
+    /**
+     * popupWindow频闭通知按钮
+     */
+    public void notificationBtn() {
+        int[] positionArray = smsUiFlagBean.getSelectPosition();
+        String[] ids = new String[positionArray.length];
+        for (int i = 0; i < positionArray.length; i++) {
+            ids[i] = getItemBean(positionArray[i]).getId();
+        }
+        
 
     }
 

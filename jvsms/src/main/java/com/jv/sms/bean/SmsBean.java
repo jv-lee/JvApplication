@@ -9,6 +9,7 @@ import java.util.List;
 
 public class SmsBean implements Serializable {
 
+    private int noId;
     private String id;
     private String thread_id;
     private String name;
@@ -28,6 +29,11 @@ public class SmsBean implements Serializable {
     }
 
     public SmsBean() {
+    }
+
+    public SmsBean(int noId, String id) {
+        this.noId = noId;
+        this.id = id;
     }
 
     public SmsBean(String id, String thread_id, String name, String phoneNumber, String smsBody, String date, boolean isShowDate, Type type, ReadType readType) {
@@ -66,6 +72,13 @@ public class SmsBean implements Serializable {
                 '}';
     }
 
+    public int getNoId() {
+        return noId;
+    }
+
+    public void setNoId(int noId) {
+        this.noId = noId;
+    }
 
     public boolean isShowDate() {
         return isShowDate;

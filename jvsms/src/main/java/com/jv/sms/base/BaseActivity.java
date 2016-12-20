@@ -17,11 +17,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setThemes();
         super.onCreate(savedInstanceState);
         setContentView(getContentViewId());
         ButterKnife.bind(this);
         initAllView(savedInstanceState);
     }
+
+    protected abstract void setThemes();
 
     protected abstract void initAllView(Bundle savedInstanceState);
 

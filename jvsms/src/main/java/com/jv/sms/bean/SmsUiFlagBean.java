@@ -10,7 +10,6 @@ import java.util.List;
 public class SmsUiFlagBean {
 
     public List<Boolean> hasIconUi = new ArrayList<>();
-    public List<Boolean> hasNotificationUi = new ArrayList<>();
 
     public SmsUiFlagBean() {
     }
@@ -18,14 +17,12 @@ public class SmsUiFlagBean {
     public SmsUiFlagBean(int size) {
         for (int i = 0; i < size; i++) {
             hasIconUi.add(true);
-            hasNotificationUi.add(true);
         }
     }
 
     public void updateSize(int num) {
         for (int i = 0; i < num; i++) {
             hasIconUi.add(true);
-            hasNotificationUi.add(true);
         }
     }
 

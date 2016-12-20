@@ -19,6 +19,7 @@ public class SmsBean implements Serializable {
     private boolean isShowDate = false;
     private Type type;
     private ReadType readType;
+    private int colorPosition;
 
     public enum ReadType {
         IS_READ, NOT_READ
@@ -57,6 +58,7 @@ public class SmsBean implements Serializable {
         this.type = type;
         this.thread_id = thread_id;
         this.readType = readType;
+        this.colorPosition = (int) (Math.random() * 9 );
     }
 
     @Override
@@ -70,6 +72,14 @@ public class SmsBean implements Serializable {
                 ", isShowDate=" + isShowDate +
                 ", type=" + type +
                 '}';
+    }
+
+    public int getColorPosition() {
+        return colorPosition;
+    }
+
+    public void setColorPosition(int colorPosition) {
+        this.colorPosition = colorPosition;
     }
 
     public int getNoId() {

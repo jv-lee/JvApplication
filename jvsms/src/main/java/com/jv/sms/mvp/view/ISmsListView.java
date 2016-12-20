@@ -2,7 +2,7 @@ package com.jv.sms.mvp.view;
 
 import com.jv.sms.bean.SmsBean;
 
-import java.util.List;
+import java.util.LinkedList;
 
 /**
  * Created by Administrator on 2016/12/5.
@@ -11,7 +11,7 @@ import java.util.List;
 public interface ISmsListView {
 
 
-    void refreshSmsList(List<SmsBean> list);
+    void refreshSmsList(LinkedList<SmsBean> list);
 
     void showSmsListSuccess();
 

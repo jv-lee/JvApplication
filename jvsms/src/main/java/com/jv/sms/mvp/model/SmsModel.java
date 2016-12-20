@@ -22,6 +22,7 @@ import com.jv.sms.utils.TimeUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import rx.Observable;
@@ -36,14 +37,14 @@ import rx.schedulers.Schedulers;
 
 public class SmsModel implements ISmsModel {
 
-    private List<SmsBean> smsBeanList;
+    private LinkedList<SmsBean> smsBeanList;
     private List<String> threads;
 
     @SuppressLint("LongLogTag")
     @Override
-    public List<SmsBean> findSmsAll(final Context context) {
+    public LinkedList<SmsBean> findSmsAll(final Context context) {
         //create return Container ，get all session id
-        smsBeanList = new ArrayList<>();
+        smsBeanList = new LinkedList<>();
         threads = SmsUtils.getThreadsId(context);
 
         final ContentResolver cr = context.getContentResolver();

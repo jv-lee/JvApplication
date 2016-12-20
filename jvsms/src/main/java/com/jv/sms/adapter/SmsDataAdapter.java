@@ -1,7 +1,11 @@
 package com.jv.sms.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,12 +20,14 @@ import android.widget.Toast;
 
 import com.jv.sms.R;
 import com.jv.sms.activity.SmsListActivity;
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsUiFlagBean;
 import com.jv.sms.mvp.presenter.ISmsPresenter;
 import com.jv.sms.utils.TimeUtils;
 
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
@@ -39,6 +45,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     public List<SmsBean> mList;
     private OnSmsDataListener mListener;
     public SmsUiFlagBean smsUiFlagBean;
+    public String findByContent = "";
 
     public SmsDataAdapter(Context context, List<SmsBean> list, OnSmsDataListener listener) {
         mContext = context;
@@ -74,8 +81,6 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         ImageView itemSmsImgIcon;
         @BindView(R.id.item_sms_icon_layout)
         FrameLayout itemSmsIconLayout;
-        @BindView(R.id.item_sms_notification)
-        ImageView itemSmsNotification;
         @BindView(R.id.item_sms_number)
         TextView itemSmsNumber;
         @BindView(R.id.item_sms_msg)
@@ -91,7 +96,21 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             ButterKnife.bind(this, itemView);
         }
 
+        /**
+         * 绑定数据方法
+         *
+         * @param bean
+         */
         private void initData(SmsBean bean) {
+
+            if (!findByContent.equals("")) {
+
+                    if (!bean.getName().contains(findByContent) && !bean.getSmsBody().contains(findByContent)) {
+                        return;
+                }
+
+            }
+
             itemSmsMsg.setText(bean.getSmsBody());
             itemSmsDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
 
@@ -104,24 +123,24 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                 itemSmsNumber.getPaint().setFakeBoldText(false);
             }
 
-            if (smsUiFlagBean.hasNotificationUi.get(getLayoutPosition())) {
-                itemSmsNotification.setVisibility(View.GONE);
-            } else {
-                itemSmsNotification.setVisibility(View.VISIBLE);
-            }
-
             //判断当前name是否为数字
             String name = bean.getName();
             if (smsUiFlagBean.hasIconUi.get(getLayoutPosition())) {
                 if (!Pattern.compile("[0-9]*").matcher(name).matches()) {
+                    //当前name 非名字 设置第一个字符显示
                     itemSmsTextIcon.setText(name.substring(0, 1));
                     itemSmsImgIcon.setImageDrawable(null);
-                    itemSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
                 } else {
-                    itemSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
+                    //当前name为空 设置头像图片
                     itemSmsImgIcon.setImageResource(R.drawable.ic_person_light);
                     itemSmsTextIcon.setText("");
                 }
+                //设置背景颜色
+                itemSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
+                GradientDrawable grad = (GradientDrawable) itemSmsIconLayout.getBackground();
+                grad.setColor(ContextCompat.getColor(mContext, JvApplication.icon_theme_colors[bean.getColorPosition()]));
+
+                //当前为选中状态设置选中layout
             } else if (!smsUiFlagBean.hasIconUi.get(getLayoutPosition())) {
                 itemSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg2);
                 itemSmsImgIcon.setImageResource(R.mipmap.ic_checkmark_small_blue);
@@ -135,9 +154,11 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         public void onSmsLayoutClick(View view) {
             switch (view.getId()) {
                 case R.id.item_sms_layout:
+                    //项点击事件
                     layoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
                     break;
                 case R.id.item_sms_icon_layout:
+                    //头像点击事件
                     iconClick(mList.get(getLayoutPosition()));
                     break;
             }
@@ -145,6 +166,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
         @OnLongClick(R.id.item_sms_layout)
         public boolean onSmsLayoutLongClick() {
+            //项长按事件
             longLayoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
             return true;
         }
@@ -153,10 +175,23 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
     public interface OnSmsDataListener {
 
+        /**
+         * 获取Fragment中Popup菜单
+         *
+         * @return
+         */
         PopupWindow getPopupWindow();
 
+        /**
+         * 初始化Popup菜单 并显示
+         */
         void getInitPopupWindow();
 
+        /**
+         * 获取presenter控制逻辑视图
+         *
+         * @return
+         */
         ISmsPresenter getPresenter();
 
     }
@@ -184,9 +219,11 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             return;
         }
 
+        //当前菜单为空则直接显示菜单
         if (mListener.getPopupWindow() == null) {
             mListener.getInitPopupWindow();
         } else {
+            //当前菜单不为空 为不显示状态 则显示操作菜单
             if (!mListener.getPopupWindow().isShowing()) {
                 mListener.getInitPopupWindow();
             }
@@ -219,9 +256,8 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
      */
     public void startIntent(SmsBean bean, int position) {
         Intent intent = new Intent(mContext, SmsListActivity.class);
-        intent.putExtra("title", bean.getName());
-        intent.putExtra("thread_id", bean.getThread_id());
-        intent.putExtra("phone_number", bean.getPhoneNumber());
+        intent.putExtra("bean", bean);
+        JvApplication.themeId = bean.getColorPosition();
         mContext.startActivity(intent);
         updateReadState(bean, position);
     }
@@ -234,6 +270,8 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     public void notifySelectUiFlag(int position) {
         smsUiFlagBean.setFlag(position, false);
         notifyItemChanged(position);
+
+        //当前没有选择消息 则隐藏菜单
         if (!smsUiFlagBean.extendHasMessageUi()) {
             mListener.getPopupWindow().dismiss();
             return;
@@ -294,6 +332,21 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
      */
     public void deleteWindowBtn() {
 
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+        alertDialog.setTitle("提示")
+                .setMessage("确认删除选中会话？")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteWindowBtnMethod();
+                    }
+                })
+                .create().show();
+
+    }
+
+    public void deleteWindowBtnMethod() {
         int[] positionArray = smsUiFlagBean.getSelectPosition();
         for (int i = 0; i < positionArray.length; i++) {
             //数据操作必须放在第一位 ， 否则会出现下标排序错误
@@ -304,21 +357,6 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             notifyItemRemoved(positionArray[i]);
         }
         mListener.getPopupWindow().dismiss();
-
     }
-
-    /**
-     * popupWindow频闭通知按钮
-     */
-    public void notificationBtn() {
-        int[] positionArray = smsUiFlagBean.getSelectPosition();
-        String[] ids = new String[positionArray.length];
-        for (int i = 0; i < positionArray.length; i++) {
-            ids[i] = getItemBean(positionArray[i]).getId();
-        }
-
-
-    }
-
 
 }

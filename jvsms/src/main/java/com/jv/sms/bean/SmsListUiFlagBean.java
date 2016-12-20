@@ -38,6 +38,15 @@ public class SmsListUiFlagBean {
         return false;
     }
 
+    public int getSelectMessageUiPosition() {
+        for (int i = 0; i < hasMessageUi.size(); i++) {
+            if (!hasMessageUi.get(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void initHasMessageUi() {
         for (int i = 0; i < hasMessageUi.size(); i++) {
             hasMessageUi.set(i, true);

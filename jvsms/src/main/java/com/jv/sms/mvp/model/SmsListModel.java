@@ -16,6 +16,7 @@ import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TimeUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -35,16 +36,16 @@ public class SmsListModel implements ISmsListModel {
 
     @SuppressLint("LongLogTag")
     @Override
-    public List<SmsBean> refreshSmsList(String threadId) {
+    public LinkedList<SmsBean> refreshSmsList(String threadId) {
 
-        List<SmsBean> smsList = new ArrayList<>();
+        LinkedList<SmsBean> smsList = new LinkedList<>();
         ContentResolver cr = JvApplication.getInstance().getContentResolver();
         final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read"};
         final Uri uri = Uri.parse("content://sms/");
 
         try {
             //获取当前短信对话游标对象
-            Cursor cur = cr.query(Uri.parse("content://sms/"), projection, "thread_id=?", new String[]{threadId}, "date asc");
+            Cursor cur = cr.query(Uri.parse("content://sms/"), projection, "thread_id=?", new String[]{threadId}, "date desc");
             //获取短信对象 添加至集合
             if (cur.moveToFirst()) {
                 do {
@@ -52,9 +53,11 @@ public class SmsListModel implements ISmsListModel {
                 } while (cur.moveToNext());
             }
             //设置时间显示格式
-            for (SmsBean sms : smsList) {
-                sms.setShowDate(TimeUtils.isShowTime(sms.getDate()));
+            for(int i =(smsList.size()-1);i>0;i--){
+                smsList.get(i).setShowDate(TimeUtils.isShowTime(smsList.get(i).getDate()));
             }
+
+
             return smsList;
         } catch (SQLiteException ex) {
             Log.e("SQLiteException in getSmsInPhone", ex.getMessage());

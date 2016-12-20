@@ -654,6 +654,12 @@ public class TimeUtils {
         return cal.get(Calendar.WEEK_OF_YEAR);
     }
 
+    /**
+     * 获取时间自定义格式显示
+     *
+     * @param time
+     * @return
+     */
     public static String getChineseTimeString(String time) {
         long timeLong = TimeUtils.string2Milliseconds(time);
         long timeLong2 = (System.currentTimeMillis() - timeLong);
@@ -673,6 +679,12 @@ public class TimeUtils {
     }
 
 
+    /**
+     * 获取时间自定义显示方法2
+     *
+     * @param time
+     * @return
+     */
     public static String getChineseTimeString2(String time) {
         long timeLong = TimeUtils.string2Milliseconds(time);
         long timeLong2 = (System.currentTimeMillis() - timeLong);
@@ -697,17 +709,23 @@ public class TimeUtils {
         timeList.clear();
     }
 
+    //计算同一时段显示时间头方法
     public static boolean isShowTime(String time) {
 
+        //当前时间为列表第一位 则直接显示时间头
         if (timeList.size() == 0) {
             timeList.add(time);
             return true;
         } else {
             long timeLong1 = TimeUtils.string2Milliseconds(timeList.get(0));
             long timeLong2 = TimeUtils.string2Milliseconds(time);
+
+            //新增时间减去时间头 小于20分钟内 则添加至集合 返回false 不显示时间头
             if ((timeLong2 - timeLong1) <= (ConstUtils.MIN * 20)) {
                 timeList.add(time);
                 return false;
+
+                //时间大于20分钟后 清空集合 开启新的时间头
             } else {
                 timeList.clear();
                 timeList.add(time);

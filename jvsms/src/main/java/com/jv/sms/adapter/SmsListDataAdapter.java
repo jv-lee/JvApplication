@@ -1,6 +1,11 @@
 package com.jv.sms.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +14,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsListUiFlagBean;
+import com.jv.sms.mvp.presenter.ISmsListPresenter;
+import com.jv.sms.utils.TestUtils;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -31,13 +41,13 @@ import static com.jv.sms.utils.TimeUtils.getChineseTimeString;
 
 public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<SmsBean> mList;
+    private LinkedList<SmsBean> mList;
     private Context mContext;
     private OnSmsListAdapterListener mListener;
     public SmsListUiFlagBean smsListUiFlagBean;
     private int hasSelecting = -1;
 
-    public SmsListDataAdapter(Context context, List<SmsBean> list, OnSmsListAdapterListener listener) {
+    public SmsListDataAdapter(Context context, LinkedList<SmsBean> list, OnSmsListAdapterListener listener) {
         mContext = context;
         mList = list;
         mListener = listener;
@@ -187,9 +197,12 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             //设置短信内容 显示状态
             if (smsListUiFlagBean.hasMessageUi.get(getLayoutPosition())) {
-                tvInfo.setBackgroundResource(R.drawable.shape_message_blue);
+                GradientDrawable grad = (GradientDrawable) tvInfo.getBackground();
+                grad.setColor(ContextCompat.getColor(mContext, JvApplication.icon_theme_colors[mListener.getThemePosition()]));
+
             } else {
-                tvInfo.setBackgroundResource(R.drawable.shape_message_blue_dark);
+                GradientDrawable grad = (GradientDrawable) tvInfo.getBackground();
+                grad.setColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
             }
 
             //设置短信时间 显示状态
@@ -206,6 +219,9 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             } else {
                 tvIcon.setText(name.substring(0, 1));
             }
+            //设置头像背景
+            GradientDrawable myGrad = (GradientDrawable) flIcon.getBackground();
+            myGrad.setColor(ContextCompat.getColor(mContext, JvApplication.icon_theme_colors[mListener.getThemePosition()]));
 
             //无其他条件设置数据
             tvDate2.setText(getChineseTimeString(bean.getDate()));
@@ -258,6 +274,18 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     /**
+     * 新增短信至当前适配器
+     *
+     * @param smsBean
+     */
+    public void insertSmsListUi(SmsBean smsBean) {
+        mList.addFirst(smsBean);
+        smsListUiFlagBean.updateSize(1);
+        notifyItemInserted(0);
+        mListener.getRvContainer().scrollToPosition(0);
+    }
+
+    /**
      * 清空消息选中状态
      *
      * @return
@@ -276,16 +304,37 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return false;
     }
 
-    /**
-     * 新增短信至当前适配器
-     *
-     * @param smsBean
-     */
-    public void insertSmsListUi(SmsBean smsBean) {
-        mList.add(smsBean);
-        smsListUiFlagBean.updateSize(1);
-        notifyItemInserted(getItemCount());
-        mListener.getRvContainer().scrollToPosition(getItemCount() - 1);
+    public void clearSelectMessageThis(int position) {
+        smsListUiFlagBean.initHasMessageUi();
+        mListener.getPopupWindow().dismiss();
+        notifyItemChanged(position);
+    }
+
+    public void windowCopy() {
+        int position = smsListUiFlagBean.getSelectMessageUiPosition();
+        String content = mList.get(position).getSmsBody();
+        TestUtils.copy(content);
+        Toast.makeText(mContext, "已复制短信内容", Toast.LENGTH_SHORT).show();
+        clearSelectMessageThis(position);
+    }
+
+    public void windowInfo() {
+        int position = smsListUiFlagBean.getSelectMessageUiPosition();
+        SmsBean bean = mList.get(position);
+        AlertDialog.Builder aBuilder = new AlertDialog.Builder(mContext);
+        aBuilder.setTitle("信息详情")
+                .setMessage("类型：文字信息\n发件人：" + bean.getName() + "\n接收时间：" + bean.getDate())
+                .create().show();
+        clearSelectMessageThis(position);
+    }
+
+    public void windowDelete() {
+        int position = smsListUiFlagBean.getSelectMessageUiPosition();
+        mListener.getPresenter().removeSmsById(mList.get(position).getId());
+        smsListUiFlagBean.initHasMessageUi();
+        mListener.getPopupWindow().dismiss();
+        mList.remove(position);
+        notifyItemRemoved(position);
     }
 
     public interface OnSmsListAdapterListener {
@@ -295,6 +344,10 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         PopupWindow getPopupWindow();
 
         void getPopupWindowInit();
+
+        int getThemePosition();
+
+        ISmsListPresenter getPresenter();
 
     }
 

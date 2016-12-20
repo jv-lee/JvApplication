@@ -9,4 +9,8 @@ public interface ToolbarSetListener {
     void setToolbarTitle(String title);
 
     int getToolbarHeight();
+
+    void showProgressBar();
+
+    void hideProgressBar();
 }

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -42,7 +43,8 @@ import rx.functions.Action1;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapter.OnSmsDataListener, View.OnClickListener {
+public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapter.OnSmsDataListener, View.OnClickListener
+        , SearchView.OnQueryTextListener {
 
     @BindView(R.id.rv_smsFragment_container)
     RecyclerView rvSmsFragmentContainer;
@@ -83,6 +85,10 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     protected void initAllView(Bundle savedInstanceState) {
         listener.showDataBar();
         initPopupView();
+
+        if (listener.getSearchBar() != null) {
+            listener.getSearchBar().setOnQueryTextListener(this);
+        }
 
         rvSmsFragmentContainer.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         rvSmsFragmentContainer.setItemAnimator(new DefaultItemAnimator());
@@ -182,7 +188,6 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public void insertSmsNotificationError() {
-
     }
 
     @Override
@@ -211,8 +216,8 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         popupView.findViewById(R.id.iv_window_close).setOnClickListener(this);
         popupView.findViewById(R.id.iv_window_add).setOnClickListener(this);
         popupView.findViewById(R.id.iv_window_delete).setOnClickListener(this);
-        popupView.findViewById(R.id.iv_window_notification).setOnClickListener(this);
     }
+
 
     public void initPopupWindow() {
         //创建弹窗
@@ -237,13 +242,21 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
             case R.id.iv_window_delete:
                 mAdapter.deleteWindowBtn();
                 break;
-            case R.id.iv_window_notification:
-                Toast.makeText(getActivity(), "notification通知处理", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.iv_window_add:
-                Toast.makeText(getActivity(), "add添加处理", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "联系人App正在开发中", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        mAdapter.findByContent = query;
+        mAdapter.notifyDataSetChanged();
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
 }

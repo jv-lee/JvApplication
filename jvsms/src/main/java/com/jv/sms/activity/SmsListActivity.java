@@ -6,8 +6,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.jv.sms.R;
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.base.BaseActivity;
 import com.jv.sms.fragment.SmsListFragment;
 import com.jv.sms.interfaces.ToolbarSetListener;
@@ -18,6 +20,9 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener 
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.pb_loadSmsListBar)
+    ProgressBar pbLoadSmsListBar;
+
 
     private Fragment mFragment;
 
@@ -27,8 +32,15 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener 
     }
 
     @Override
+    protected void setThemes() {
+        setTheme(JvApplication.themes[JvApplication.themeId]);
+    }
+
+
+    @Override
     protected void initAllView(Bundle savedInstanceState) {
         setSupportActionBar(toolbar);
+        pbLoadSmsListBar.setVisibility(View.VISIBLE);
         mFragment = new SmsListFragment(this);
         getSupportFragmentManager().beginTransaction().add(R.id.fl_smsList_container, mFragment).commit();
     }
@@ -59,6 +71,16 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener 
     @Override
     public int getToolbarHeight() {
         return toolbar.getMeasuredHeight();
+    }
+
+    @Override
+    public void showProgressBar() {
+        pbLoadSmsListBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        pbLoadSmsListBar.setVisibility(View.GONE);
     }
 
 

@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +41,7 @@ import com.jv.sms.utils.ClickUtils;
 import com.jv.sms.utils.SizeUtils;
 import com.jv.sms.utils.TimeUtils;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -70,10 +72,11 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     private ToolbarSetListener toolbarSetListener;
     private ISmsListPresenter mPresenter;
 
-    private List<SmsBean> mList;
+    private LinkedList<SmsBean> mList;
     private SmsListDataAdapter mAdapter;
 
-    private String title, thread_id, phoneNumber;
+    private SmsBean bean;
+
 
     private final String SENT_SMS_ACTION = "send_sms_action_code";
 
@@ -88,11 +91,9 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        title = getActivity().getIntent().getStringExtra("title");
-        thread_id = getActivity().getIntent().getStringExtra("thread_id");
-        phoneNumber = getActivity().getIntent().getStringExtra("phone_number");
+        bean = (SmsBean) getActivity().getIntent().getSerializableExtra("bean");
 
-        JvApplication.THIS_SMS_FRAGMENT_FLAG = phoneNumber;
+        JvApplication.THIS_SMS_FRAGMENT_FLAG = bean.getPhoneNumber();
         mPresenter = new SmsListPresenter(this);
         getActivity().registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
     }
@@ -110,9 +111,13 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     protected void initAllView(Bundle savedInstanceState) {
         initPopupView();
-        rvSmsListFragmentContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
+        ivAddSms.setColorFilter(ContextCompat.getColor(mContext, JvApplication.icon_theme_darkColors[bean.getColorPosition()]));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(true);//设置倒叙显示消息列表
+        rvSmsListFragmentContainer.setLayoutManager(linearLayoutManager);
         rvSmsListFragmentContainer.setItemAnimator(new DefaultItemAnimator());
-        mPresenter.refreshSmsList(thread_id);
+
+        mPresenter.refreshSmsList(bean.getThread_id());
     }
 
     @Override
@@ -120,7 +125,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         if (keyCode == event.KEYCODE_BACK) {
             return mAdapter.clearSelectMessageState();
         }
-        return false;
+        return true;
     }
 
     @OnClick({R.id.iv_add_sms, R.id.iv_emoji_sms, R.id.iv_send_sms})
@@ -145,7 +150,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 .subscribe(new Action1<EventBase>() {
                     @Override
                     public void call(EventBase eventBase) {
-                        if (eventBase.getOption().equals(phoneNumber)) {
+                        if (eventBase.getOption().equals(bean.getPhoneNumber())) {
                             mAdapter.insertSmsListUi((SmsBean) eventBase.getObj());
                         }
                     }
@@ -153,27 +158,27 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     }
 
     @Override
-    public void refreshSmsList(List<SmsBean> list) {
+    public void refreshSmsList(LinkedList<SmsBean> list) {
         if (mList == null) {
             mList = list;
             mAdapter = new SmsListDataAdapter(getActivity(), mList, this);
             rvSmsListFragmentContainer.setAdapter(mAdapter);
-            rvSmsListFragmentContainer.scrollToPosition(mAdapter.getItemCount() - 1);
         } else {
             mList.clear();
             mList = list;
             mAdapter.notifyDataSetChanged();
-            rvSmsListFragmentContainer.scrollToPosition(mAdapter.getItemCount() - 1);
         }
     }
 
     @Override
     public void showSmsListSuccess() {
+        toolbarSetListener.hideProgressBar();
         Toast.makeText(getActivity(), "load smsData Success", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showSmsError() {
+        toolbarSetListener.hideProgressBar();
         Toast.makeText(getActivity(), "load smsData Error", Toast.LENGTH_SHORT).show();
     }
 
@@ -207,7 +212,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public void onResume() {
         super.onResume();
-        toolbarSetListener.setToolbarTitle(title);
+        toolbarSetListener.setToolbarTitle(bean.getName());
     }
 
     @Override
@@ -236,7 +241,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         if (content.length() > 0) {
             Intent sendIntent = new Intent(SENT_SMS_ACTION);
             PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
-            mPresenter.sendSms(sendPi, phoneNumber, content);
+            mPresenter.sendSms(sendPi, bean.getPhoneNumber(), content);
             ClickUtils.sendMusic();
         }
     }
@@ -254,6 +259,16 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public void getPopupWindowInit() {
         initPopupWindow();
+    }
+
+    @Override
+    public int getThemePosition() {
+        return bean.getColorPosition();
+    }
+
+    @Override
+    public ISmsListPresenter getPresenter() {
+        return mPresenter;
     }
 
     /************************************************
@@ -289,14 +304,22 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_window_close:
+                mAdapter.clearSelectMessageState();
+                break;
+            case R.id.iv_window_attachment:
+                Toast.makeText(mContext, "分享功能正在开发", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_window_forward:
+                Toast.makeText(mContext, "转发功能正在开发", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_window_copy:
+                mAdapter.windowCopy();
+                break;
+            case R.id.iv_window_info:
+                mAdapter.windowInfo();
                 break;
             case R.id.iv_window_delete:
-                break;
-            case R.id.iv_window_notification:
-                Toast.makeText(getActivity(), "notification通知处理", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.iv_window_add:
-                Toast.makeText(getActivity(), "add添加处理", Toast.LENGTH_SHORT).show();
+                mAdapter.windowDelete();
                 break;
         }
     }

@@ -56,7 +56,7 @@ public class SmsListModel implements ISmsListModel {
             for(int i =(smsList.size()-1);i>0;i--){
                 smsList.get(i).setShowDate(TimeUtils.isShowTime(smsList.get(i).getDate()));
             }
-
+                TimeUtils.clearTimeList();
 
             return smsList;
         } catch (SQLiteException ex) {

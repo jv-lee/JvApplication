@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_hideContacts"
+        android:id="@+id/menu_item_addContacts"
         android:title="添加到通讯录" />
 
     <item
-        android:id="@+id/menu_item_settings"
+        android:id="@+id/menu_item_delete"
         android:title="删除" />
 
     <item
         android:id="@+id/menu_item_call"
-        android:icon="@drawable/phone_icon"
+        android:icon="@mipmap/phone_icon_light"
         android:orderInCategory="50"
         android:title="电话"
         app:showAsAction="ifRoom|collapseActionView" />

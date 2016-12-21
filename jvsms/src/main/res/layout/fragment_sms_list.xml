@@ -29,8 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="15dp"
-            android:src="@mipmap/ic_add_white"
+            android:src="@mipmap/ic_add_light"
             android:tint="@color/colorPrimaryDark" />
 
         <EditText
@@ -49,7 +48,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="12dp"
             android:src="@mipmap/ic_emoji_people_light_normal"
             android:tint="@color/colorSmsEditTextIcon" />
 
@@ -59,7 +57,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@null"
-            android:padding="12dp"
             android:src="@mipmap/ic_send_light"
             android:tint="@color/colorSmsEditTextIcon" />
 

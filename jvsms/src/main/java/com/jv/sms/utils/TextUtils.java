@@ -9,7 +9,7 @@ import com.jv.sms.app.JvApplication;
  * Created by Administrator on 2016/12/20.
  */
 
-public class TestUtils {
+public class TextUtils {
 
     /**
      * 实现文本复制功能

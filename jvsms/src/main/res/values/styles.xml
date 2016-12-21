@@ -16,6 +16,7 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
@@ -157,12 +158,6 @@
     </style>
 
 
-
-
-
-
-
-
     <style name="myToolbarNavigationButtonStyle" parent="@style/Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="android:minWidth">0dp</item>
         <item name="android:paddingTop">@dimen/fab_margin</item>
@@ -179,9 +174,9 @@
 
     <!-- pupupwindow Icon大小间距 -->
     <style name="popup_window_icon_dimens">
-        <item name="android:layout_height">25dp</item>
-        <item name="android:layout_width">25dp</item>
-        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginRight">20dp</item>
     </style>
 
 

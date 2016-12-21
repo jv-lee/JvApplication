@@ -16,6 +16,8 @@ public interface ISmsListModel {
 
     LinkedList<SmsBean> refreshSmsList(String thread_id);
 
-    SmsBean sendSms(PendingIntent sentPI,String phoneNumber, String content);
+    SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content);
 
+
+    boolean removeSmsByThreadId(String thread_id);
 }

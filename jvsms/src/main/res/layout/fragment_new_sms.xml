@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.jv.sms.fragment.NewSmsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorNewSmsBar"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:translationZ="2dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="接收者"
+            android:textColor="@color/colorNewSmsText"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/et_inputTel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:background="@null"
+            android:hint="输入姓名、或电话号码"
+            android:textColorHint="@color/colorNewSmsText"
+            android:textSize="14dp" />
+
+        <CheckBox
+            android:id="@+id/cb_keyBoard"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:button="@drawable/selector_btn_checkbox"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</LinearLayout>

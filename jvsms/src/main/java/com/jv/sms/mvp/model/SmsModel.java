@@ -7,7 +7,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.jv.sms.app.JvApplication;
@@ -16,20 +15,9 @@ import com.jv.sms.constant.Constant;
 import com.jv.sms.db.dao.ISmsDao;
 import com.jv.sms.db.dao.SmsDaoImpl;
 import com.jv.sms.utils.SmsUtils;
-import com.jv.sms.utils.SmsWriteOpUtil;
-import com.jv.sms.utils.TimeUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2016/12/2.

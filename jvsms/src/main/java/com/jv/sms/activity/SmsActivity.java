@@ -1,5 +1,6 @@
 package com.jv.sms.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,10 +19,10 @@ import com.jv.sms.fragment.SmsFragment;
 import com.jv.sms.interfaces.DataLoadLayoutListener;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 
-public class SmsActivity extends BaseActivity implements
-        View.OnClickListener, DataLoadLayoutListener {
+public class SmsActivity extends BaseActivity implements DataLoadLayoutListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -46,7 +47,6 @@ public class SmsActivity extends BaseActivity implements
     @Override
     protected void initAllView(Bundle savedInstanceState) {
         setSupportActionBar(toolbar);
-
         getSupportFragmentManager().beginTransaction().add(R.id.fl_sms_container, new SmsFragment(this)).commit();
     }
 
@@ -101,13 +101,9 @@ public class SmsActivity extends BaseActivity implements
         return mSearchView;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.fab:
-                Snackbar.make(fab, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                break;
-        }
+    @OnClick(R.id.fab)
+    public void fabOnclick(View view) {
+//        Snackbar.make(fab, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        startActivity(new Intent(this, NewSmsActivity.class));
     }
-
 }

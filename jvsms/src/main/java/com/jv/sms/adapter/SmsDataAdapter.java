@@ -105,8 +105,8 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
             if (!findByContent.equals("")) {
 
-                    if (!bean.getName().contains(findByContent) && !bean.getSmsBody().contains(findByContent)) {
-                        return;
+                if (!bean.getName().contains(findByContent) && !bean.getSmsBody().contains(findByContent)) {
+                    return;
                 }
 
             }
@@ -132,7 +132,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                     itemSmsImgIcon.setImageDrawable(null);
                 } else {
                     //当前name为空 设置头像图片
-                    itemSmsImgIcon.setImageResource(R.drawable.ic_person_light);
+                    itemSmsImgIcon.setImageResource(R.mipmap.ic_person_light);
                     itemSmsTextIcon.setText("");
                 }
                 //设置背景颜色
@@ -346,6 +346,9 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
     }
 
+    /**
+     * popupWindow删除方法
+     */
     public void deleteWindowBtnMethod() {
         int[] positionArray = smsUiFlagBean.getSelectPosition();
         for (int i = 0; i < positionArray.length; i++) {
@@ -357,6 +360,16 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             notifyItemRemoved(positionArray[i]);
         }
         mListener.getPopupWindow().dismiss();
+    }
+
+    public void deleteByThreadId(String thread_id) {
+        for (int i = 0; i < mList.size(); i++) {
+            if (mList.get(i).getThread_id().equals(thread_id)) {
+                mList.remove(i);
+                smsUiFlagBean.hasIconUi.remove(i);
+                notifyItemRemoved(i);
+            }
+        }
     }
 
 }

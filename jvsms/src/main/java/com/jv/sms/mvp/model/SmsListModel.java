@@ -34,6 +34,17 @@ public class SmsListModel implements ISmsListModel {
         return false;
     }
 
+    @Override
+    public boolean removeSmsByThreadId(String id) {
+        ContentResolver resolver = JvApplication.getInstance().getContentResolver();
+        Uri uri = Uri.parse("content://sms/conversations/" + id);
+        int result = resolver.delete(uri, null, null);
+        if (result > 0) {
+            return true;
+        }
+        return false;
+    }
+
     @SuppressLint("LongLogTag")
     @Override
     public LinkedList<SmsBean> refreshSmsList(String threadId) {
@@ -52,11 +63,11 @@ public class SmsListModel implements ISmsListModel {
                     smsList.add(SmsUtils.simpleSmsBean(cur));
                 } while (cur.moveToNext());
             }
-            //设置时间显示格式
-            for(int i =(smsList.size()-1);i>0;i--){
+            //设置时间显示格式 从最小时间开始设置
+            for (int i = (smsList.size() - 1); i >= 0; i--) {
                 smsList.get(i).setShowDate(TimeUtils.isShowTime(smsList.get(i).getDate()));
             }
-                TimeUtils.clearTimeList();
+            TimeUtils.clearTimeList();
 
             return smsList;
         } catch (SQLiteException ex) {
@@ -66,7 +77,7 @@ public class SmsListModel implements ISmsListModel {
     }
 
     @Override
-    public SmsBean sendSms(PendingIntent sentPI,String phoneNumber, String content) {
+    public SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content) {
         //设置时间
         long date = System.currentTimeMillis();
         String dateStr = TimeUtils.milliseconds2String(date);

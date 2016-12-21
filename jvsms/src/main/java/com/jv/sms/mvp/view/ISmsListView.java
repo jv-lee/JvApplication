@@ -27,4 +27,8 @@ public interface ISmsListView {
 
     void sendSmsError();
 
+    void deleteThreadSuccess();
+
+    void deleteThreadError();
+
 }

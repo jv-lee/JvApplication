@@ -121,18 +121,24 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                 .subscribe(new Action1<EventBase>() {
                     @Override
                     public void call(final EventBase eventBase) {
-                        boolean hasSms = true;
-                        for (int i = 0; i < mAdapter.getItemCount(); i++) {
-                            if (mAdapter.getItemBean(i).getPhoneNumber().equals(eventBase.getOption())) {
-                                hasSms = false;
-                                SmsBean smsBean = mAdapter.getItemBean(i);
-                                smsBean.setDate(((SmsBean) eventBase.getObj()).getDate());
-                                smsBean.setSmsBody(((SmsBean) eventBase.getObj()).getSmsBody());
-                                mAdapter.receiverSmsUpdate(i, smsBean);
+                        //接受到删除通知 执行逻辑
+                        if (((String)eventBase.getOption()).equals("deleteByThreadId")) {
+                            mAdapter.deleteByThreadId((String) eventBase.getObj());
+                        } else {
+                            //添加短信通知执行逻辑
+                            boolean hasSms = true;
+                            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                                if (mAdapter.getItemBean(i).getPhoneNumber().equals(eventBase.getOption())) {
+                                    hasSms = false;
+                                    SmsBean smsBean = mAdapter.getItemBean(i);
+                                    smsBean.setDate(((SmsBean) eventBase.getObj()).getDate());
+                                    smsBean.setSmsBody(((SmsBean) eventBase.getObj()).getSmsBody());
+                                    mAdapter.receiverSmsUpdate(i, smsBean);
+                                }
                             }
-                        }
-                        if (hasSms) {
-                            mPresenter.getNewSms();
+                            if (hasSms) {
+                                mPresenter.getNewSms();
+                            }
                         }
                     }
                 });
@@ -179,6 +185,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     @Override
     public void setNewSms(SmsBean sms) {
         mAdapter.receiverSmsAdd(sms);
+        rvSmsFragmentContainer.scrollToPosition(0);
     }
 
     @Override

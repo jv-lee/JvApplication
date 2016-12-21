@@ -4,8 +4,7 @@
     android:layout_height="?attr/actionBarSize"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:paddingLeft="10dp">
 
     <ImageView
         android:id="@+id/iv_window_close"
@@ -22,7 +21,8 @@
         <ImageView
             android:id="@+id/iv_window_attachment"
             style="@style/popup_window_icon_dimens"
-            android:src="@mipmap/ic_attachment_dark" />
+            android:src="@mipmap/ic_share_light"
+            android:tint="#4C4C4C" />
 
         <ImageView
             android:id="@+id/iv_window_forward"

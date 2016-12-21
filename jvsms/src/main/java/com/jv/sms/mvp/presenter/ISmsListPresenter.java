@@ -22,4 +22,6 @@ public interface ISmsListPresenter extends BasePresenter {
 
     void sendSmsError();
 
+    void deleteSmsByThreadId(String thread_id);
+
 }

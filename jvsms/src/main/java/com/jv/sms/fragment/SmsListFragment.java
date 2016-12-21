@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +41,7 @@ import com.jv.sms.mvp.view.ISmsListView;
 import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.ClickUtils;
 import com.jv.sms.utils.SizeUtils;
+import com.jv.sms.utils.TelUtils;
 import com.jv.sms.utils.TimeUtils;
 
 import java.util.LinkedList;
@@ -121,6 +124,22 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_call:
+                TelUtils.sendTel1(mContext, bean.getPhoneNumber());
+                break;
+            case R.id.menu_item_delete:
+                mPresenter.deleteSmsByThreadId(bean.getThread_id());
+                break;
+            case R.id.menu_item_addContacts:
+                Toast.makeText(mContext, "添加联系人功能正在开发", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == event.KEYCODE_BACK) {
             return mAdapter.clearSelectMessageState();
@@ -200,6 +219,17 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public void sendSmsError() {
         Toast.makeText(getActivity(), "send sms error", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void deleteThreadSuccess() {
+        getActivity().finish();
+        RxBus.getInstance().post(new EventBase("deleteByThreadId", bean.getThread_id()));
+    }
+
+    @Override
+    public void deleteThreadError() {
+        Toast.makeText(mContext, "删除失败，请检查权限", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -112,4 +112,35 @@ public class SmsListPresenter implements ISmsListPresenter {
     public void sendSmsError() {
         mView.sendSmsError();
     }
+
+    @Override
+    public void deleteSmsByThreadId(final String thread_id) {
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onNext(mModel.removeSmsByThreadId(thread_id));
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.deleteThreadError();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            mView.deleteThreadSuccess();
+                        } else {
+                            mView.deleteThreadError();
+                        }
+                    }
+                });
+    }
 }

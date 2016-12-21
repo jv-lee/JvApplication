@@ -2,8 +2,6 @@ package com.jv.sms.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -21,10 +19,9 @@ import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsListUiFlagBean;
 import com.jv.sms.mvp.presenter.ISmsListPresenter;
-import com.jv.sms.utils.TestUtils;
+import com.jv.sms.utils.TextUtils;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
@@ -215,7 +212,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             //设置头像内容
             String name = bean.getName();
             if (Pattern.compile("[0-9]*").matcher(name).matches()) {
-                ivIcon.setImageResource(R.drawable.ic_person_light);
+                ivIcon.setImageResource(R.mipmap.ic_person_light);
             } else {
                 tvIcon.setText(name.substring(0, 1));
             }
@@ -313,7 +310,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void windowCopy() {
         int position = smsListUiFlagBean.getSelectMessageUiPosition();
         String content = mList.get(position).getSmsBody();
-        TestUtils.copy(content);
+        TextUtils.copy(content);
         Toast.makeText(mContext, "已复制短信内容", Toast.LENGTH_SHORT).show();
         clearSelectMessageThis(position);
     }

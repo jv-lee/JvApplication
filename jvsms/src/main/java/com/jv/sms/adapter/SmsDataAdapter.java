@@ -47,6 +47,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     public SmsUiFlagBean smsUiFlagBean;
     public String findByContent = "";
 
+
     public SmsDataAdapter(Context context, List<SmsBean> list, OnSmsDataListener listener) {
         mContext = context;
         mList = list;
@@ -313,6 +314,19 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         mList.add(0, sms);
         smsUiFlagBean.updateSize(1);
         notifyItemInserted(0);
+    }
+
+    /**
+     * 清空消息选中状态
+     *
+     * @return
+     */
+    public boolean clearSelectMessageState() {
+        if (smsUiFlagBean.extendHasMessageUi()) {
+            closeWindowBtn();
+            return true;
+        }
+        return false;
     }
 
     /**

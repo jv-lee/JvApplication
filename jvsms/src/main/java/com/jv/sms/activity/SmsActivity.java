@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import com.jv.sms.R;
 import com.jv.sms.base.BaseActivity;
 import com.jv.sms.fragment.SmsFragment;
+import com.jv.sms.fragment.SmsListFragment;
 import com.jv.sms.interfaces.DataLoadLayoutListener;
 
 import butterknife.BindView;
@@ -34,6 +37,8 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
     FloatingActionButton fab;
     private SearchView mSearchView;
 
+    private Fragment mFragment;
+
 
     @Override
     public int getContentViewId() {
@@ -47,7 +52,8 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
     @Override
     protected void initAllView(Bundle savedInstanceState) {
         setSupportActionBar(toolbar);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_sms_container, new SmsFragment(this)).commit();
+        mFragment = new SmsFragment(this);
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_sms_container, mFragment).commit();
     }
 
     @Override
@@ -106,4 +112,19 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
 //        Snackbar.make(fab, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         startActivity(new Intent(this, NewSmsActivity.class));
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mFragment != null && mFragment instanceof SmsFragment) {
+            //执行fragment 中onKeyDown事件返回false时消费事件 执行finish
+            if (!((SmsFragment) mFragment).onKeyDown(keyCode, event)) {
+                finish();
+            } else {
+                //否则不处理事件 拦截只执行fargment中取消选中状态事件
+                return false;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 }

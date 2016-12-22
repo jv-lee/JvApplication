@@ -18,6 +18,5 @@ public interface ISmsListModel {
 
     SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content);
 
-
     boolean removeSmsByThreadId(String thread_id);
 }

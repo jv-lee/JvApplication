@@ -58,7 +58,8 @@ public class SmsBean implements Serializable {
         this.type = type;
         this.thread_id = thread_id;
         this.readType = readType;
-        this.colorPosition = (int) (Math.random() * 9 );
+//        this.colorPosition = (int) (Math.random() * 9 );
+        this.colorPosition = Integer.parseInt(phoneNumber.substring(phoneNumber.length() - 1)) == 9 ? 0 : Integer.parseInt(phoneNumber.substring(phoneNumber.length() - 1));
     }
 
     @Override

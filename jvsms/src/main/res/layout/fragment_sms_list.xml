@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@mipmap/ic_emoji_people_light_normal"
-            android:tint="@color/colorSmsEditTextIcon" />
+            android:tint="@color/colorNewSmsText" />
 
         <ImageView
             android:id="@+id/iv_send_sms"

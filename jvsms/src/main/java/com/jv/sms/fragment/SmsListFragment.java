@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -15,10 +16,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -49,6 +53,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -79,6 +84,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     private SmsListDataAdapter mAdapter;
 
     private SmsBean bean;
+    private boolean etFlag = true;
 
 
     private final String SENT_SMS_ACTION = "send_sms_action_code";
@@ -130,7 +136,17 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 TelUtils.sendTel1(mContext, bean.getPhoneNumber());
                 break;
             case R.id.menu_item_delete:
-                mPresenter.deleteSmsByThreadId(bean.getThread_id());
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+                alertDialog.setTitle("提示")
+                        .setMessage("确认删除当前会话？")
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mPresenter.deleteSmsByThreadId(bean.getThread_id());
+                            }
+                        })
+                        .create().show();
                 break;
             case R.id.menu_item_addContacts:
                 Toast.makeText(mContext, "添加联系人功能正在开发", Toast.LENGTH_SHORT).show();
@@ -159,6 +175,18 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
             case R.id.iv_emoji_sms:
                 Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
                 break;
+        }
+    }
+
+    @OnTextChanged(R.id.et_sms_content)
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (s.length() > 0) {
+            if (!etFlag) return;
+            etFlag = false;
+            ivSendSms.setColorFilter(ContextCompat.getColor(mContext, JvApplication.icon_theme_darkColors[bean.getColorPosition()]));
+        } else {
+            etFlag = true;
+            ivSendSms.setColorFilter(ContextCompat.getColor(mContext, R.color.colorSmsEditTextIcon));
         }
     }
 

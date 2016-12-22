@@ -97,7 +97,11 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return false;
+        if (keyCode == event.KEYCODE_BACK) {
+            //判断当前是否选中 返回处理事件
+            return mAdapter.clearSelectMessageState();
+        }
+        return true;
     }
 
     @Override
@@ -122,7 +126,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                     @Override
                     public void call(final EventBase eventBase) {
                         //接受到删除通知 执行逻辑
-                        if (((String)eventBase.getOption()).equals("deleteByThreadId")) {
+                        if (((String) eventBase.getOption()).equals("deleteByThreadId")) {
                             mAdapter.deleteByThreadId((String) eventBase.getObj());
                         } else {
                             //添加短信通知执行逻辑
@@ -134,6 +138,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                                     smsBean.setDate(((SmsBean) eventBase.getObj()).getDate());
                                     smsBean.setSmsBody(((SmsBean) eventBase.getObj()).getSmsBody());
                                     mAdapter.receiverSmsUpdate(i, smsBean);
+                                    rvSmsFragmentContainer.scrollToPosition(0);
                                 }
                             }
                             if (hasSms) {

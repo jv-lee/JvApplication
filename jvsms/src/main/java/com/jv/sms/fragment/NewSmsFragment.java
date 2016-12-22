@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.jv.sms.R;
 import com.jv.sms.base.BaseFragment;
 import com.jv.sms.base.EventBase;
+import com.jv.sms.mvp.model.NewSmsModel;
 import com.jv.sms.utils.KeyboardUtils;
 
 import butterknife.BindView;
@@ -108,6 +109,7 @@ public class NewSmsFragment extends BaseFragment {
                 break;
             case EditorInfo.IME_ACTION_DONE:
                 Toast.makeText(mContext, "点击-->OK", Toast.LENGTH_SHORT).show();
+                new NewSmsModel().findContactsAll();
                 break;
             default:
                 isOK = false;

@@ -23,12 +23,13 @@
             android:textColor="@color/colorNewSmsText"
             android:textSize="16sp" />
 
-        <EditText
+        <android.support.v7.widget.AppCompatAutoCompleteTextView
             android:id="@+id/et_inputTel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
             android:background="@null"
+            android:completionThreshold="1"
             android:hint="输入姓名、或电话号码"
             android:textColorHint="@color/colorNewSmsText"
             android:textSize="14dp" />
@@ -42,5 +43,13 @@
             android:gravity="center" />
 
     </LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_new_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+
 
 </LinearLayout>

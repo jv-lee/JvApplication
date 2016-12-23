@@ -52,7 +52,6 @@ public class SmsListModel implements ISmsListModel {
         LinkedList<SmsBean> smsList = new LinkedList<>();
         ContentResolver cr = JvApplication.getInstance().getContentResolver();
         final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read"};
-        final Uri uri = Uri.parse("content://sms/");
 
         try {
             //获取当前短信对话游标对象

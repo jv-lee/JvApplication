@@ -29,7 +29,7 @@
             android:id="@+id/item_sms_icon_layout"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="center"
+            android:layout_gravity="start"
             android:background="@drawable/shape_icon_bg">
 
             <TextView

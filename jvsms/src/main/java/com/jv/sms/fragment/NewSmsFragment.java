@@ -1,15 +1,18 @@
 package com.jv.sms.fragment;
 
 
-import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -17,10 +20,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.adapter.NewSmsAdapter;
+import com.jv.sms.adapter.SmsListDataAdapter;
 import com.jv.sms.base.BaseFragment;
 import com.jv.sms.base.EventBase;
+import com.jv.sms.bean.ContactsBean;
 import com.jv.sms.mvp.model.NewSmsModel;
+import com.jv.sms.mvp.presenter.INewSmsPresenter;
+import com.jv.sms.mvp.presenter.NewSmsPresenter;
+import com.jv.sms.mvp.view.INewSmsView;
 import com.jv.sms.utils.KeyboardUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,13 +42,22 @@ import rx.Observable;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewSmsFragment extends BaseFragment {
+public class NewSmsFragment extends BaseFragment implements INewSmsView {
 
 
     @BindView(R.id.et_inputTel)
-    EditText etInputTel;
+    AppCompatAutoCompleteTextView etInputTel;
     @BindView(R.id.cb_keyBoard)
     CheckBox cbKeyBoard;
+    @BindView(R.id.rv_new_container)
+    RecyclerView rvNewContainer;
+
+    private List<ContactsBean> mList;
+    private NewSmsAdapter mAdapter;
+
+    private INewSmsPresenter mPresenter;
+
+    String[] array = {"李佳薇", "张三", "李四", "王五", "lis", "132"};
 
     @Override
     public int getContentViewId() {
@@ -50,9 +70,17 @@ public class NewSmsFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPresenter = new NewSmsPresenter(this);
+    }
+
+    @Override
     protected void initAllView(Bundle savedInstanceState) {
-
-
+        rvNewContainer.setLayoutManager(new LinearLayoutManager(mContext));
+        mPresenter.findContactsAll();
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, array);
+        etInputTel.setAdapter(arrayAdapter);
     }
 
     @Override
@@ -85,6 +113,7 @@ public class NewSmsFragment extends BaseFragment {
         } else {
             etInputTel.setInputType(EditorInfo.TYPE_CLASS_TEXT);
         }
+        KeyboardUtils.hideSoftInput(getActivity());
         KeyboardUtils.showSoftInput2(mContext, etInputTel);
     }
 
@@ -118,4 +147,29 @@ public class NewSmsFragment extends BaseFragment {
         return true;
     }
 
+    @Override
+    public void setContactsAll(List<ContactsBean> list) {
+        if (mList == null) {
+            mList = list;
+            mAdapter = new NewSmsAdapter(mContext, mList);
+            rvNewContainer.setAdapter(mAdapter);
+        } else {
+            mList.clear();
+            mList = list;
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void findContactsAllError() {
+        Toast.makeText(mContext, "加载联系人失败", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
 }

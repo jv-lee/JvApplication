@@ -1,6 +1,6 @@
 package com.jv.sms.mvp.model;
 
-import com.jv.sms.bean.SmsBean;
+import com.jv.sms.bean.ContactsBean;
 
 import java.util.List;
 
@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface INewSmsModel {
 
-    List<SmsBean> findContactsAll();
+    List<ContactsBean> findContactsAll();
 
 }

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_sms_layout"
     android:layout_width="match_parent"
-    android:layout_height="85dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/selected_sms_item"
     android:gravity="center_vertical"
     android:orientation="horizontal"
@@ -12,7 +12,7 @@
         android:id="@+id/item_sms_icon_layout"
         android:layout_width="@dimen/sms_icon"
         android:layout_height="@dimen/sms_icon"
-        android:layout_gravity="center"
+        android:layout_gravity="start"
         android:background="@drawable/shape_icon_bg">
 
         <TextView
@@ -33,7 +33,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:orientation="vertical">

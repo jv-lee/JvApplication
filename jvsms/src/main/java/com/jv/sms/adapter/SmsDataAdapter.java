@@ -119,9 +119,11 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             if (bean.getReadType().equals(SmsBean.ReadType.NOT_READ)) {
                 itemSmsNumber.getPaint().setFakeBoldText(true);
                 itemSmsMsg.getPaint().setFakeBoldText(true);
+                itemSmsMsg.setMaxLines(3);
             } else {
                 itemSmsMsg.getPaint().setFakeBoldText(false);
                 itemSmsNumber.getPaint().setFakeBoldText(false);
+                itemSmsMsg.setMaxLines(1);
             }
 
             //判断当前name是否为数字

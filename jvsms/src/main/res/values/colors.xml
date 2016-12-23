@@ -10,6 +10,7 @@
     <color name="colorSmsIconText">#E8E8E8</color>
     <color name="colorNewSmsBar">#FAFAFA</color>
     <color name="colorNewSmsText">#546E7A</color>
+    <color name="colorNewNameText">#37474F</color>
 
     <!--色调1-->
     <color name="colorPrimary1">#9C27B0</color>

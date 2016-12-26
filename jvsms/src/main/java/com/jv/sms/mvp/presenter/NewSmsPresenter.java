@@ -3,6 +3,7 @@ package com.jv.sms.mvp.presenter;
 import android.util.Log;
 
 import com.jv.sms.bean.ContactsBean;
+import com.jv.sms.bean.LinkmanBean;
 import com.jv.sms.fragment.NewSmsFragment;
 import com.jv.sms.mvp.model.INewSmsModel;
 import com.jv.sms.mvp.model.NewSmsModel;
@@ -56,6 +57,35 @@ public class NewSmsPresenter implements INewSmsPresenter {
                     @Override
                     public void onNext(List<ContactsBean> contactsBeen) {
                         mView.setContactsAll(contactsBeen);
+                    }
+                });
+    }
+
+    @Override
+    public void findLinkmanAll() {
+        Observable.create(new Observable.OnSubscribe<List<LinkmanBean>>() {
+            @Override
+            public void call(Subscriber<? super List<LinkmanBean>> subscriber) {
+                subscriber.onNext(mModel.findLinkmanAll());
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<LinkmanBean>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i("NewSmsPresenter", e.getMessage());
+                        mView.findLinkmanAllError();
+                    }
+
+                    @Override
+                    public void onNext(List<LinkmanBean> linkmanBeen) {
+                        mView.setLinkmanAll(linkmanBeen);
                     }
                 });
     }

@@ -12,4 +12,6 @@ public interface INewSmsPresenter {
 
     void findContactsAll();
 
+    void findLinkmanAll();
+
 }

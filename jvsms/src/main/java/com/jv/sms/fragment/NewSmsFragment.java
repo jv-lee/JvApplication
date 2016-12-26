@@ -1,6 +1,8 @@
 package com.jv.sms.fragment;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -20,11 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.activity.SmsListActivity;
+import com.jv.sms.adapter.AutoLinkmanAdapter;
 import com.jv.sms.adapter.NewSmsAdapter;
 import com.jv.sms.adapter.SmsListDataAdapter;
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.base.BaseFragment;
 import com.jv.sms.base.EventBase;
 import com.jv.sms.bean.ContactsBean;
+import com.jv.sms.bean.LinkmanBean;
+import com.jv.sms.bean.SmsBean;
 import com.jv.sms.mvp.model.NewSmsModel;
 import com.jv.sms.mvp.presenter.INewSmsPresenter;
 import com.jv.sms.mvp.presenter.NewSmsPresenter;
@@ -52,12 +60,15 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
     @BindView(R.id.rv_new_container)
     RecyclerView rvNewContainer;
 
-    private List<ContactsBean> mList;
-    private NewSmsAdapter mAdapter;
+    private List<ContactsBean> contactsList;
+    private NewSmsAdapter newSmsAdapter;
+
+    private List<LinkmanBean> linkmanList;
+    private AutoLinkmanAdapter linkmanAdapter;
+
+    private LinkmanBean bean;
 
     private INewSmsPresenter mPresenter;
-
-    String[] array = {"李佳薇", "张三", "李四", "王五", "lis", "132"};
 
     @Override
     public int getContentViewId() {
@@ -79,8 +90,16 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
     protected void initAllView(Bundle savedInstanceState) {
         rvNewContainer.setLayoutManager(new LinearLayoutManager(mContext));
         mPresenter.findContactsAll();
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, array);
-        etInputTel.setAdapter(arrayAdapter);
+        mPresenter.findLinkmanAll();
+        etInputTel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                bean = (LinkmanBean) parent.getItemAtPosition(position);
+                etInputTel.setText(bean.getName());
+                etInputTel.setSelection(bean.getName().length());
+//                linkmanAdapter.startSmsList(bean);
+            }
+        });
     }
 
     @Override
@@ -125,7 +144,11 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
                 Toast.makeText(mContext, "点击-->NONE", Toast.LENGTH_SHORT).show();
                 break;
             case EditorInfo.IME_ACTION_GO:
-                Toast.makeText(mContext, "点击-->GO", Toast.LENGTH_SHORT).show();
+                if (bean != null) {
+                    linkmanAdapter.startSmsList(bean);
+                }else{
+                    linkmanAdapter.startSmsListNew(etInputTel.getText().toString());
+                }
                 break;
             case EditorInfo.IME_ACTION_SEARCH:
                 Toast.makeText(mContext, "点击-->SEARCH", Toast.LENGTH_SHORT).show();
@@ -149,20 +172,38 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
 
     @Override
     public void setContactsAll(List<ContactsBean> list) {
-        if (mList == null) {
-            mList = list;
-            mAdapter = new NewSmsAdapter(mContext, mList);
-            rvNewContainer.setAdapter(mAdapter);
+        if (contactsList == null) {
+            contactsList = list;
+            newSmsAdapter = new NewSmsAdapter(mContext, contactsList);
+            rvNewContainer.setAdapter(newSmsAdapter);
         } else {
-            mList.clear();
-            mList = list;
-            mAdapter.notifyDataSetChanged();
+            contactsList.clear();
+            contactsList = list;
+            newSmsAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void findContactsAllError() {
         Toast.makeText(mContext, "加载联系人失败", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setLinkmanAll(List<LinkmanBean> list) {
+        if (linkmanList == null) {
+            linkmanList = list;
+            linkmanAdapter = new AutoLinkmanAdapter(mContext, R.layout.item_auto_text, list);
+            etInputTel.setAdapter(linkmanAdapter);
+        } else {
+            linkmanList.clear();
+            linkmanList = list;
+            linkmanAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void findLinkmanAllError() {
+        Toast.makeText(mContext, "加载输入提示联系人列表失败", Toast.LENGTH_SHORT).show();
     }
 
     @Override

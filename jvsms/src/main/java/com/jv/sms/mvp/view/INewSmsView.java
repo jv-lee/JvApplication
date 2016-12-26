@@ -1,6 +1,7 @@
 package com.jv.sms.mvp.view;
 
 import com.jv.sms.bean.ContactsBean;
+import com.jv.sms.bean.LinkmanBean;
 
 import java.util.List;
 
@@ -13,5 +14,9 @@ public interface INewSmsView {
     void setContactsAll(List<ContactsBean> list);
 
     void findContactsAllError();
+
+    void setLinkmanAll(List<LinkmanBean> list);
+
+    void findLinkmanAllError();
 
 }

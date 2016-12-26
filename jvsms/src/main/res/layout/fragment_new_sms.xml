@@ -30,7 +30,11 @@
             android:layout_weight="4"
             android:background="@null"
             android:completionThreshold="1"
+
+            android:dropDownHeight="200dp"
             android:hint="输入姓名、或电话号码"
+
+            android:imeOptions="actionGo"
             android:textColorHint="@color/colorNewSmsText"
             android:textSize="14dp" />
 

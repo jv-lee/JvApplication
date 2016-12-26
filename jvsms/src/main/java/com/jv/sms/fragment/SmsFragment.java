@@ -108,6 +108,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     public void onResume() {
         super.onResume();
         NotificationUtils.clearNum();
+
     }
 
     @Override
@@ -158,6 +159,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         } else {
             mList.clear();
             mList = beanList;
+            mAdapter = new SmsDataAdapter(getActivity(), mList, this);
             rvSmsFragmentContainer.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
         }

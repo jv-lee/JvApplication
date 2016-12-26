@@ -79,14 +79,13 @@ public class SmsPresenter implements ISmsPresenter {
 
     @Override
     public void getNewSms() {
-        Observable.create(new Observable.OnSubscribe<SmsBean>() {
+
+        Observable.just("123").map(new Func1<String, SmsBean>() {
             @Override
-            public void call(Subscriber<? super SmsBean> subscriber) {
-                subscriber.onNext(mSmsModel.getNewSms());
-                subscriber.onCompleted();
+            public SmsBean call(String s) {
+                return mSmsModel.getNewSms();
             }
-        })
-                .subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<SmsBean>() {
                     @Override
@@ -95,6 +94,7 @@ public class SmsPresenter implements ISmsPresenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i("错误信息", e.getMessage());
                     }
 
                     @Override
@@ -102,6 +102,31 @@ public class SmsPresenter implements ISmsPresenter {
                         mSmsView.setNewSms(smsBean);
                     }
                 });
+
+//        Observable.create(new Observable.OnSubscribe<SmsBean>() {
+//            @Override
+//            public void call(Subscriber<? super SmsBean> subscriber) {
+//                subscriber.onNext(mSmsModel.getNewSms());
+//                subscriber.onCompleted();
+//            }
+//        })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<SmsBean>() {
+//                    @Override
+//                    public void onCompleted() {
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.i("错误信息", e.getMessage());
+//                    }
+//
+//                    @Override
+//                    public void onNext(SmsBean smsBean) {
+//                        mSmsView.setNewSms(smsBean);
+//                    }
+//                });
     }
 
     @Override

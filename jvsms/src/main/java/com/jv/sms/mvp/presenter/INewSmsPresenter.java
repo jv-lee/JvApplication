@@ -14,4 +14,6 @@ public interface INewSmsPresenter {
 
     void findLinkmanAll();
 
+    void findLinkmanByPhoneNumber(String phoneNumber);
+
 }

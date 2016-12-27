@@ -40,6 +40,7 @@ import com.jv.sms.mvp.view.INewSmsView;
 import com.jv.sms.utils.KeyboardUtils;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,7 +98,7 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
                 bean = (LinkmanBean) parent.getItemAtPosition(position);
                 etInputTel.setText(bean.getName());
                 etInputTel.setSelection(bean.getName().length());
-//                linkmanAdapter.startSmsList(bean);
+                linkmanAdapter.startSmsList(bean);
             }
         });
     }
@@ -144,10 +145,10 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
                 Toast.makeText(mContext, "点击-->NONE", Toast.LENGTH_SHORT).show();
                 break;
             case EditorInfo.IME_ACTION_GO:
-                if (bean != null) {
-                    linkmanAdapter.startSmsList(bean);
-                }else{
-                    linkmanAdapter.startSmsListNew(etInputTel.getText().toString());
+                if (Pattern.compile("[0-9]*").matcher(etInputTel.getText().toString()).matches()) {
+                    mPresenter.findLinkmanByPhoneNumber(etInputTel.getText().toString());
+                } else {
+                    Toast.makeText(mContext, "非联系人请直接输入号码", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case EditorInfo.IME_ACTION_SEARCH:
@@ -161,7 +162,6 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
                 break;
             case EditorInfo.IME_ACTION_DONE:
                 Toast.makeText(mContext, "点击-->OK", Toast.LENGTH_SHORT).show();
-                new NewSmsModel().findContactsAll();
                 break;
             default:
                 isOK = false;
@@ -204,6 +204,11 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
     @Override
     public void findLinkmanAllError() {
         Toast.makeText(mContext, "加载输入提示联系人列表失败", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void startListSmsBySms(SmsBean smsBean) {
+        linkmanAdapter.startSmsList(smsBean);
     }
 
     @Override

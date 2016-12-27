@@ -2,6 +2,7 @@ package com.jv.sms.mvp.model;
 
 import com.jv.sms.bean.ContactsBean;
 import com.jv.sms.bean.LinkmanBean;
+import com.jv.sms.bean.SmsBean;
 
 import java.util.List;
 
@@ -24,5 +25,7 @@ public interface INewSmsModel {
      * @return
      */
     List<LinkmanBean> findLinkmanAll();
+
+    SmsBean findLinkmanByPhoneNumber(String phoneNumber);
 
 }

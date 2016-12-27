@@ -55,6 +55,11 @@
                 <data android:scheme="mmsto" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.NewSmsActivity"
+            android:label="@string/title_activity_newsms"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.SmsService"
@@ -89,10 +94,6 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".activity.NewSmsActivity"
-            android:label="@string/title_activity_newsms"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

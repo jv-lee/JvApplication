@@ -1,9 +1,12 @@
 package com.jv.sms.mvp.presenter;
 
 import android.util.Log;
+import android.widget.Toast;
 
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.ContactsBean;
 import com.jv.sms.bean.LinkmanBean;
+import com.jv.sms.bean.SmsBean;
 import com.jv.sms.fragment.NewSmsFragment;
 import com.jv.sms.mvp.model.INewSmsModel;
 import com.jv.sms.mvp.model.NewSmsModel;
@@ -15,6 +18,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -86,6 +90,32 @@ public class NewSmsPresenter implements INewSmsPresenter {
                     @Override
                     public void onNext(List<LinkmanBean> linkmanBeen) {
                         mView.setLinkmanAll(linkmanBeen);
+                    }
+                });
+    }
+
+    @Override
+    public void findLinkmanByPhoneNumber(final String phoneNumber) {
+        Observable.just(phoneNumber).map(new Func1<String, SmsBean>() {
+            @Override
+            public SmsBean call(String s) {
+                return mModel.findLinkmanByPhoneNumber(phoneNumber);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<SmsBean>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i("错误日志", e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(SmsBean smsBean) {
+                        mView.startListSmsBySms(smsBean);
                     }
                 });
     }

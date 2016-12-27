@@ -11,6 +11,7 @@ import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.ContactsBean;
 import com.jv.sms.bean.LinkmanBean;
 import com.jv.sms.bean.SmsBean;
+import com.jv.sms.utils.SmsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,5 +136,29 @@ public class NewSmsModel implements INewSmsModel {
             linkmanList.add(bean); //添加至集合
         }
         return linkmanList;
+    }
+
+    @Override
+    public SmsBean findLinkmanByPhoneNumber(String phoneNumber) {
+        SmsBean bean = null;
+
+        //查询raw_contacts表获得联系人id
+        ContentResolver resolver = JvApplication.getInstance().getContentResolver();
+        Cursor cur = resolver.query(Uri.parse("content://sms/"), new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read"}, "address=?", new String[]{phoneNumber}, "date desc limit 1");
+        while (cur.moveToNext()) {
+            bean = new SmsBean();
+            bean.setPhoneNumber(phoneNumber);
+            bean.setName(SmsUtils.getPeopleNameFromPerson(phoneNumber, JvApplication.getInstance()));
+            bean.setThread_id(cur.getString(cur.getColumnIndex("thread_id")));
+            bean.setColorPosition(Integer.parseInt(phoneNumber.substring(phoneNumber.length() - 1)) == 9 ? 0 : Integer.parseInt(phoneNumber.substring(phoneNumber.length() - 1)));
+        }
+        if (bean == null) {
+            bean = new SmsBean();
+            bean.setPhoneNumber(phoneNumber);
+            bean.setName(phoneNumber);
+            bean.setThread_id("-1");
+            bean.setColorPosition(Integer.parseInt(phoneNumber.substring(phoneNumber.length() - 1)) == 9 ? 0 : Integer.parseInt(phoneNumber.substring(phoneNumber.length() - 1)));
+        }
+        return bean;
     }
 }

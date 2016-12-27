@@ -146,11 +146,7 @@ public class AutoLinkmanAdapter extends ArrayAdapter implements Filterable {
         smsBean.setColorPosition(bean.getColorType());
         smsBean.setPhoneNumber(bean.getPhoneNumber());
         smsBean.setThread_id(bean.getThread_id());
-        Intent intent = new Intent(context, SmsListActivity.class);
-        intent.putExtra("bean", smsBean);
-        JvApplication.themeId = bean.getColorType();
-        context.startActivity(intent);
-        ((Activity) context).finish();
+        startSmsList(smsBean);
     }
 
     public void startSmsListNew(String str) {
@@ -160,14 +156,18 @@ public class AutoLinkmanAdapter extends ArrayAdapter implements Filterable {
             smsBean.setPhoneNumber(str);
             smsBean.setThread_id("-1");
             smsBean.setColorPosition(Integer.parseInt(smsBean.getPhoneNumber().substring(smsBean.getPhoneNumber().length() - 1)) == 9 ? 0 : Integer.parseInt(smsBean.getPhoneNumber().substring(smsBean.getPhoneNumber().length() - 1)));
-            Intent intent = new Intent(context, SmsListActivity.class);
-            intent.putExtra("bean", smsBean);
-            JvApplication.themeId = smsBean.getColorPosition();
-            context.startActivity(intent);
-            ((Activity) context).finish();
+            startSmsList(smsBean);
         } else {
-            Toast.makeText(context, "非联系人请直接输入号码", Toast.LENGTH_SHORT).show();
+
         }
+    }
+
+    public void startSmsList(SmsBean bean) {
+        Intent intent = new Intent(context, SmsListActivity.class);
+        intent.putExtra("bean", bean);
+        JvApplication.themeId = bean.getColorPosition();
+        context.startActivity(intent);
+        ((Activity) context).finish();
     }
 
 

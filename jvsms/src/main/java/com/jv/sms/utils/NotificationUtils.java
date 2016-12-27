@@ -36,12 +36,13 @@ public class NotificationUtils {
     }
 
     public static void showNotification(String phoneNumber, String content) {
+        //SmsList列表在栈顶时 进入判断
         if (isMainActivityTop()) {
+            //当前浏览短信号码不等于"" 的情况下 进入
             if (!JvApplication.THIS_SMS_FRAGMENT_FLAG.equals("")) {
+                //当前获取短信号码 为当前浏览短信 直接return 不发送通知
                 if (phoneNumber.equals(JvApplication.THIS_SMS_FRAGMENT_FLAG)) {
                     return;
-                } else {
-
                 }
             }
         }
@@ -76,6 +77,7 @@ public class NotificationUtils {
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
+                .addAction(R.mipmap.ic_wear_reply, "点击回复", null) //添加点击Action事件
         ;
 
         notificationManager.notify(1, nBuilder.build());

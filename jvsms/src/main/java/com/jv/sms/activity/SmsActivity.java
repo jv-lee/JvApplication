@@ -1,6 +1,7 @@
 package com.jv.sms.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -61,6 +62,8 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
         getMenuInflater().inflate(R.menu.main_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.menu_item_search);
         mSearchView = (SearchView) menuItem.getActionView();
+        mSearchView.setQueryHint("搜索信息");
+
         return true;
     }
 

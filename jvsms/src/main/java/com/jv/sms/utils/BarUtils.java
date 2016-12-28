@@ -49,6 +49,12 @@ public class BarUtils {
         setColor(activity, color, DEFAULT_STATUS_BAR_ALPHA);
     }
 
+
+    /**
+     * 隐藏statusBar 和 navigationBar
+     *
+     * @param view
+     */
     public static void hideBar(View view) {
         view.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -57,6 +63,12 @@ public class BarUtils {
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    public static void showBar(View view) {
+        view.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_VISIBLE
+        );
     }
 
     /**
@@ -605,12 +617,36 @@ public class BarUtils {
     }
 
     /**
+     * 获取导航栏 高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getNavigationBarHeight(Context context) {
+        int resIdShow = context.getResources().getIdentifier("config_showNavigationBar", "bool", "android");
+        boolean hasNavigationBar = false;
+        if (resIdShow > 0) {
+            hasNavigationBar = context.getResources().getBoolean(resIdShow);//是否显示底部navigationBar
+        }
+        if (hasNavigationBar) {
+            int resIdNavigationBar = context.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+            int navigationbarHeight = 0;
+            if (resIdNavigationBar > 0) {
+                navigationbarHeight = context.getResources().getDimensionPixelSize(resIdNavigationBar);//navigationBar高度
+                return navigationbarHeight;
+            }
+        }
+        return 0;
+    }
+
+    /**
      * 计算状态栏颜色
      *
      * @param color color值
      * @param alpha alpha值
      * @return 最终的状态栏颜色
      */
+
     private static int calculateStatusColor(int color, int alpha) {
         float a = 1 - alpha / 255f;
         int red = color >> 16 & 0xff;

@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.provider.Telephony;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,8 @@ public class WelcomeActivity extends AppCompatActivity {
     TextView tvOut;
     @BindView(R.id.tv_next)
     TextView tvNext;
+    @BindView(R.id.ll_navigation_layout)
+    LinearLayout llNavigationLayout;
 
     private final int REQUEST_CODE = 0x02222;
 
@@ -48,6 +53,12 @@ public class WelcomeActivity extends AppCompatActivity {
         //获取全屏试图容器
         mDecorView = getWindow().getDecorView();
         BarUtils.hideBar(mDecorView); //隐藏状态栏 和控制栏
+
+        int navigationHeight = BarUtils.getNavigationBarHeight(this);
+        if (navigationHeight != 0) {
+            llNavigationLayout.setWeightSum(0);
+            llNavigationLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, navigationHeight));
+        }
 
     }
 
@@ -98,6 +109,11 @@ public class WelcomeActivity extends AppCompatActivity {
             startSmsActivity();
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     /**

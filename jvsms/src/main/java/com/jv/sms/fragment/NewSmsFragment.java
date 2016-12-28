@@ -3,22 +3,26 @@ package com.jv.sms.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +43,7 @@ import com.jv.sms.mvp.presenter.NewSmsPresenter;
 import com.jv.sms.mvp.view.INewSmsView;
 import com.jv.sms.utils.KeyboardUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -60,6 +65,9 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
     CheckBox cbKeyBoard;
     @BindView(R.id.rv_new_container)
     RecyclerView rvNewContainer;
+    @BindView(R.id.ll_newsms_layout)
+    LinearLayout llNewsmsLayout;
+
 
     private List<ContactsBean> contactsList;
     private NewSmsAdapter newSmsAdapter;

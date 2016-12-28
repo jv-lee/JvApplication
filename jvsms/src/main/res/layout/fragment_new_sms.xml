@@ -1,7 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_newsms_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context="com.jv.sms.fragment.NewSmsFragment">
 
@@ -30,10 +33,11 @@
             android:layout_weight="4"
             android:background="@null"
             android:completionThreshold="1"
-
             android:dropDownHeight="200dp"
+            android:dropDownHorizontalOffset="-100dp"
+            android:dropDownVerticalOffset="1dp"
+            android:dropDownWidth="match_parent"
             android:hint="输入姓名、或电话号码"
-
             android:imeOptions="actionGo"
             android:textColorHint="@color/colorNewSmsText"
             android:textSize="14dp" />

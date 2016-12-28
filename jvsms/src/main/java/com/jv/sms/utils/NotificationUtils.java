@@ -77,7 +77,7 @@ public class NotificationUtils {
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
-                .addAction(R.mipmap.ic_wear_reply, "点击回复", null) //添加点击Action事件
+                .addAction(R.mipmap.ic_call_back, "点击回复", null) //添加点击Action事件
         ;
 
         notificationManager.notify(1, nBuilder.build());

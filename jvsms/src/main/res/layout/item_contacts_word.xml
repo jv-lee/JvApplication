@@ -10,7 +10,6 @@
         android:layout_width="@dimen/sms_icon"
         android:layout_height="@dimen/sms_icon"
         android:gravity="center"
-        android:text="A"
         android:textColor="@color/colorNewSmsText"
         android:textSize="20sp" />
 

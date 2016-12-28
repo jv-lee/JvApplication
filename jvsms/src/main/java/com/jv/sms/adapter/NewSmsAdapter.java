@@ -62,6 +62,7 @@ public class NewSmsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int count = -1;
         for (int i = 0; i < contactsList.size(); i++) {
+            if(contactsList.get(i) == null)break;
             count++;
             if (position == count) {
                 ((WorkViewHolder) holder).setItem(contactsList.get(i).getWork());
@@ -81,7 +82,9 @@ public class NewSmsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public int getItemCount() {
         int count = contactsList.size();
         for (ContactsBean bean : contactsList) {
-            count += bean.getLinkmanList().size();
+            if (bean != null) {
+                count += bean.getLinkmanList().size();
+            }
         }
         return count;
     }

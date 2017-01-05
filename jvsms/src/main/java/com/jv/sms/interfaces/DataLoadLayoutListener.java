@@ -19,6 +19,4 @@ public interface DataLoadLayoutListener {
 
     int getToolbarHeight();
 
-    SearchView getSearchBar();
-
 }

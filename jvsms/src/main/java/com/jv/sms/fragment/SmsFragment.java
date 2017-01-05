@@ -14,12 +14,16 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.interfaces.DataLoadLayoutListener;
 import com.jv.sms.adapter.SmsDataAdapter;
 import com.jv.sms.base.BaseFragment;
@@ -32,6 +36,8 @@ import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.NotificationUtils;
 import com.jv.sms.utils.SizeUtils;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,18 +50,27 @@ import rx.functions.Action1;
  */
 @SuppressLint("ValidFragment")
 public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapter.OnSmsDataListener, View.OnClickListener
-        , SearchView.OnQueryTextListener {
+        , SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
+    //数据填充容器 view
     @BindView(R.id.rv_smsFragment_container)
     RecyclerView rvSmsFragmentContainer;
+
+    //长按弹框 view
     private PopupWindow mPopupWindow;
     private View popupView;
 
+    //搜索框view
+    private SearchView mSearchView;
+
+    //数据 及 适配器
     private SmsDataAdapter mAdapter;
     private List<SmsBean> mList;
 
+    // 加载数据 及 toolbar 监听接口回调
     private DataLoadLayoutListener listener;
 
+    //presenter 控制层
     private ISmsPresenter mPresenter;
 
     public SmsFragment() {
@@ -69,6 +84,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new SmsPresenter(this);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -81,20 +97,67 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         return RxBus.getInstance().register(this);
     }
 
+    /**
+     * 初始化 view函数
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void initAllView(Bundle savedInstanceState) {
-        listener.showDataBar();
-        initPopupView();
+        listener.showDataBar(); //显示数据加载bar
+        initPopupView(); //初始化长按弹窗
 
-        if (listener.getSearchBar() != null) {
-            listener.getSearchBar().setOnQueryTextListener(this);
-        }
-
+        //创建显示容器 rv
         rvSmsFragmentContainer.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         rvSmsFragmentContainer.setItemAnimator(new DefaultItemAnimator());
+
+        //控制层获取数据填充
         mPresenter.findSmsAll();
     }
 
+    /**
+     * 初始化菜单 及 菜单搜索监听
+     *
+     * @param menu
+     * @param inflater
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.menu_item_search);
+        mSearchView = (SearchView) menuItem.getActionView();
+        mSearchView.setQueryHint("搜索信息");
+        mSearchView.setOnQueryTextListener(this);
+        mSearchView.setOnCloseListener(this);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /**
+     * 菜单选择
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_settings:
+                Toast.makeText(mContext, "设置功能暂未开放", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_item_hideContacts:
+                Toast.makeText(mContext, "屏蔽功能暂未开放", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Back键处理逻辑
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == event.KEYCODE_BACK) {
@@ -104,6 +167,9 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         return true;
     }
 
+    /**
+     * 清楚当前短信推送数量
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -111,6 +177,9 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     }
 
+    /**
+     * 释放引用数据
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -119,7 +188,9 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     }
 
 
-    //RxBus事件监听函数
+    /**
+     * RxBus事件监听函数 监听通知 接受短信 新增短信
+     */
     @Override
     protected void rxEvent() {
         mObservable.observeOn(AndroidSchedulers.mainThread())
@@ -150,8 +221,14 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                 });
     }
 
+    /**
+     * 加载数据View 层回调
+     *
+     * @param beanList
+     */
     @Override
     public void setData(List<SmsBean> beanList) {
+        JvApplication.smsBeans = beanList; //保存当前临时数据
         if (mList == null) {
             mList = beanList;
             mAdapter = new SmsDataAdapter(getActivity(), mList, this);
@@ -197,7 +274,6 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public void insertSmsNotificationSuccess() {
-
     }
 
     @Override
@@ -262,15 +338,54 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         }
     }
 
+    /**
+     * 搜索框监听事件等 ..
+     *
+     * @param query
+     * @return
+     */
     @Override
     public boolean onQueryTextSubmit(String query) {
-        mAdapter.findByContent = query;
-        mAdapter.notifyDataSetChanged();
-        return false;
+        return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        final List<SmsBean> filteredModelList = filter(mList, newText);
+
+        mAdapter.setFilter(filteredModelList);
+        rvSmsFragmentContainer.scrollToPosition(0);
         return false;
     }
+
+    @Override
+    public boolean onClose() {
+        mAdapter.setFilter(mList);
+        return true;
+    }
+
+    /**
+     * 过滤器
+     *
+     * @param smsBeans
+     * @param query
+     * @return
+     */
+    private List<SmsBean> filter(List<SmsBean> smsBeans, String query) {
+        query = query.toLowerCase(); //小写
+
+        final List<SmsBean> filteredModelList = new LinkedList<>();
+        for (SmsBean smsBean : smsBeans) {
+
+            final String name = smsBean.getName().toLowerCase();
+            final String smsBody = smsBean.getSmsBody().toLowerCase();
+
+            if (name.contains(query) || smsBody.contains(query)) {
+                smsBean.selectStr = query; //添加选中字体记录
+                filteredModelList.add(smsBean);
+            }
+        }
+        return filteredModelList;
+    }
+
 }

@@ -36,7 +36,7 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
     LinearLayout llSmsNullLayout;
     @BindView(R.id.fab)
     FloatingActionButton fab;
-    private SearchView mSearchView;
+
 
     private Fragment mFragment;
 
@@ -57,28 +57,6 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
         getSupportFragmentManager().beginTransaction().add(R.id.fl_sms_container, mFragment).commit();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.menu_item_search);
-        mSearchView = (SearchView) menuItem.getActionView();
-        mSearchView.setQueryHint("搜索信息");
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_settings:
-                Toast.makeText(this, "设置功能暂未开放", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.menu_item_hideContacts:
-                Toast.makeText(this, "屏蔽功能暂未开放", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void showDataBar() {
@@ -105,10 +83,6 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
         return toolbar.getMeasuredHeight();
     }
 
-    @Override
-    public SearchView getSearchBar() {
-        return mSearchView;
-    }
 
     @OnClick(R.id.fab)
     public void fabOnclick(View view) {

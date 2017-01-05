@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 
 import com.jv.sms.R;
+import com.jv.sms.bean.SmsBean;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/12/5.
@@ -44,5 +47,8 @@ public class JvApplication extends Application {
             R.style.AppTheme9_NoActionBar};
 
     public static int themeId = 0;
+
+    public static List<SmsBean> smsBeans;
+    public static String text = "";
 
 }

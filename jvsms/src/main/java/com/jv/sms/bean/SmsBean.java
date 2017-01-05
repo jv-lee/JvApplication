@@ -20,6 +20,7 @@ public class SmsBean implements Serializable {
     private Type type;
     private ReadType readType;
     private int colorPosition;
+    public String selectStr = "";
 
     public enum ReadType {
         IS_READ, NOT_READ

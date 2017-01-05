@@ -18,21 +18,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.activity.NewSmsActivity;
+import com.jv.sms.adapter.ForwardDialogAdapter;
 import com.jv.sms.interfaces.ToolbarSetListener;
 import com.jv.sms.adapter.SmsListDataAdapter;
 import com.jv.sms.app.JvApplication;
@@ -44,6 +46,7 @@ import com.jv.sms.mvp.presenter.SmsListPresenter;
 import com.jv.sms.mvp.view.ISmsListView;
 import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.ClickUtils;
+import com.jv.sms.utils.ShareUtils;
 import com.jv.sms.utils.SizeUtils;
 import com.jv.sms.utils.TelUtils;
 import com.jv.sms.utils.TimeUtils;
@@ -74,19 +77,28 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     ImageView ivEmojiSms;
     @BindView(R.id.iv_send_sms)
     ImageView ivSendSms;
+
+    //弹窗View
     private PopupWindow mPopupWindow;
     private View popupView;
 
+    //toolbar监听回调接口
     private ToolbarSetListener toolbarSetListener;
+
+    //当前控制层实现类
     private ISmsListPresenter mPresenter;
 
+    //数据 and 适配器
     private LinkedList<SmsBean> mList;
     private SmsListDataAdapter mAdapter;
 
+    //中转数据实体类
     private SmsBean bean;
+
+    //输入框flag
     private boolean etFlag = true;
 
-
+    //发送短信成功返回码
     private final String SENT_SMS_ACTION = "send_sms_action_code";
 
     public SmsListFragment() {
@@ -100,9 +112,13 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //获取当前跳转实体数据 号码 、名字 、会话Id 、颜色
         bean = (SmsBean) getActivity().getIntent().getSerializableExtra("bean");
 
+        //当前显示的会话Fragment 是哪一个 记录FLAG
         JvApplication.THIS_SMS_FRAGMENT_FLAG = bean.getPhoneNumber();
+
+        //实例化Presenter  and 注册发送短信通知广播
         mPresenter = new SmsListPresenter(this);
         getActivity().registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
     }
@@ -119,23 +135,27 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
 
     @Override
     protected void initAllView(Bundle savedInstanceState) {
-        initPopupView();
-        ivAddSms.setColorFilter(ContextCompat.getColor(mContext, JvApplication.icon_theme_darkColors[bean.getColorPosition()]));
+        initPopupView(); //初始化长按弹窗
+        ivAddSms.setColorFilter(ContextCompat.getColor(mContext, JvApplication.icon_theme_darkColors[bean.getColorPosition()])); //设置添加按钮颜色
+
+        //初始化消息显示列表
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);//设置倒叙显示消息列表
         rvSmsListFragmentContainer.setLayoutManager(linearLayoutManager);
         rvSmsListFragmentContainer.setItemAnimator(new DefaultItemAnimator());
 
+
+        //加载数据
         mPresenter.refreshSmsList(bean.getThread_id());
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_call:
+            case R.id.menu_item_call: // 菜单点击拨打当前联系人电话
                 TelUtils.sendTel1(mContext, bean.getPhoneNumber());
                 break;
-            case R.id.menu_item_delete:
+            case R.id.menu_item_delete: // 菜单点击删除当前联系人会话
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
                 alertDialog.setTitle("提示")
                         .setMessage("确认删除当前会话？")
@@ -148,7 +168,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                         })
                         .create().show();
                 break;
-            case R.id.menu_item_addContacts:
+            case R.id.menu_item_addContacts: // 菜单点击 添加当前会话人 为联系人
                 Toast.makeText(mContext, "添加联系人功能正在开发", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -157,7 +177,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == event.KEYCODE_BACK) {
+        if (keyCode == event.KEYCODE_BACK) { //按下BACK 键先清除当前选中状态
             return mAdapter.clearSelectMessageState();
         }
         return true;
@@ -166,7 +186,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @OnClick({R.id.iv_add_sms, R.id.iv_emoji_sms, R.id.iv_send_sms})
     public void ivOnClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_send_sms:
+            case R.id.iv_send_sms: //发送短信
                 sendSms();
                 break;
             case R.id.iv_add_sms:
@@ -178,6 +198,14 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         }
     }
 
+    /**
+     * 动态改变发送按钮颜色
+     *
+     * @param s
+     * @param start
+     * @param before
+     * @param count
+     */
     @OnTextChanged(R.id.et_sms_content)
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         if (s.length() > 0) {
@@ -196,7 +224,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         mObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<EventBase>() {
                     @Override
-                    public void call(EventBase eventBase) {
+                    public void call(EventBase eventBase) { //收到新增短信通知 判断会话号码 做逻辑操作
                         if (eventBase.getOption().equals(bean.getPhoneNumber())) {
                             mAdapter.insertSmsListUi((SmsBean) eventBase.getObj());
                         }
@@ -204,6 +232,11 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 });
     }
 
+    /**
+     * 填充数据回调接口
+     *
+     * @param list
+     */
     @Override
     public void refreshSmsList(LinkedList<SmsBean> list) {
         if (mList == null) {
@@ -215,6 +248,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
             mList = list;
             mAdapter.notifyDataSetChanged();
         }
+        mAdapter.notifyItemRangeInserted(0, list.size());
     }
 
     @Override
@@ -271,6 +305,10 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     public void onResume() {
         super.onResume();
         toolbarSetListener.setToolbarTitle(bean.getName());
+        if (JvApplication.text != null && !JvApplication.text.equals("")) {
+            etSmsContent.setText(JvApplication.text);
+            JvApplication.text = "";
+        }
     }
 
     @Override
@@ -294,6 +332,9 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         }
     };
 
+    /**
+     * 发送短信
+     */
     public void sendSms() {
         String content = etSmsContent.getText().toString();
         if (content.length() > 0) {
@@ -365,10 +406,12 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 mAdapter.clearSelectMessageState();
                 break;
             case R.id.iv_window_attachment:
-                Toast.makeText(mContext, "分享功能正在开发", Toast.LENGTH_SHORT).show();
+                ShareUtils.shareText(mContext, mList.get(mAdapter.smsListUiFlagBean.getSelectMessageUiPosition()).getSmsBody());
+                mAdapter.clearSelectMessageState();
                 break;
             case R.id.iv_window_forward:
-                Toast.makeText(mContext, "转发功能正在开发", Toast.LENGTH_SHORT).show();
+                showForward(mList.get(mAdapter.smsListUiFlagBean.getSelectMessageUiPosition()).getSmsBody());
+                mAdapter.clearSelectMessageState();
                 break;
             case R.id.iv_window_copy:
                 mAdapter.windowCopy();
@@ -380,6 +423,29 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 mAdapter.windowDelete();
                 break;
         }
+    }
+
+    private void showForward(final String text) {
+
+        //初始化转发列表View
+        RecyclerView rvForwardView = new RecyclerView(mContext);
+        rvForwardView.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        rvForwardView.setLayoutManager(new LinearLayoutManager(mContext));
+        rvForwardView.setAdapter(new ForwardDialogAdapter(mContext, text));
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+        alertDialog.setTitle("转发信息")
+                .setView(rvForwardView)
+                .setNegativeButton("取消", null)
+                .setPositiveButton("新信息", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        JvApplication.text = text;
+                        startActivity(new Intent(mContext, NewSmsActivity.class));
+                    }
+                }).create().show();
+
+
     }
 
 

@@ -32,12 +32,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="6dp"
+            android:autoLink="all"
             android:background="@drawable/shape_message_white"
             android:gravity="center_vertical"
             android:maxWidth="280dp"
             android:padding="10dp"
             android:text="你真的是卖火车票的嘛？"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textColorLink="@android:color/black" />
 
     </LinearLayout>
 

@@ -3,10 +3,14 @@ package com.jv.sms.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +30,7 @@ import com.jv.sms.bean.SmsUiFlagBean;
 import com.jv.sms.mvp.presenter.ISmsPresenter;
 import com.jv.sms.utils.TimeUtils;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -45,8 +50,6 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     public List<SmsBean> mList;
     private OnSmsDataListener mListener;
     public SmsUiFlagBean smsUiFlagBean;
-    public String findByContent = "";
-
 
     public SmsDataAdapter(Context context, List<SmsBean> list, OnSmsDataListener listener) {
         mContext = context;
@@ -73,6 +76,12 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     @Override
     public int getItemCount() {
         return mList.size();
+    }
+
+    public void setFilter(List<SmsBean> list) {
+        mList = new LinkedList<>();
+        mList.addAll(list);
+        notifyDataSetChanged();
     }
 
     class SmsDataHolder extends RecyclerView.ViewHolder {
@@ -104,15 +113,21 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
          */
         private void initData(SmsBean bean) {
 
-            if (!findByContent.equals("")) {
+            //设置短信内容
+            if (!bean.selectStr.equals("")) {
 
-                if (!bean.getName().contains(findByContent) && !bean.getSmsBody().contains(findByContent)) {
-                    return;
-                }
+                //过滤设置选中内容
+                int start = bean.getSmsBody().indexOf(bean.selectStr);
+                int end = start + bean.selectStr.length();
+                SpannableStringBuilder style = new SpannableStringBuilder(bean.getSmsBody());
+                style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+                itemSmsMsg.setText(style);
+            } else {
+                itemSmsMsg.setText(bean.getSmsBody());
             }
 
-            itemSmsMsg.setText(bean.getSmsBody());
+            //设置短信时间
             itemSmsDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
 
             //设置当前消息是否已读样式

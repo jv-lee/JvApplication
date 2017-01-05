@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.activity.SmsActivity;
 import com.jv.sms.activity.SmsListActivity;
 import com.jv.sms.adapter.AutoLinkmanAdapter;
 import com.jv.sms.adapter.NewSmsAdapter;
@@ -225,5 +227,12 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        JvApplication.text = "";
     }
 }

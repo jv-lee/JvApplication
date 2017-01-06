@@ -1,4 +1,4 @@
-package com.rockerhieu.emojicon.utils;
+package com.jv.sms.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

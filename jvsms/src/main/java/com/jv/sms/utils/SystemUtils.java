@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.jv.sms.app.JvApplication;
-import com.rockerhieu.emojicon.utils.SharedPreferencesUtils;
 
 public class SystemUtils {
     public static int getKeyboardHeight(Activity paramActivity) {

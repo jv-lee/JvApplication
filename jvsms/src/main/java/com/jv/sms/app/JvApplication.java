@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.jv.sms.R;
 import com.jv.sms.bean.SmsBean;
-import com.rockerhieu.emojicon.utils.SharedPreferencesUtils;
+import com.jv.sms.utils.SharedPreferencesUtils;
 
 import java.util.List;
 

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JvApplication.iml" filepath="$PROJECT_DIR$/JvApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvsms/jvsms.iml" filepath="$PROJECT_DIR$/jvsms/jvsms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
     </modules>
   </component>
 </project>

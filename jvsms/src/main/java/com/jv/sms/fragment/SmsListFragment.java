@@ -1,8 +1,6 @@
 package com.jv.sms.fragment;
 
 
-import android.animation.LayoutTransition;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -13,7 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,6 +49,7 @@ import com.jv.sms.mvp.presenter.SmsListPresenter;
 import com.jv.sms.mvp.view.ISmsListView;
 import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.ClickUtils;
+import com.jv.sms.utils.KeyboardUtils;
 import com.jv.sms.utils.ShareUtils;
 import com.jv.sms.utils.SizeUtils;
 import com.jv.sms.utils.SmsUtils;
@@ -60,9 +57,7 @@ import com.jv.sms.utils.SystemUtils;
 import com.jv.sms.utils.TelUtils;
 import com.jv.sms.utils.TimeUtils;
 import com.rockerhieu.emojicon.EmojiconEditText;
-import com.rockerhieu.emojicon.EmojiconGridFragment;
 import com.rockerhieu.emojicon.EmojiconsFragment;
-import com.rockerhieu.emojicon.emoji.Emojicon;
 
 import java.util.LinkedList;
 
@@ -212,7 +207,6 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         if (keyCode == event.KEYCODE_BACK) { //按下BACK 键先清除当前选中状态
             if (flEjmoContainer.isShown()) {
                 hideEmotionView(true);
-                cbEmojiIcon.setChecked(false);
                 return true;
             }
             return mAdapter.clearSelectMessageState();
@@ -517,6 +511,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
      * 隐藏emoji
      **/
     private void hideEmotionView(boolean showKeyBoard) {
+        cbEmojiIcon.setChecked(false);
         if (flEjmoContainer.isShown()) {
             if (showKeyBoard) {
                 LinearLayout.LayoutParams localLayoutParams = (LinearLayout.LayoutParams) llSmsListLayout.getLayoutParams();
@@ -542,7 +537,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     }
 
     private void showEmotionView() {
-
+        cbEmojiIcon.setChecked(true);
         emotionHeight = SystemUtils.getKeyboardHeight(getActivity());
 
         SystemUtils.hideSoftInput(etSmsContent);

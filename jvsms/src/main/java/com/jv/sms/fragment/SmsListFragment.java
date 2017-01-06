@@ -55,6 +55,7 @@ import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.ClickUtils;
 import com.jv.sms.utils.ShareUtils;
 import com.jv.sms.utils.SizeUtils;
+import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.SystemUtils;
 import com.jv.sms.utils.TelUtils;
 import com.jv.sms.utils.TimeUtils;
@@ -185,17 +186,19 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 TelUtils.sendTel1(mContext, bean.getPhoneNumber());
                 break;
             case R.id.menu_item_delete: // 菜单点击删除当前联系人会话
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-                alertDialog.setTitle("提示")
-                        .setMessage("确认删除当前会话？")
-                        .setNegativeButton("取消", null)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mPresenter.deleteSmsByThreadId(bean.getThread_id());
-                            }
-                        })
-                        .create().show();
+                if (SmsUtils.setDefaultSms(rvSmsListFragmentContainer, mContext)) {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+                    alertDialog.setTitle("提示")
+                            .setMessage("确认删除当前会话？")
+                            .setNegativeButton("取消", null)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mPresenter.deleteSmsByThreadId(bean.getThread_id());
+                                }
+                            })
+                            .create().show();
+                }
                 break;
             case R.id.menu_item_addContacts: // 菜单点击 添加当前会话人 为联系人
                 Toast.makeText(mContext, "添加联系人功能正在开发", Toast.LENGTH_SHORT).show();
@@ -221,7 +224,9 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     public void ivOnClick(View view) {
         switch (view.getId()) {
             case R.id.iv_send_sms: //发送短信
-                sendSms();
+                if (SmsUtils.setDefaultSms(rvSmsListFragmentContainer, mContext)) {
+                    sendSms();
+                }
                 break;
             case R.id.iv_add_sms:
                 Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
@@ -463,7 +468,9 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 mAdapter.windowInfo();
                 break;
             case R.id.iv_window_delete:
-                mAdapter.windowDelete();
+                if (SmsUtils.setDefaultSms(rvSmsListFragmentContainer, mContext)) {
+                    mAdapter.windowDelete();
+                }
                 break;
         }
     }

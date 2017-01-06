@@ -1,9 +1,12 @@
 package com.jv.sms.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.provider.Telephony;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.utils.BarUtils;
 
 import java.util.List;
@@ -119,6 +123,7 @@ public class WelcomeActivity extends AppCompatActivity {
     /**
      * 跳转到主页函数
      */
+
     public void startSmsActivity() {
         startActivity(new Intent(this, SmsActivity.class));
         finish();

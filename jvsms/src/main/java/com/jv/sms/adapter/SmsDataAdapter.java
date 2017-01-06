@@ -29,6 +29,7 @@ import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsUiFlagBean;
 import com.jv.sms.mvp.presenter.ISmsPresenter;
+import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TimeUtils;
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
@@ -211,6 +212,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
          * @param layoutPosition
          */
         private void swipeDelete(int layoutPosition) {
+            if (!SmsUtils.setDefaultSms(mListener.getRvContainer(), mContext)) return;
             mListener.getPresenter().removeSmsByThreadId(getItemBean(layoutPosition).getThread_id());
             mList.remove(layoutPosition);
             smsUiFlagBean.hasIconUi.remove(layoutPosition);
@@ -251,6 +253,11 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
          * @return
          */
         ISmsPresenter getPresenter();
+
+        /**
+         * 获取容器
+         */
+        RecyclerView getRvContainer();
 
     }
 
@@ -317,7 +324,9 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         intent.putExtra("bean", bean);
         JvApplication.themeId = bean.getColorPosition();
         mContext.startActivity(intent);
-        updateReadState(bean, position);
+        if (SmsUtils.setDefaultSms(mListener.getRvContainer(), mContext)) {
+            updateReadState(bean, position);
+        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.jv.sms.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -10,8 +11,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.Telephony;
+import android.support.design.widget.Snackbar;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.View;
 
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
@@ -28,6 +32,29 @@ import java.util.List;
 public class SmsUtils {
 
     /**
+     * 判断当前应用是否获得短信权限
+     *
+     * @param view
+     * @param context
+     */
+    public static boolean setDefaultSms(View view, final Context context) {
+        final String packageName = JvApplication.getInstance().getPackageName();
+        if (!Telephony.Sms.getDefaultSmsPackage(JvApplication.getInstance()).equals(packageName)) {
+            Snackbar.make(view, "请将 Jv Messenger 设为默认的短信应用", Snackbar.LENGTH_LONG).setAction("更改", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName);
+                    ((Activity) context).startActivityForResult(intent, 0x00025);
+                }
+            }).show();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 发送短信
      */
     public static void sendSms(PendingIntent sentPI, String phoneNumber, String Content) {
@@ -38,7 +65,7 @@ public class SmsUtils {
     /**
      * 添加到系统短信数据库
      */
-    public static void addSmsToDB(Context context, String address, String content, long date,int read,int type) {
+    public static void addSmsToDB(Context context, String address, String content, long date, int read, int type) {
         ContentValues values = new ContentValues();
 //        values.put("date", date);
         values.put("read", read);//0为未读信息

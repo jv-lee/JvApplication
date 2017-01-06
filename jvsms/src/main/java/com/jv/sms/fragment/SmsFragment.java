@@ -35,6 +35,7 @@ import com.jv.sms.mvp.view.ISmsView;
 import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.NotificationUtils;
 import com.jv.sms.utils.SizeUtils;
+import com.jv.sms.utils.SmsUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -295,6 +296,11 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         return mPresenter;
     }
 
+    @Override
+    public RecyclerView getRvContainer() {
+        return rvSmsFragmentContainer;
+    }
+
 
     /************************************************
      * 长按菜单
@@ -330,7 +336,9 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                 mAdapter.closeWindowBtn();
                 break;
             case R.id.iv_window_delete:
-                mAdapter.deleteWindowBtn();
+                if(SmsUtils.setDefaultSms(rvSmsFragmentContainer, getActivity())){
+                    mAdapter.deleteWindowBtn();
+                }
                 break;
             case R.id.iv_window_add:
                 Toast.makeText(getActivity(), "联系人App正在开发中", Toast.LENGTH_SHORT).show();

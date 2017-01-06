@@ -50,6 +50,15 @@ public class SmsUiFlagBean {
         }
     }
 
+    public boolean selectFlag() {
+        for (int i = 0; i < hasIconUi.size(); i++) {
+            if (hasIconUi.get(i) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public int[] getSelectPosition() {
         List<Integer> positions = new ArrayList<>();
         for (int i = 0; i < hasIconUi.size(); i++) {

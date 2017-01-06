@@ -34,6 +34,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.0'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.jakewharton:butterknife:8.1.0'
+    compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.2.5'
     apt 'com.jakewharton:butterknife-compiler:8.1.0'
     compile project(':ejmo_library')
 }

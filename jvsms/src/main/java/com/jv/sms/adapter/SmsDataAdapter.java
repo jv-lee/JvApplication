@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsUiFlagBean;
 import com.jv.sms.mvp.presenter.ISmsPresenter;
 import com.jv.sms.utils.TimeUtils;
+import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -99,6 +101,10 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         TextView itemSmsDate;
         @BindView(R.id.item_sms_layout)
         LinearLayout itemSmsLayout;
+        @BindView(R.id.swipe)
+        SwipeMenuLayout swipeMenuLayout;
+        @BindView(R.id.btn_delete)
+        Button btnDelete;
 
 
         public SmsDataHolder(View itemView) {
@@ -182,7 +188,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
         }
 
-        @OnClick({R.id.item_sms_layout, R.id.item_sms_icon_layout})
+        @OnClick({R.id.item_sms_layout, R.id.item_sms_icon_layout, R.id.btn_delete})
         public void onSmsLayoutClick(View view) {
             switch (view.getId()) {
                 case R.id.item_sms_layout:
@@ -193,6 +199,26 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                     //头像点击事件
                     iconClick(mList.get(getLayoutPosition()));
                     break;
+                case R.id.btn_delete:
+                    swipeDelete(getLayoutPosition());
+                    break;
+            }
+        }
+
+        /**
+         * 侧滑删除按钮
+         *
+         * @param layoutPosition
+         */
+        private void swipeDelete(int layoutPosition) {
+            mListener.getPresenter().removeSmsByThreadId(getItemBean(layoutPosition).getThread_id());
+            mList.remove(layoutPosition);
+            smsUiFlagBean.hasIconUi.remove(layoutPosition);
+            notifyItemRemoved(layoutPosition);
+            if (smsUiFlagBean.selectFlag()) {
+                if (mListener.getPopupWindow().isShowing()) {
+                    mListener.getPopupWindow().dismiss();
+                }
             }
         }
 

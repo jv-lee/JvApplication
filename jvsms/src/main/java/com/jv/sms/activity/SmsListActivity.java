@@ -15,10 +15,16 @@ import com.jv.sms.app.JvApplication;
 import com.jv.sms.base.BaseActivity;
 import com.jv.sms.fragment.SmsListFragment;
 import com.jv.sms.interfaces.ToolbarSetListener;
+import com.jv.sms.utils.KeyboardUtils;
+import com.rockerhieu.emojicon.EmojiconGridFragment;
+import com.rockerhieu.emojicon.EmojiconsFragment;
+import com.rockerhieu.emojicon.emoji.Emojicon;
 
 import butterknife.BindView;
 
-public class SmsListActivity extends BaseActivity implements ToolbarSetListener {
+public class SmsListActivity extends BaseActivity implements ToolbarSetListener,
+        EmojiconGridFragment.OnEmojiconClickedListener,
+        EmojiconsFragment.OnEmojiconBackspaceClickedListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -54,6 +60,7 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                KeyboardUtils.hideSoftInput(SmsListActivity.this);
                 finish();
             }
         });
@@ -98,4 +105,18 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener 
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void onEmojiconClicked(Emojicon emojicon) {
+        if (mFragment != null && mFragment instanceof SmsListFragment) {
+            EmojiconsFragment.input(((SmsListFragment) mFragment).etSmsContent, emojicon);
+        }
+    }
+
+    @Override
+    public void onEmojiconBackspaceClicked(View v) {
+        if (mFragment != null && mFragment instanceof SmsListFragment) {
+            EmojiconsFragment.backspace(((SmsListFragment) mFragment).etSmsContent);
+        }
+
+    }
 }

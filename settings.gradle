@@ -1,1 +1,1 @@
-include ':jvsms'
+include ':jvsms', ':ejmo_library'

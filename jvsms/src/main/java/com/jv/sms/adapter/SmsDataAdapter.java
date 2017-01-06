@@ -113,20 +113,6 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
          */
         private void initData(SmsBean bean) {
 
-            //设置短信内容
-            if (!bean.selectStr.equals("")) {
-
-                //过滤设置选中内容
-                int start = bean.getSmsBody().indexOf(bean.selectStr);
-                int end = start + bean.selectStr.length();
-                SpannableStringBuilder style = new SpannableStringBuilder(bean.getSmsBody());
-                style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                itemSmsMsg.setText(style);
-            } else {
-                itemSmsMsg.setText(bean.getSmsBody());
-            }
-
             //设置短信时间
             itemSmsDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
 
@@ -164,7 +150,35 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                 itemSmsImgIcon.setImageResource(R.mipmap.ic_checkmark_small_blue);
                 itemSmsTextIcon.setText("");
             }
+
+            //设置发件人姓名及 短信内容
             itemSmsNumber.setText(name);
+            itemSmsMsg.setText(bean.getSmsBody());
+            SpannableStringBuilder style;
+
+            //设置短信内容 搜索过滤效果
+            if (!bean.selectStr.equals("")) {
+
+                //设置短信内容搜索效果
+                if (bean.getSmsBody().toLowerCase().contains(bean.selectStr)) {
+                    //过滤设置选中内容
+                    int start = bean.getSmsBody().indexOf(bean.selectStr);
+                    int end = start + bean.selectStr.length();
+                    style = new SpannableStringBuilder(bean.getSmsBody());
+                    style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    itemSmsMsg.setText(style);
+                }
+
+                //设置短信内容过滤效果
+                if (bean.getName().toLowerCase().contains(bean.selectStr)) {
+                    int start = bean.getName().indexOf(bean.selectStr);
+                    int end = start + bean.selectStr.length();
+                    style = new SpannableStringBuilder(bean.getName());
+                    style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    itemSmsNumber.setText(style);
+                }
+            }
+
 
         }
 

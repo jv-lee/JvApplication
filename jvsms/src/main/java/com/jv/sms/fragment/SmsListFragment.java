@@ -1,6 +1,8 @@
 package com.jv.sms.fragment;
 
 
+import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -17,6 +19,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,8 +30,12 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -48,13 +55,18 @@ import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.ClickUtils;
 import com.jv.sms.utils.ShareUtils;
 import com.jv.sms.utils.SizeUtils;
+import com.jv.sms.utils.SystemUtils;
 import com.jv.sms.utils.TelUtils;
 import com.jv.sms.utils.TimeUtils;
+import com.rockerhieu.emojicon.EmojiconEditText;
+import com.rockerhieu.emojicon.EmojiconGridFragment;
+import com.rockerhieu.emojicon.EmojiconsFragment;
+import com.rockerhieu.emojicon.emoji.Emojicon;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import rx.Observable;
@@ -65,18 +77,23 @@ import rx.functions.Action1;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class SmsListFragment extends BaseFragment implements ISmsListView, View.OnClickListener, SmsListDataAdapter.OnSmsListAdapterListener {
+public class SmsListFragment extends BaseFragment implements ISmsListView, View.OnClickListener,
+        SmsListDataAdapter.OnSmsListAdapterListener {
 
+    @BindView(R.id.ll_sms_list_layout)
+    LinearLayout llSmsListLayout;
     @BindView(R.id.rv_smsListFragment_container)
     RecyclerView rvSmsListFragmentContainer;
     @BindView(R.id.iv_add_sms)
     ImageView ivAddSms;
     @BindView(R.id.et_sms_content)
-    EditText etSmsContent;
-    @BindView(R.id.iv_emoji_sms)
-    ImageView ivEmojiSms;
+    public EmojiconEditText etSmsContent;
+    @BindView(R.id.cb_emoji_icon)
+    AppCompatCheckBox cbEmojiIcon;
     @BindView(R.id.iv_send_sms)
     ImageView ivSendSms;
+    @BindView(R.id.fl_ejmo_container)
+    FrameLayout flEjmoContainer;
 
     //弹窗View
     private PopupWindow mPopupWindow;
@@ -100,6 +117,10 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
 
     //发送短信成功返回码
     private final String SENT_SMS_ACTION = "send_sms_action_code";
+
+    //表情窗体参数
+    private int emotionHeight;
+    private EmojiconsFragment emojiconsFragment;
 
     public SmsListFragment() {
     }
@@ -143,10 +164,18 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         linearLayoutManager.setReverseLayout(true);//设置倒叙显示消息列表
         rvSmsListFragmentContainer.setLayoutManager(linearLayoutManager);
         rvSmsListFragmentContainer.setItemAnimator(new DefaultItemAnimator());
-
+        rvSmsListFragmentContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "点击了 rv", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //加载数据
         mPresenter.refreshSmsList(bean.getThread_id());
+
+        //初始化Ejmo表情
+        createEjmoLayout(savedInstanceState);
     }
 
     @Override
@@ -178,12 +207,17 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == event.KEYCODE_BACK) { //按下BACK 键先清除当前选中状态
+            if (flEjmoContainer.isShown()) {
+                hideEmotionView(true);
+                cbEmojiIcon.setChecked(false);
+                return true;
+            }
             return mAdapter.clearSelectMessageState();
         }
         return true;
     }
 
-    @OnClick({R.id.iv_add_sms, R.id.iv_emoji_sms, R.id.iv_send_sms})
+    @OnClick({R.id.iv_add_sms, R.id.iv_send_sms})
     public void ivOnClick(View view) {
         switch (view.getId()) {
             case R.id.iv_send_sms: //发送短信
@@ -192,9 +226,18 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
             case R.id.iv_add_sms:
                 Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.iv_emoji_sms:
-                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
+            case R.id.et_sms_content:
+                hideEmotionView(true);
                 break;
+        }
+    }
+
+    @OnCheckedChanged(R.id.cb_emoji_icon)
+    public void onChecked(CompoundButton button, boolean isChecked) {
+        if (isChecked && !flEjmoContainer.isShown()) {
+            showEmotionView();
+        } else {
+            hideEmotionView(true);
         }
     }
 
@@ -425,6 +468,11 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         }
     }
 
+    /**
+     * 转发短信弹窗
+     *
+     * @param text
+     */
     private void showForward(final String text) {
 
         //初始化转发列表View
@@ -444,9 +492,70 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                         startActivity(new Intent(mContext, NewSmsActivity.class));
                     }
                 }).create().show();
-
-
     }
 
+    private void createEjmoLayout(Bundle savedInstanceState) {
+
+        /**安全判断 有些情况会出现异常**/
+        if (savedInstanceState == null) {
+            emojiconsFragment = EmojiconsFragment.newInstance(false);
+            getFragmentManager().beginTransaction().add(R.id.fl_ejmo_container, emojiconsFragment, "EmotionFragemnt").commit();
+        } else {
+            emojiconsFragment = (EmojiconsFragment) getFragmentManager().findFragmentByTag("EmotionFragemnt");
+        }
+    }
+
+
+    /**
+     * 隐藏emoji
+     **/
+    private void hideEmotionView(boolean showKeyBoard) {
+        if (flEjmoContainer.isShown()) {
+            if (showKeyBoard) {
+                LinearLayout.LayoutParams localLayoutParams = (LinearLayout.LayoutParams) llSmsListLayout.getLayoutParams();
+                localLayoutParams.height = flEjmoContainer.getTop();
+                localLayoutParams.weight = 0.0F;
+                flEjmoContainer.setVisibility(View.GONE);
+                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                SystemUtils.showKeyBoard(etSmsContent);
+                etSmsContent.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        unlockContainerHeightDelayed();
+                    }
+
+                }, 200L);
+            } else {
+                flEjmoContainer.setVisibility(View.GONE);
+                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                unlockContainerHeightDelayed();
+            }
+        }
+    }
+
+    private void showEmotionView() {
+
+        emotionHeight = SystemUtils.getKeyboardHeight(getActivity());
+
+        SystemUtils.hideSoftInput(etSmsContent);
+        flEjmoContainer.getLayoutParams().height = emotionHeight;
+        flEjmoContainer.setVisibility(View.VISIBLE);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        //在5.0有navigationbar的手机，高度高了一个statusBar
+        int lockHeight = SystemUtils.getAppContentHeight(getActivity());
+        lockContainerHeight(lockHeight);
+    }
+
+    private void lockContainerHeight(int paramInt) {
+        LinearLayout.LayoutParams localLayoutParams = (LinearLayout.LayoutParams) llSmsListLayout.getLayoutParams();
+        localLayoutParams.height = paramInt;
+        localLayoutParams.weight = 0.0F;
+    }
+
+    public void unlockContainerHeightDelayed() {
+        ((LinearLayout.LayoutParams) llSmsListLayout.getLayoutParams()).weight = 1.0F;
+    }
 
 }

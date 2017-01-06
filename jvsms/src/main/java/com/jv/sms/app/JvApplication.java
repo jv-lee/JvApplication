@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.jv.sms.R;
 import com.jv.sms.bean.SmsBean;
+import com.rockerhieu.emojicon.utils.SharedPreferencesUtils;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class JvApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        SharedPreferencesUtils.config(this);
     }
 
     public static int[] icon_theme_colors = {R.color.colorPrimary1, R.color.colorPrimary2,

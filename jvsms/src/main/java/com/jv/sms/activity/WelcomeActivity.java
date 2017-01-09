@@ -38,6 +38,7 @@ public class WelcomeActivity extends AppCompatActivity {
     @BindView(R.id.ll_navigation_layout)
     LinearLayout llNavigationLayout;
 
+    //请求返回码
     private final int REQUEST_CODE = 0x02222;
 
 

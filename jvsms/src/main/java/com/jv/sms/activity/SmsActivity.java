@@ -30,10 +30,10 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.pb_sms_loading)
-    ProgressBar pbSmsLoading;
-    @BindView(R.id.ll_sms_nullLayout)
-    LinearLayout llSmsNullLayout;
+    @BindView(R.id.pb_loadBar)
+    ProgressBar pbLoadBar;
+    @BindView(R.id.ll_nullLayout)
+    LinearLayout llNullLayout;
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
@@ -54,28 +54,28 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
     protected void initAllView(Bundle savedInstanceState) {
         setSupportActionBar(toolbar);
         mFragment = new SmsFragment(this);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_sms_container, mFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container, mFragment).commit();
     }
 
 
     @Override
     public void showDataBar() {
-        pbSmsLoading.setVisibility(View.VISIBLE);
+        pbLoadBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideDataBar() {
-        pbSmsLoading.setVisibility(View.GONE);
+        pbLoadBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showDataLayout() {
-        llSmsNullLayout.setVisibility(View.VISIBLE);
+        llNullLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideDataLayout() {
-        llSmsNullLayout.setVisibility(View.GONE);
+        llNullLayout.setVisibility(View.GONE);
     }
 
     @Override

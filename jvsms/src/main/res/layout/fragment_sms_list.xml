@@ -9,14 +9,14 @@
     tools:context="com.jv.sms.fragment.SmsListFragment">
 
     <LinearLayout
-        android:id="@+id/ll_sms_list_layout"
+        android:id="@+id/ll_content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorSmsMessageBg"
         android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_smsListFragment_container"
+            android:id="@+id/rv_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -31,7 +31,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/iv_add_sms"
+                android:id="@+id/iv_addSms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -40,7 +40,7 @@
                 android:tint="@color/colorPrimaryDark" />
 
             <com.rockerhieu.emojicon.EmojiconEditText
-                android:id="@+id/et_sms_content"
+                android:id="@+id/et_smsContent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
@@ -51,14 +51,14 @@
                 android:textSize="16sp" />
 
             <android.support.v7.widget.AppCompatCheckBox
-                android:id="@+id/cb_emoji_icon"
+                android:id="@+id/cb_emojIcon"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:button="@drawable/selector_btn_checkbox2" />
 
             <ImageView
-                android:id="@+id/iv_send_sms"
+                android:id="@+id/iv_sendSms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -71,7 +71,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/fl_ejmo_container"
+        android:id="@+id/fl_emojFragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />

@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="快速便捷的沟通"
+            android:text="@string/str_welcome_title"
             android:textColor="#ffffff"
             android:textSize="20sp"
             android:typeface="serif" />
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:text="为了更加轻松快捷地与他人保持联络，请将\n\t\t\t\t\tJvSms 设为您的默认短信应用。"
+            android:text="@string/str_welcome_message"
             android:textColor="#ffffff"
             android:textSize="14sp"
             android:typeface="serif" />

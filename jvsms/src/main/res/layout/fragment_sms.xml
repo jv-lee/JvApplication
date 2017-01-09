@@ -5,7 +5,7 @@
     tools:context="com.jv.sms.fragment.SmsFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_smsFragment_container"
+        android:id="@+id/rv_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />

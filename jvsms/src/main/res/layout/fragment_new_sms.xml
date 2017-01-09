@@ -1,7 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll_newsms_layout"
+    android:id="@+id/ll_rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -22,7 +21,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="接收者"
+            android:text="@string/str_receiver"
             android:textColor="@color/colorNewSmsText"
             android:textSize="16sp" />
 
@@ -37,7 +36,7 @@
             android:dropDownHorizontalOffset="-100dp"
             android:dropDownVerticalOffset="1dp"
             android:dropDownWidth="match_parent"
-            android:hint="输入姓名、或电话号码"
+            android:hint="@string/str_hint_nameAndTel"
             android:imeOptions="actionGo"
             android:textColorHint="@color/colorNewSmsText"
             android:textSize="14dp" />
@@ -54,7 +53,7 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_new_container"
+        android:id="@+id/rv_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />

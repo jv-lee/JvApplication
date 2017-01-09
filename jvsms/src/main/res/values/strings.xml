@@ -5,4 +5,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_sms_list">SmsListActivity</string>
     <string name="title_activity_newsms">NewsmsActivity</string>
+    <string name="str_welcome_title">快速便捷的沟通</string>
+    <string name="str_welcome_message">为了更加轻松快捷地与他人保持联络，请将\n\t\t\t\t\tJvSms 设为您的默认短信应用。</string>
+    <string name="str_receiver">接收者</string>
+    <string name="str_hint_nameAndTel">输入姓名、或电话号码</string>
+    <string name="phone">手机</string>
+    <string name="name">李嘉伟</string>
+    <string name="str_item_phoneNumber">13201567738</string>
+    <string name="str_item_name">文文</string>
 </resources>

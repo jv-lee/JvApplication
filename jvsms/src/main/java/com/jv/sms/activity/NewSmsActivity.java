@@ -28,7 +28,7 @@ public class NewSmsActivity extends BaseActivity {
     @Override
     protected void initAllView(Bundle savedInstanceState) {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_newSms_container, new NewSmsFragment()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container, new NewSmsFragment()).commit();
     }
 
     @Override

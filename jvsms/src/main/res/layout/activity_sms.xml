@@ -24,20 +24,20 @@
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
-        android:id="@+id/fl_sms_container"
+        android:id="@+id/fl_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <ProgressBar
-            android:id="@+id/pb_sms_loading"
+            android:id="@+id/pb_loadBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="invisible" />
 
         <LinearLayout
-            android:id="@+id/ll_sms_nullLayout"
+            android:id="@+id/ll_nullLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -50,7 +50,7 @@
                 android:src="@mipmap/ic_oobe_null" />
 
             <TextView
-                android:id="@+id/tv_sms_nullMessage"
+                android:id="@+id/tv_nullMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

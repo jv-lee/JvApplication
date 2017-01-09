@@ -1,1 +1,1 @@
-include ':jvsms', ':library'
+include ':jvsms'

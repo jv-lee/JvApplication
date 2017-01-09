@@ -76,19 +76,19 @@ import rx.functions.Action1;
 public class SmsListFragment extends BaseFragment implements ISmsListView, View.OnClickListener,
         SmsListDataAdapter.OnSmsListAdapterListener {
 
-    @BindView(R.id.ll_sms_list_layout)
-    LinearLayout llSmsListLayout;
-    @BindView(R.id.rv_smsListFragment_container)
-    RecyclerView rvSmsListFragmentContainer;
+    @BindView(R.id.ll_content_layout)
+    LinearLayout llContentLayout;
+    @BindView(R.id.rv_container)
+    RecyclerView rvContainer;
     @BindView(R.id.iv_add_sms)
     ImageView ivAddSms;
-    @BindView(R.id.et_sms_content)
+    @BindView(R.id.et_smsContent)
     public EmojiconEditText etSmsContent;
-    @BindView(R.id.cb_emoji_icon)
+    @BindView(R.id.cb_emojIcon)
     AppCompatCheckBox cbEmojiIcon;
-    @BindView(R.id.iv_send_sms)
+    @BindView(R.id.iv_sendSms)
     ImageView ivSendSms;
-    @BindView(R.id.fl_ejmo_container)
+    @BindView(R.id.fl_emojFragment_container)
     FrameLayout flEjmoContainer;
 
     //弹窗View
@@ -158,9 +158,9 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         //初始化消息显示列表
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);//设置倒叙显示消息列表
-        rvSmsListFragmentContainer.setLayoutManager(linearLayoutManager);
-        rvSmsListFragmentContainer.setItemAnimator(new DefaultItemAnimator());
-        rvSmsListFragmentContainer.setOnClickListener(new View.OnClickListener() {
+        rvContainer.setLayoutManager(linearLayoutManager);
+        rvContainer.setItemAnimator(new DefaultItemAnimator());
+        rvContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "点击了 rv", Toast.LENGTH_SHORT).show();
@@ -181,7 +181,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 TelUtils.sendTel1(mContext, bean.getPhoneNumber());
                 break;
             case R.id.menu_item_delete: // 菜单点击删除当前联系人会话
-                if (SmsUtils.setDefaultSms(rvSmsListFragmentContainer, mContext)) {
+                if (SmsUtils.setDefaultSms(rvContainer, mContext)) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
                     alertDialog.setTitle("提示")
                             .setMessage("确认删除当前会话？")
@@ -218,7 +218,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     public void ivOnClick(View view) {
         switch (view.getId()) {
             case R.id.iv_send_sms: //发送短信
-                if (SmsUtils.setDefaultSms(rvSmsListFragmentContainer, mContext)) {
+                if (SmsUtils.setDefaultSms(rvContainer, mContext)) {
                     sendSms();
                 }
                 break;
@@ -284,7 +284,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         if (mList == null) {
             mList = list;
             mAdapter = new SmsListDataAdapter(getActivity(), mList, this);
-            rvSmsListFragmentContainer.setAdapter(mAdapter);
+            rvContainer.setAdapter(mAdapter);
         } else {
             mList.clear();
             mList = list;
@@ -389,7 +389,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
 
     @Override
     public RecyclerView getRvContainer() {
-        return rvSmsListFragmentContainer;
+        return rvContainer;
     }
 
     @Override
@@ -438,7 +438,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         mPopupWindow.setOutsideTouchable(false);
         // TODO：更新popupwindow的状态
         mPopupWindow.update();
-        mPopupWindow.showAtLocation(rvSmsListFragmentContainer, Gravity.TOP, 0, SizeUtils.getSubTitleHeight(getActivity()));
+        mPopupWindow.showAtLocation(rvContainer, Gravity.TOP, 0, SizeUtils.getSubTitleHeight(getActivity()));
     }
 
     @Override
@@ -462,7 +462,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 mAdapter.windowInfo();
                 break;
             case R.id.iv_window_delete:
-                if (SmsUtils.setDefaultSms(rvSmsListFragmentContainer, mContext)) {
+                if (SmsUtils.setDefaultSms(rvContainer, mContext)) {
                     mAdapter.windowDelete();
                 }
                 break;
@@ -514,7 +514,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         cbEmojiIcon.setChecked(false);
         if (flEjmoContainer.isShown()) {
             if (showKeyBoard) {
-                LinearLayout.LayoutParams localLayoutParams = (LinearLayout.LayoutParams) llSmsListLayout.getLayoutParams();
+                LinearLayout.LayoutParams localLayoutParams = (LinearLayout.LayoutParams) llContentLayout.getLayoutParams();
                 localLayoutParams.height = flEjmoContainer.getTop();
                 localLayoutParams.weight = 0.0F;
                 flEjmoContainer.setVisibility(View.GONE);
@@ -551,13 +551,13 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     }
 
     private void lockContainerHeight(int paramInt) {
-        LinearLayout.LayoutParams localLayoutParams = (LinearLayout.LayoutParams) llSmsListLayout.getLayoutParams();
+        LinearLayout.LayoutParams localLayoutParams = (LinearLayout.LayoutParams) llContentLayout.getLayoutParams();
         localLayoutParams.height = paramInt;
         localLayoutParams.weight = 0.0F;
     }
 
     public void unlockContainerHeightDelayed() {
-        ((LinearLayout.LayoutParams) llSmsListLayout.getLayoutParams()).weight = 1.0F;
+        ((LinearLayout.LayoutParams) llContentLayout.getLayoutParams()).weight = 1.0F;
     }
 
 }

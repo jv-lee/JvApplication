@@ -28,8 +28,8 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener,
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.pb_loadSmsListBar)
-    ProgressBar pbLoadSmsListBar;
+    @BindView(R.id.pb_loadBar)
+    ProgressBar pbLoadBar;
 
 
     private Fragment mFragment;
@@ -48,9 +48,9 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener,
     @Override
     protected void initAllView(Bundle savedInstanceState) {
         setSupportActionBar(toolbar);
-        pbLoadSmsListBar.setVisibility(View.VISIBLE);
+        pbLoadBar.setVisibility(View.VISIBLE);
         mFragment = new SmsListFragment(this);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_smsList_container, mFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container, mFragment).commit();
     }
 
 
@@ -84,12 +84,12 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener,
 
     @Override
     public void showProgressBar() {
-        pbLoadSmsListBar.setVisibility(View.VISIBLE);
+        pbLoadBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
-        pbLoadSmsListBar.setVisibility(View.GONE);
+        pbLoadBar.setVisibility(View.GONE);
     }
 
 

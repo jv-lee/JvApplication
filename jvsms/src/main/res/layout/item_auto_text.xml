@@ -33,14 +33,14 @@
             android:id="@+id/tv_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="李嘉伟" />
+            android:text="@string/str_item_name" />
 
         <TextView
             android:id="@+id/tv_item_phoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="13201567738" />
+            android:text="@string/str_item_phoneNumber" />
 
     </LinearLayout>
 
@@ -48,7 +48,7 @@
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="手机" />
+        android:text="@string/phone" />
 
 
 </LinearLayout>

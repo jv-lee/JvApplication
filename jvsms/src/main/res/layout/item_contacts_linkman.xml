@@ -42,14 +42,14 @@
             android:id="@+id/tv_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="文文"
+            android:text="@string/str_item_name"
             android:textColor="@color/colorNewNameText" />
 
         <TextView
             android:id="@+id/tv_item_phoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="13201567738"
+            android:text="@string/str_item_phoneNumber"
             android:textColor="@color/colorNewSmsText" />
 
     </LinearLayout>

@@ -54,8 +54,8 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         , SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     //数据填充容器 view
-    @BindView(R.id.rv_smsFragment_container)
-    RecyclerView rvSmsFragmentContainer;
+    @BindView(R.id.rv_container)
+    RecyclerView rvContainer;
 
     //长按弹框 view
     private PopupWindow mPopupWindow;
@@ -109,8 +109,8 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         initPopupView(); //初始化长按弹窗
 
         //创建显示容器 rv
-        rvSmsFragmentContainer.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        rvSmsFragmentContainer.setItemAnimator(new DefaultItemAnimator());
+        rvContainer.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        rvContainer.setItemAnimator(new DefaultItemAnimator());
 
         //控制层获取数据填充
         mPresenter.findSmsAll();
@@ -211,7 +211,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                                     smsBean.setDate(((SmsBean) eventBase.getObj()).getDate());
                                     smsBean.setSmsBody(((SmsBean) eventBase.getObj()).getSmsBody());
                                     mAdapter.receiverSmsUpdate(i, smsBean);
-                                    rvSmsFragmentContainer.scrollToPosition(0);
+                                    rvContainer.scrollToPosition(0);
                                 }
                             }
                             if (hasSms) {
@@ -233,12 +233,12 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         if (mList == null) {
             mList = beanList;
             mAdapter = new SmsDataAdapter(getActivity(), mList, this);
-            rvSmsFragmentContainer.setAdapter(mAdapter);
+            rvContainer.setAdapter(mAdapter);
         } else {
             mList.clear();
             mList = beanList;
             mAdapter = new SmsDataAdapter(getActivity(), mList, this);
-            rvSmsFragmentContainer.setAdapter(mAdapter);
+            rvContainer.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -270,7 +270,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     @Override
     public void setNewSms(SmsBean sms) {
         mAdapter.receiverSmsAdd(sms);
-        rvSmsFragmentContainer.scrollToPosition(0);
+        rvContainer.scrollToPosition(0);
     }
 
     @Override
@@ -298,7 +298,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public RecyclerView getRvContainer() {
-        return rvSmsFragmentContainer;
+        return rvContainer;
     }
 
 
@@ -326,7 +326,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         mPopupWindow.setOutsideTouchable(false);
         // TODO：更新popupwindow的状态
         mPopupWindow.update();
-        mPopupWindow.showAtLocation(rvSmsFragmentContainer, Gravity.TOP, 0, SizeUtils.getSubTitleHeight(getActivity()));
+        mPopupWindow.showAtLocation(rvContainer, Gravity.TOP, 0, SizeUtils.getSubTitleHeight(getActivity()));
     }
 
     @Override
@@ -336,7 +336,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                 mAdapter.closeWindowBtn();
                 break;
             case R.id.iv_window_delete:
-                if(SmsUtils.setDefaultSms(rvSmsFragmentContainer, getActivity())){
+                if (SmsUtils.setDefaultSms(rvContainer, getActivity())) {
                     mAdapter.deleteWindowBtn();
                 }
                 break;
@@ -362,7 +362,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         final List<SmsBean> filteredModelList = filter(mList, newText);
 
         mAdapter.setFilter(filteredModelList);
-        rvSmsFragmentContainer.scrollToPosition(0);
+        rvContainer.scrollToPosition(0);
         return false;
     }
 

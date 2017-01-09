@@ -65,10 +65,10 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
     AppCompatAutoCompleteTextView etInputTel;
     @BindView(R.id.cb_keyBoard)
     CheckBox cbKeyBoard;
-    @BindView(R.id.rv_new_container)
-    RecyclerView rvNewContainer;
-    @BindView(R.id.ll_newsms_layout)
-    LinearLayout llNewsmsLayout;
+    @BindView(R.id.rv_container)
+    RecyclerView rvContainer;
+    @BindView(R.id.ll_rootLayout)
+    LinearLayout llRootLayout;
 
 
     private List<ContactsBean> contactsList;
@@ -99,7 +99,7 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
 
     @Override
     protected void initAllView(Bundle savedInstanceState) {
-        rvNewContainer.setLayoutManager(new LinearLayoutManager(mContext));
+        rvContainer.setLayoutManager(new LinearLayoutManager(mContext));
         mPresenter.findContactsAll();
         mPresenter.findLinkmanAll();
         etInputTel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -185,7 +185,7 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
         if (contactsList == null) {
             contactsList = list;
             newSmsAdapter = new NewSmsAdapter(mContext, contactsList);
-            rvNewContainer.setAdapter(newSmsAdapter);
+            rvContainer.setAdapter(newSmsAdapter);
         } else {
             contactsList.clear();
             contactsList = list;

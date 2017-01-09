@@ -33,6 +33,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jv.sms.R;
@@ -49,7 +50,6 @@ import com.jv.sms.mvp.presenter.SmsListPresenter;
 import com.jv.sms.mvp.view.ISmsListView;
 import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.ClickUtils;
-import com.jv.sms.utils.KeyboardUtils;
 import com.jv.sms.utils.ShareUtils;
 import com.jv.sms.utils.SizeUtils;
 import com.jv.sms.utils.SmsUtils;
@@ -76,14 +76,14 @@ import rx.functions.Action1;
 public class SmsListFragment extends BaseFragment implements ISmsListView, View.OnClickListener,
         SmsListDataAdapter.OnSmsListAdapterListener {
 
+    @BindView(R.id.et_smsContent)
+    public EmojiconEditText etSmsContent;
     @BindView(R.id.ll_content_layout)
     LinearLayout llContentLayout;
     @BindView(R.id.rv_container)
     RecyclerView rvContainer;
     @BindView(R.id.iv_addSms)
     ImageView ivAddSms;
-    @BindView(R.id.et_smsContent)
-    public EmojiconEditText etSmsContent;
     @BindView(R.id.cb_emojIcon)
     AppCompatCheckBox cbEmojiIcon;
     @BindView(R.id.iv_sendSms)
@@ -102,7 +102,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     private ISmsListPresenter mPresenter;
 
     //数据 and 适配器
-    private LinkedList<SmsBean> mList;
+    private LinkedList<SmsBean> mSmsBeans;
     private SmsListDataAdapter mAdapter;
 
     //中转数据实体类
@@ -168,9 +168,9 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         });
 
         //加载数据
-        mPresenter.refreshSmsList(bean.getThread_id());
+        mPresenter.findSmsBeansAll(bean.getThread_id());
 
-        //初始化Ejmo表情
+        //初始化Emoj表情
         createEjmoLayout(savedInstanceState);
     }
 
@@ -218,8 +218,8 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     public void ivOnClick(View view) {
         switch (view.getId()) {
             case R.id.iv_sendSms: //发送短信
-                if (SmsUtils.setDefaultSms(rvContainer, mContext)) {
-                    sendSms();
+                if (SmsUtils.setDefaultSms(rvContainer, mContext)) { //判断当前应用是否获取默认 短信应用权限
+                    sendSms(etSmsContent.getText().toString(), bean.getPhoneNumber());
                 }
                 break;
             case R.id.iv_addSms:
@@ -268,7 +268,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                     @Override
                     public void call(EventBase eventBase) { //收到新增短信通知 判断会话号码 做逻辑操作
                         if (eventBase.getOption().equals(bean.getPhoneNumber())) {
-                            mAdapter.insertSmsListUi((SmsBean) eventBase.getObj());
+                            mAdapter.receiverSmsListUi((SmsBean) eventBase.getObj());
                         }
                     }
                 });
@@ -280,14 +280,14 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
      * @param list
      */
     @Override
-    public void refreshSmsList(LinkedList<SmsBean> list) {
-        if (mList == null) {
-            mList = list;
-            mAdapter = new SmsListDataAdapter(getActivity(), mList, this);
+    public void setSmsBeansAll(LinkedList<SmsBean> list) {
+        if (mSmsBeans == null) {
+            mSmsBeans = list;
+            mAdapter = new SmsListDataAdapter(getActivity(), mSmsBeans, this);
             rvContainer.setAdapter(mAdapter);
         } else {
-            mList.clear();
-            mList = list;
+            mSmsBeans.clear();
+            mSmsBeans = list;
             mAdapter.notifyDataSetChanged();
         }
         mAdapter.notifyItemRangeInserted(0, list.size());
@@ -296,18 +296,16 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public void showSmsListSuccess() {
         toolbarSetListener.hideProgressBar();
-        Toast.makeText(getActivity(), "load smsData Success", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showSmsError() {
         toolbarSetListener.hideProgressBar();
-        Toast.makeText(getActivity(), "load smsData Error", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void deleteSmsSuccess() {
-        Toast.makeText(getActivity(), "delete sms success", Toast.LENGTH_SHORT).show();
+        mAdapter.windowDeleteResult();
     }
 
     @Override
@@ -316,19 +314,21 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     }
 
     @Override
-    public void sendSmsSuccess() {
-        Toast.makeText(getActivity(), "send sms success", Toast.LENGTH_SHORT).show();
+    public void sendSmsSuccess(SmsBean smsBean) {
+        mAdapter.initHasSendProgressbar();
+        mPresenter.saveSmsToDb(smsBean, -1);
     }
 
     @Override
-    public void sendSmsError() {
-        Toast.makeText(getActivity(), "send sms error", Toast.LENGTH_SHORT).show();
+    public void sendSmsError(SmsBean smsBean) {
+        mAdapter.sendSmsError();
+        mPresenter.saveSmsToDb(smsBean, 128);
     }
 
     @Override
     public void deleteThreadSuccess() {
-        getActivity().finish();
-        RxBus.getInstance().post(new EventBase("deleteByThreadId", bean.getThread_id()));
+        getActivity().finish(); //删除当前会话成功 后关闭当前会话
+        RxBus.getInstance().post(new EventBase("deleteByThreadId", bean.getThread_id())); //发送通知删除会话列表当前会话
     }
 
     @Override
@@ -339,8 +339,9 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public void sendSmsLoading(SmsBean smsBean) {
         //设置发送短信内容至显示
-        RxBus.getInstance().post(new EventBase(smsBean.getPhoneNumber(), smsBean));
+        mAdapter.insertSmsListUi(smsBean);
         etSmsContent.setText("");
+        JvApplication.smsBean = smsBean;
     }
 
     @Override
@@ -367,9 +368,9 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         @Override
         public void onReceive(Context context, Intent intent) {
             if (getResultCode() == Activity.RESULT_OK) {
-                mPresenter.sendSmsSuccess();
+                mPresenter.sendSmsSuccess(JvApplication.smsBean);
             } else {
-                mPresenter.sendSmsError();
+                mPresenter.sendSmsError(JvApplication.smsBean);
             }
         }
     };
@@ -377,12 +378,11 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     /**
      * 发送短信
      */
-    public void sendSms() {
-        String content = etSmsContent.getText().toString();
+    public void sendSms(String content, String phoneNumber) {
         if (content.length() > 0) {
             Intent sendIntent = new Intent(SENT_SMS_ACTION);
             PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
-            mPresenter.sendSms(sendPi, bean.getPhoneNumber(), content);
+            mPresenter.sendSms(sendPi, phoneNumber, content);
             ClickUtils.sendMusic();
         }
     }
@@ -410,6 +410,11 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public ISmsListPresenter getPresenter() {
         return mPresenter;
+    }
+
+    @Override
+    public void getSendSms(String content, String phoneNumber) {
+        sendSms(content, phoneNumber);
     }
 
     /************************************************
@@ -448,11 +453,11 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 mAdapter.clearSelectMessageState();
                 break;
             case R.id.iv_window_attachment:
-                ShareUtils.shareText(mContext, mList.get(mAdapter.smsListUiFlagBean.getSelectMessageUiPosition()).getSmsBody());
+                ShareUtils.shareText(mContext, mSmsBeans.get(mAdapter.smsListUiFlagBean.getSelectMessageUiPosition()).getSmsBody());
                 mAdapter.clearSelectMessageState();
                 break;
             case R.id.iv_window_forward:
-                showForward(mList.get(mAdapter.smsListUiFlagBean.getSelectMessageUiPosition()).getSmsBody());
+                showForward(mSmsBeans.get(mAdapter.smsListUiFlagBean.getSelectMessageUiPosition()).getSmsBody());
                 mAdapter.clearSelectMessageState();
                 break;
             case R.id.iv_window_copy:

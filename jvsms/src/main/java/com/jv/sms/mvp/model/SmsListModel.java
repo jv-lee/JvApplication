@@ -47,11 +47,11 @@ public class SmsListModel implements ISmsListModel {
 
     @SuppressLint("LongLogTag")
     @Override
-    public LinkedList<SmsBean> refreshSmsList(String threadId) {
+    public LinkedList<SmsBean> findSmsBeansAll(String threadId) {
 
         LinkedList<SmsBean> smsList = new LinkedList<>();
         ContentResolver cr = JvApplication.getInstance().getContentResolver();
-        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read"};
+        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read", "status"};
 
         try {
             //获取当前短信对话游标对象
@@ -81,12 +81,6 @@ public class SmsListModel implements ISmsListModel {
         long date = System.currentTimeMillis();
         String dateStr = TimeUtils.milliseconds2String(date);
 
-        //发送短信
-        SmsUtils.sendSms(sentPI, phoneNumber, content);
-
-        //将发送短信保存至数据库
-        SmsUtils.addSmsToDB(JvApplication.getInstance(), phoneNumber, content, date, Constant.SMS_STATUS_IS_READ, Constant.SMS_STATUS_SEND);
-
         //返回发送的短信对象
         SmsBean sms = new SmsBean();
         sms.setDate(dateStr);
@@ -96,8 +90,17 @@ public class SmsListModel implements ISmsListModel {
         sms.setReadType(SmsBean.ReadType.IS_READ);
         sms.setType(SmsBean.Type.SEND);
         sms.setShowDate(TimeUtils.isShowTime(dateStr));
-        return sms;
+        sms.setStatus(-1);
 
+        //发送短信
+        SmsUtils.sendSms(sentPI, phoneNumber, content);
+        return sms;
+    }
+
+    public SmsBean saveSmsToDb(SmsBean smsBean, int status) {
+        //将发送短信保存至数据库
+        SmsUtils.addSmsToDB(JvApplication.getInstance(), smsBean.getPhoneNumber(), smsBean.getSmsBody(), TimeUtils.string2Milliseconds(smsBean.getDate()), Constant.SMS_STATUS_IS_READ, Constant.SMS_STATUS_SEND, status);
+        return smsBean;
     }
 
 

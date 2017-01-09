@@ -3,7 +3,9 @@ package com.jv.sms.mvp.presenter;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.mvp.model.ISmsListModel;
 import com.jv.sms.mvp.model.SmsListModel;
@@ -37,12 +39,12 @@ public class SmsListPresenter implements ISmsListPresenter {
     }
 
     @Override
-    public void refreshSmsList(String thread_id) {
+    public void findSmsBeansAll(String thread_id) {
         Observable.just(thread_id)
                 .map(new Func1<String, LinkedList<SmsBean>>() {
                     @Override
                     public LinkedList<SmsBean> call(String thread_id) {
-                        return mModel.refreshSmsList(thread_id);
+                        return mModel.findSmsBeansAll(thread_id);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -61,7 +63,7 @@ public class SmsListPresenter implements ISmsListPresenter {
 
                     @Override
                     public void onNext(LinkedList<SmsBean> bean) {
-                        mView.refreshSmsList(bean);
+                        mView.setSmsBeansAll(bean);
                     }
                 });
     }
@@ -93,7 +95,7 @@ public class SmsListPresenter implements ISmsListPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.sendSmsError();
+                        Toast.makeText(JvApplication.getInstance(), "发送短信启动代码错误", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -104,13 +106,40 @@ public class SmsListPresenter implements ISmsListPresenter {
     }
 
     @Override
-    public void sendSmsSuccess() {
-        mView.sendSmsSuccess();
+    public void sendSmsSuccess(SmsBean smsBean) {
+        mView.sendSmsSuccess(smsBean);
     }
 
     @Override
-    public void sendSmsError() {
-        mView.sendSmsError();
+    public void sendSmsError(SmsBean smsbean) {
+        mView.sendSmsError(smsbean);
+    }
+
+    @Override
+    public void saveSmsToDb(final SmsBean smsBean, final int status) {
+        Observable.create(new Observable.OnSubscribe<SmsBean>() {
+            @Override
+            public void call(Subscriber<? super SmsBean> subscriber) {
+                subscriber.onNext(mModel.saveSmsToDb(smsBean, status));
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<SmsBean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(JvApplication.getInstance(), "保存至DB失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(SmsBean smsBean) {
+                        Toast.makeText(JvApplication.getInstance(), "保持至DB", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override

@@ -54,7 +54,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     sms.setName(SmsUtils.getPeopleNameFromPerson(sms.getPhoneNumber(), context));
 
                     //添加接受短信至数据库
-                    SmsUtils.addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), curMsg.getTimestampMillis(), Constant.SMS_STATUS_NOT_READ, Constant.SMS_STATUS_RECEIVER);
+                    SmsUtils.addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), curMsg.getTimestampMillis(), Constant.SMS_STATUS_NOT_READ, Constant.SMS_STATUS_RECEIVER, -1);
                 }
 
                 //通过RxBus发送新短信通知

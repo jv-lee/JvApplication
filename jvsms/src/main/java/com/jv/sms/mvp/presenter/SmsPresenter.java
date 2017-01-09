@@ -69,9 +69,9 @@ public class SmsPresenter implements ISmsPresenter {
     }
 
     @Override
-    public void removeSmsByThreadId(String id) {
+    public void removeSmsByThreadId(String id,int position) {
         if (mSmsModel.removeSmsByThreadId(id)) {
-            mSmsView.removeDataSuccess();
+            mSmsView.removeDataSuccess(position);
         } else {
             mSmsView.removeDataError();
         }
@@ -133,6 +133,7 @@ public class SmsPresenter implements ISmsPresenter {
     public void updateSmsState(SmsBean smsBean) {
         mSmsModel.updateSmsState(smsBean);
     }
+
 
     @Override
     public void insertSmsNotification(String[] ids) {

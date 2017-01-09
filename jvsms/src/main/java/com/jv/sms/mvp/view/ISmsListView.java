@@ -11,7 +11,7 @@ import java.util.LinkedList;
 public interface ISmsListView {
 
 
-    void refreshSmsList(LinkedList<SmsBean> list);
+    void setSmsBeansAll(LinkedList<SmsBean> list);
 
     void showSmsListSuccess();
 
@@ -23,9 +23,9 @@ public interface ISmsListView {
 
     void sendSmsLoading(SmsBean smsBean);
 
-    void sendSmsSuccess();
+    void sendSmsSuccess(SmsBean smsBean);
 
-    void sendSmsError();
+    void sendSmsError(SmsBean smsBean);
 
     void deleteThreadSuccess();
 

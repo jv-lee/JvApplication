@@ -26,7 +26,7 @@ public interface ISmsListModel {
      * @param thread_id
      * @return
      */
-    LinkedList<SmsBean> refreshSmsList(String thread_id);
+    LinkedList<SmsBean> findSmsBeansAll(String thread_id);
 
     /**
      * 发送短信 保存至系统contentProvider
@@ -45,4 +45,6 @@ public interface ISmsListModel {
      * @return
      */
     boolean removeSmsByThreadId(String thread_id);
+
+    SmsBean saveSmsToDb(SmsBean smsBean,int status);
 }

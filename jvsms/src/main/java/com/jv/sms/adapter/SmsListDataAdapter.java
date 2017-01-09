@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsListUiFlagBean;
 import com.jv.sms.mvp.presenter.ISmsListPresenter;
+import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TextUtils;
 
 import java.util.LinkedList;
@@ -96,6 +98,10 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView tvInfo;
         @BindView(R.id.tv_item_date2)
         TextView tvDate2;
+        @BindView(R.id.pb_sendSms_statusBar)
+        ProgressBar pbSendSmsStatusBar;
+        @BindView(R.id.iv_sendSms_statusIcon)
+        ImageView ivSendSmsStatusIcon;
 
         public SmsListDataSendHolder(View itemView) {
             super(itemView);
@@ -119,6 +125,20 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
          * @param bean
          */
         public void bindItemDate(SmsBean bean) {
+
+            //设置当前发送状态显示
+            if (!smsListUiFlagBean.hasSendProgressbar.get(getLayoutPosition())) {
+                pbSendSmsStatusBar.setVisibility(View.VISIBLE);
+            } else {
+                pbSendSmsStatusBar.setVisibility(View.GONE);
+            }
+
+            if (bean.getStatus() != -1) {
+                ivSendSmsStatusIcon.setVisibility(View.VISIBLE);
+            } else {
+                ivSendSmsStatusIcon.setVisibility(View.GONE);
+            }
+
             //设置当前列表时间差显示
             if (bean.getShowDate() == true) {
                 tvDate.setText(getChineseTimeString(bean.getDate()));
@@ -146,6 +166,17 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvDate2.setText(getChineseTimeString(bean.getDate()));
             tvInfo.setText(bean.getSmsBody());
         }
+
+        @OnClick(R.id.iv_sendSms_statusIcon)
+        public void statusIconClick(View view) {
+            SmsBean smsBean = mList.get(getLayoutPosition());
+            mListener.getPresenter().removeSmsById(smsBean.getId());
+            mList.remove(getLayoutPosition());
+            smsListUiFlagBean.deleteAllSize(getLayoutPosition());
+            notifyItemRemoved(getLayoutPosition());
+            mListener.getSendSms(smsBean.getSmsBody(), smsBean.getPhoneNumber());
+        }
+
     }
 
     /**
@@ -271,6 +302,18 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     /**
+     * 接受到短信至当前适配器
+     *
+     * @param smsBean
+     */
+    public void receiverSmsListUi(SmsBean smsBean) {
+        mList.addFirst(smsBean);
+        smsListUiFlagBean.updateSize(1);
+        notifyItemInserted(0);
+        mListener.getRvContainer().scrollToPosition(0);
+    }
+
+    /**
      * 新增短信至当前适配器
      *
      * @param smsBean
@@ -278,9 +321,23 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void insertSmsListUi(SmsBean smsBean) {
         mList.addFirst(smsBean);
         smsListUiFlagBean.updateSize(1);
+        smsListUiFlagBean.hasSendProgressbar.set(0, false);
         notifyItemInserted(0);
         mListener.getRvContainer().scrollToPosition(0);
     }
+
+    public void initHasSendProgressbar() {
+        smsListUiFlagBean.initHasSendProgressbar();
+        notifyItemChanged(0);
+    }
+
+    public void sendSmsError() {
+        smsListUiFlagBean.initHasSendProgressbar();
+        mList.get(0).setStatus(128);
+        Toast.makeText(JvApplication.getInstance(), "" + mList.get(0).getSmsBody(), Toast.LENGTH_SHORT).show();
+        notifyItemChanged(0);
+    }
+
 
     /**
      * 清空消息选中状态
@@ -333,9 +390,14 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void windowDelete() {
         int position = smsListUiFlagBean.getSelectMessageUiPosition();
         mListener.getPresenter().removeSmsById(mList.get(position).getId());
+    }
+
+    public void windowDeleteResult() {
+        int position = smsListUiFlagBean.getSelectMessageUiPosition();
         smsListUiFlagBean.initHasMessageUi();
         mListener.getPopupWindow().dismiss();
         mList.remove(position);
+        smsListUiFlagBean.deleteAllSize(position);
         notifyItemRemoved(position);
     }
 
@@ -350,6 +412,8 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         int getThemePosition();
 
         ISmsListPresenter getPresenter();
+
+        void getSendSms(String content, String phoneNumber);
 
     }
 

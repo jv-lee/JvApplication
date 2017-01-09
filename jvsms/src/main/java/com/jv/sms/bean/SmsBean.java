@@ -20,6 +20,7 @@ public class SmsBean implements Serializable {
     private Type type;
     private ReadType readType;
     private int colorPosition;
+    private int status;
     public String selectStr = "";
 
     public enum ReadType {
@@ -50,7 +51,7 @@ public class SmsBean implements Serializable {
         this.readType = readType;
     }
 
-    public SmsBean(String id, String name, String phoneNumber, String smsBody, String date, Type type, String thread_id, ReadType readType) {
+    public SmsBean(String id, String name, String phoneNumber, String smsBody, String date, Type type, String thread_id, ReadType readType, int status) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -59,6 +60,7 @@ public class SmsBean implements Serializable {
         this.type = type;
         this.thread_id = thread_id;
         this.readType = readType;
+        this.status = status;
 //        this.colorPosition = (int) (Math.random() * 9 );
         this.colorPosition = Integer.parseInt(phoneNumber.substring(phoneNumber.length() - 1)) == 9 ? 0 : Integer.parseInt(phoneNumber.substring(phoneNumber.length() - 1));
     }
@@ -167,6 +169,14 @@ public class SmsBean implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
 

@@ -18,7 +18,7 @@ public interface ISmsView {
 
     void removeDataError();
 
-    void removeDataSuccess();
+    void removeDataSuccess(int position);
 
     void setNewSms(SmsBean sms);
 

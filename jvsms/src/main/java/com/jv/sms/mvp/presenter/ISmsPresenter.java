@@ -9,11 +9,11 @@ import com.jv.sms.bean.SmsBean;
  * Created by Administrator on 2016/12/2.
  */
 
-public interface ISmsPresenter extends BasePresenter{
+public interface ISmsPresenter extends BasePresenter {
 
     void findSmsAll();
 
-    void removeSmsByThreadId(String id);
+    void removeSmsByThreadId(String id, int position);
 
     void getNewSms();
 

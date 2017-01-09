@@ -50,6 +50,7 @@ public interface ISmsModel {
      */
     boolean insertSmsDB(String[] ids);
 
+
     boolean deleteSmsDB(String[] ids);
 
 }

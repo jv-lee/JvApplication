@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 
 import com.jv.sms.base.BasePresenter;
+import com.jv.sms.bean.SmsBean;
 
 /**
  * Created by Administrator on 2016/12/5.
@@ -12,15 +13,17 @@ import com.jv.sms.base.BasePresenter;
 public interface ISmsListPresenter extends BasePresenter {
 
 
-    void refreshSmsList(String thread_id);
+    void findSmsBeansAll(String thread_id);
 
     void removeSmsById(String id);
 
     void sendSms(PendingIntent sentPI, String phoneNumber, String content);
 
-    void sendSmsSuccess();
+    void sendSmsSuccess(SmsBean smsBean);
 
-    void sendSmsError();
+    void sendSmsError(SmsBean smsBean);
+
+    void saveSmsToDb(SmsBean smsBean, int status);
 
     void deleteSmsByThreadId(String thread_id);
 

@@ -27,6 +27,29 @@
         android:gravity="right"
         android:orientation="horizontal">
 
+        <FrameLayout
+            android:id="@+id/fl_sendStatus_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="8dp">
+
+            <ProgressBar
+                android:id="@+id/pb_sendSms_statusBar"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_sendSms_statusIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_failed_status_red"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
         <TextView
             android:id="@+id/tv_item_info"
             android:layout_width="wrap_content"
@@ -37,7 +60,7 @@
             android:gravity="center_vertical"
             android:maxWidth="280dp"
             android:padding="10dp"
-            android:text="你真的是卖火车票的嘛？"
+            android:text="this is send message info !"
             android:textColor="@android:color/black"
             android:textColorLink="@android:color/black" />
 

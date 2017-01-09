@@ -53,4 +53,6 @@ public class JvApplication extends Application {
     public static List<SmsBean> smsBeans;
     public static String text = "";
 
+    public static SmsBean smsBean; //当前发送中短信
+
 }

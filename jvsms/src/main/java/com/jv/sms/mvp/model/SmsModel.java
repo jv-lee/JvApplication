@@ -36,7 +36,7 @@ public class SmsModel implements ISmsModel {
         threads = SmsUtils.getThreadsId(context);
 
         final ContentResolver cr = context.getContentResolver();
-        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read"};
+        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read","status"};
         final Uri uri = Uri.parse("content://sms/");
 
         try {
@@ -72,7 +72,7 @@ public class SmsModel implements ISmsModel {
     @Override
     public SmsBean getNewSms() {
         final ContentResolver cr = JvApplication.getInstance().getContentResolver();
-        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read"};
+        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read","status"};
         final Uri uri = Uri.parse("content://sms/");
 
         Cursor cur = cr.query(uri, projection, null, null, "date desc limit 1");

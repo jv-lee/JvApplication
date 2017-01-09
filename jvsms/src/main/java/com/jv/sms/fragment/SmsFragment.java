@@ -66,7 +66,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     //数据 及 适配器
     private SmsDataAdapter mAdapter;
-    private List<SmsBean> mList;
+    private List<SmsBean> mSmsBeans;
 
     // 加载数据 及 toolbar 监听接口回调
     private DataLoadLayoutListener listener;
@@ -163,6 +163,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == event.KEYCODE_BACK) {
             //判断当前是否选中 返回处理事件
+            if (mAdapter == null) return false;
             return mAdapter.clearSelectMessageState();
         }
         return true;
@@ -184,7 +185,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mList = null;
+        mSmsBeans = null;
         mPresenter = null;
     }
 
@@ -230,14 +231,14 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     @Override
     public void setData(List<SmsBean> beanList) {
         JvApplication.smsBeans = beanList; //保存当前临时数据
-        if (mList == null) {
-            mList = beanList;
-            mAdapter = new SmsDataAdapter(getActivity(), mList, this);
+        if (mSmsBeans == null) {
+            mSmsBeans = beanList;
+            mAdapter = new SmsDataAdapter(getActivity(), mSmsBeans, this);
             rvContainer.setAdapter(mAdapter);
         } else {
-            mList.clear();
-            mList = beanList;
-            mAdapter = new SmsDataAdapter(getActivity(), mList, this);
+            mSmsBeans.clear();
+            mSmsBeans = beanList;
+            mAdapter = new SmsDataAdapter(getActivity(), mSmsBeans, this);
             rvContainer.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
         }
@@ -245,14 +246,12 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public void setDataError() {
-        Toast.makeText(mContext, "数据加载错误或者为0", Toast.LENGTH_SHORT).show();
         listener.hideDataBar();
         listener.showDataLayout();
     }
 
     @Override
     public void setDataSuccess() {
-        Toast.makeText(mContext, "数据加载成功", Toast.LENGTH_SHORT).show();
         listener.hideDataBar();
         listener.hideDataLayout();
     }
@@ -263,8 +262,8 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     }
 
     @Override
-    public void removeDataSuccess() {
-        Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
+    public void removeDataSuccess(int position) {
+        mAdapter.deleteWindowBtnMethodResult(position);
     }
 
     @Override
@@ -359,7 +358,8 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        final List<SmsBean> filteredModelList = filter(mList, newText);
+        if(mSmsBeans == null)return true;
+        final List<SmsBean> filteredModelList = filter(mSmsBeans, newText);
 
         mAdapter.setFilter(filteredModelList);
         rvContainer.scrollToPosition(0);
@@ -368,7 +368,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public boolean onClose() {
-        mAdapter.setFilter(mList);
+        mAdapter.setFilter(mSmsBeans);
         return true;
     }
 

@@ -212,15 +212,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
          */
         private void swipeDelete(int layoutPosition) {
             if (!SmsUtils.setDefaultSms(mListener.getRvContainer(), mContext)) return;
-            mListener.getPresenter().removeSmsByThreadId(getItemBean(layoutPosition).getThread_id());
-            mList.remove(layoutPosition);
-            smsUiFlagBean.hasIconUi.remove(layoutPosition);
-            notifyItemRemoved(layoutPosition);
-            if (smsUiFlagBean.selectFlag()) {
-                if (mListener.getPopupWindow().isShowing()) {
-                    mListener.getPopupWindow().dismiss();
-                }
-            }
+            mListener.getPresenter().removeSmsByThreadId(getItemBean(layoutPosition).getThread_id(), layoutPosition);
         }
 
         @OnLongClick(R.id.ll_item_smsLayout)
@@ -387,6 +379,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
      * @return
      */
     public boolean clearSelectMessageState() {
+        if (smsUiFlagBean == null) return false;
         if (smsUiFlagBean.extendHasMessageUi()) {
             closeWindowBtn();
             return true;
@@ -431,14 +424,22 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     public void deleteWindowBtnMethod() {
         int[] positionArray = smsUiFlagBean.getSelectPosition();
         for (int i = 0; i < positionArray.length; i++) {
-            //数据操作必须放在第一位 ， 否则会出现下标排序错误
-            Log.i("thread_id=", getItemBean(positionArray[i]).getThread_id());
-            mListener.getPresenter().removeSmsByThreadId(getItemBean(positionArray[i]).getThread_id());
-            mList.remove(positionArray[i]);
-            smsUiFlagBean.hasIconUi.remove(positionArray[i]);
-            notifyItemRemoved(positionArray[i]);
+            mListener.getPresenter().removeSmsByThreadId(getItemBean(positionArray[i]).getThread_id(), positionArray[i]);
         }
-        mListener.getPopupWindow().dismiss();
+    }
+
+    public void deleteWindowBtnMethodResult(int position) {
+        //数据操作必须放在第一位 ， 否则会出现下标排序错误
+        mList.remove(position);
+        smsUiFlagBean.hasIconUi.remove(position);
+        notifyItemRemoved(position);
+
+        //当前未有被选中 则隐藏Window
+        if (smsUiFlagBean.selectFlag()) {
+            if (mListener.getPopupWindow().isShowing()) {
+                mListener.getPopupWindow().dismiss();
+            }
+        }
     }
 
     public void deleteByThreadId(String thread_id) {

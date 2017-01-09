@@ -65,13 +65,14 @@ public class SmsUtils {
     /**
      * 添加到系统短信数据库
      */
-    public static void addSmsToDB(Context context, String address, String content, long date, int read, int type) {
+    public static void addSmsToDB(Context context, String address, String content, long date, int read, int type, int status) {
         ContentValues values = new ContentValues();
 //        values.put("date", date);
         values.put("read", read);//0为未读信息
         values.put("type", type);//1为收件箱信息
         values.put("address", address);
         values.put("body", content);
+        values.put("status", status);
         context.getContentResolver().insert(Uri.parse("content://sms"), values);
     }
 
@@ -89,9 +90,11 @@ public class SmsUtils {
         String name = SmsUtils.getPeopleNameFromPerson(phoneNumber, JvApplication.getInstance());
         String thread_id = cur.getString(cur.getColumnIndex("thread_id"));
 
+
         //获取状态参数
         int typeId = cur.getInt(cur.getColumnIndex("type"));
         int read = cur.getInt(cur.getColumnIndex("read"));
+        int status = cur.getInt(cur.getColumnIndex("status"));
 
         //获取短信时间进行格式化
         String date = TimeUtils.milliseconds2String(cur.getLong(cur.getColumnIndex("date")));
@@ -100,7 +103,7 @@ public class SmsUtils {
         SmsBean.Type type = typeId == 1 ? SmsBean.Type.RECEIVE : SmsBean.Type.SEND;
         SmsBean.ReadType readType = read == 0 ? SmsBean.ReadType.NOT_READ : SmsBean.ReadType.IS_READ;
 
-        return new SmsBean(id, name, phoneNumber, smsBody, date, type, thread_id, readType);
+        return new SmsBean(id, name, phoneNumber, smsBody, date, type, thread_id, readType, status);
     }
 
     /**

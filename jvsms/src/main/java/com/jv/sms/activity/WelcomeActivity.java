@@ -41,7 +41,6 @@ public class WelcomeActivity extends AppCompatActivity {
     //请求返回码
     private final int REQUEST_CODE = 0x02222;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

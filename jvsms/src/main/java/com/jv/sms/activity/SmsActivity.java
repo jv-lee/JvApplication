@@ -37,9 +37,7 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-
     private Fragment mFragment;
-
 
     @Override
     public int getContentViewId() {

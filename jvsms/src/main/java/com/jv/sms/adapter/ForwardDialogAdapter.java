@@ -50,7 +50,7 @@ public class ForwardDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ViewHolder) holder).setItem(smsBeans.get(position));
+        ((ViewHolder) holder).bindItemDate(smsBeans.get(position));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ForwardDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
             ButterKnife.bind(this, itemView);
         }
 
-        public void setItem(final SmsBean smsBean) {
+        public void bindItemDate(final SmsBean smsBean) {
 
             String name = smsBean.getName();
             if (!Pattern.compile("[0-9]*").matcher(name).matches()) {

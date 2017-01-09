@@ -80,7 +80,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     LinearLayout llContentLayout;
     @BindView(R.id.rv_container)
     RecyclerView rvContainer;
-    @BindView(R.id.iv_add_sms)
+    @BindView(R.id.iv_addSms)
     ImageView ivAddSms;
     @BindView(R.id.et_smsContent)
     public EmojiconEditText etSmsContent;
@@ -214,24 +214,24 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         return true;
     }
 
-    @OnClick({R.id.iv_add_sms, R.id.iv_send_sms})
+    @OnClick({R.id.iv_addSms, R.id.iv_sendSms})
     public void ivOnClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_send_sms: //发送短信
+            case R.id.iv_sendSms: //发送短信
                 if (SmsUtils.setDefaultSms(rvContainer, mContext)) {
                     sendSms();
                 }
                 break;
-            case R.id.iv_add_sms:
+            case R.id.iv_addSms:
                 Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.et_sms_content:
+            case R.id.et_smsContent:
                 hideEmotionView(true);
                 break;
         }
     }
 
-    @OnCheckedChanged(R.id.cb_emoji_icon)
+    @OnCheckedChanged(R.id.cb_emojIcon)
     public void onChecked(CompoundButton button, boolean isChecked) {
         if (isChecked && !flEjmoContainer.isShown()) {
             showEmotionView();
@@ -248,7 +248,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
      * @param before
      * @param count
      */
-    @OnTextChanged(R.id.et_sms_content)
+    @OnTextChanged(R.id.et_smsContent)
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         if (s.length() > 0) {
             if (!etFlag) return;
@@ -500,7 +500,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         /**安全判断 有些情况会出现异常**/
         if (savedInstanceState == null) {
             emojiconsFragment = EmojiconsFragment.newInstance(false);
-            getFragmentManager().beginTransaction().add(R.id.fl_ejmo_container, emojiconsFragment, "EmotionFragemnt").commit();
+            getFragmentManager().beginTransaction().add(R.id.fl_emojFragment_container, emojiconsFragment, "EmotionFragemnt").commit();
         } else {
             emojiconsFragment = (EmojiconsFragment) getFragmentManager().findFragmentByTag("EmotionFragemnt");
         }

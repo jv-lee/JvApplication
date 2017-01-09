@@ -65,13 +65,13 @@ public class NewSmsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if(contactsList.get(i) == null)break;
             count++;
             if (position == count) {
-                ((WorkViewHolder) holder).setItem(contactsList.get(i).getWork());
+                ((WorkViewHolder) holder).bindItemDate(contactsList.get(i).getWork());
             } else {
                 List<LinkmanBean> linkmanList = contactsList.get(i).getLinkmanList();
                 for (int j = 0; j < linkmanList.size(); j++) {
                     count++;
                     if (position == count) {
-                        ((LinkmanViewHolder) holder).setItem(linkmanList.get(j));
+                        ((LinkmanViewHolder) holder).bindItemDate(linkmanList.get(j));
                     }
                 }
             }
@@ -118,7 +118,7 @@ public class NewSmsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ButterKnife.bind(this, itemView);
         }
 
-        public void setItem(String work) {
+        public void bindItemDate(String work) {
             tvItemWord.setText(work);
         }
 
@@ -143,7 +143,7 @@ public class NewSmsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ButterKnife.bind(this, itemView);
         }
 
-        public void setItem(final LinkmanBean bean) {
+        public void bindItemDate(final LinkmanBean bean) {
             tvItemName.setText(bean.getName());
             tvItemPhoneNumber.setText(bean.getPhoneNumber());
             tvItemText.setText(bean.getName().substring(0, 1));

@@ -35,5 +35,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.jakewharton:butterknife:8.1.0'
     compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.2.5'
+    compile 'com.github.jv-lee:EmojLibrary:v1.0'
     apt 'com.jakewharton:butterknife-compiler:8.1.0'
+
 }

@@ -75,9 +75,9 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == SmsBean.Type.SEND.ordinal()) {
-            ((SmsListDataSendHolder) holder).setItemData(mList.get(position));
+            ((SmsListDataSendHolder) holder).bindItemDate(mList.get(position));
         } else if (getItemViewType(position) == SmsBean.Type.RECEIVE.ordinal()) {
-            ((SmsListDataReceiveHolder) holder).setItemData(mList.get(position));
+            ((SmsListDataReceiveHolder) holder).bindItemDate(mList.get(position));
         }
     }
 
@@ -90,11 +90,11 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * 发送短信Item ViewHolder
      */
     public class SmsListDataSendHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.send_msg_date)
+        @BindView(R.id.tv_item_date)
         TextView tvDate;
-        @BindView(R.id.send_message_info)
+        @BindView(R.id.tv_item_info)
         TextView tvInfo;
-        @BindView(R.id.send_message_date2)
+        @BindView(R.id.tv_item_date2)
         TextView tvDate2;
 
         public SmsListDataSendHolder(View itemView) {
@@ -102,12 +102,12 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick(R.id.send_message_info)
+        @OnClick(R.id.tv_item_info)
         public void sendMessageInfoClick() {
             onClickMessageClick(getLayoutPosition());
         }
 
-        @OnLongClick(R.id.send_message_info)
+        @OnLongClick(R.id.tv_item_info)
         public boolean sendMessageInfoLongClick() {
             onLongMessageClick(getLayoutPosition());
             return true;
@@ -118,7 +118,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
          *
          * @param bean
          */
-        public void setItemData(SmsBean bean) {
+        public void bindItemDate(SmsBean bean) {
             //设置当前列表时间差显示
             if (bean.getShowDate() == true) {
                 tvDate.setText(getChineseTimeString(bean.getDate()));
@@ -152,17 +152,17 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * 接受短信item ViewHolder
      */
     public class SmsListDataReceiveHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.receive_msg_date)
+        @BindView(R.id.tv_item_date)
         TextView tvDate;
-        @BindView(R.id.receive_textIcon)
-        TextView tvIcon;
-        @BindView(R.id.receive_imgIcon)
+        @BindView(R.id.tv_item_word)
+        TextView tvWord;
+        @BindView(R.id.iv_item_icon)
         ImageView ivIcon;
-        @BindView(R.id.item_sms_icon_layout)
+        @BindView(R.id.fl_item_smsIconLayout)
         FrameLayout flIcon;
-        @BindView(R.id.receive_message_info)
+        @BindView(R.id.tv_item_info)
         TextView tvInfo;
-        @BindView(R.id.receive_message_date2)
+        @BindView(R.id.tv_item_date2)
         TextView tvDate2;
 
         public SmsListDataReceiveHolder(View itemView) {
@@ -171,19 +171,19 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         //点击短信内容
-        @OnClick(R.id.receive_message_info)
+        @OnClick(R.id.tv_item_info)
         public void sendMessageInfoClick() {
             onClickMessageClick(getLayoutPosition());
         }
 
         //短信内容 长按改变显示状态 -> 选中状态 刷新显示
-        @OnLongClick(R.id.receive_message_info)
+        @OnLongClick(R.id.tv_item_info)
         public boolean sendMessageInfoLongClick() {
             onLongMessageClick(getLayoutPosition());
             return true;
         }
 
-        public void setItemData(SmsBean bean) {
+        public void bindItemDate(SmsBean bean) {
             //设置短信组 是否显示时间头
             if (bean.getShowDate() == true) {
                 tvDate.setVisibility(View.VISIBLE);
@@ -214,7 +214,7 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (Pattern.compile("[0-9]*").matcher(name).matches()) {
                 ivIcon.setImageResource(R.mipmap.ic_person_light);
             } else {
-                tvIcon.setText(name.substring(0, 1));
+                tvWord.setText(name.substring(0, 1));
             }
             //设置头像背景
             GradientDrawable myGrad = (GradientDrawable) flIcon.getBackground();
@@ -301,6 +301,11 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return false;
     }
 
+    /**
+     * 清空当前选中 消息
+     *
+     * @param position
+     */
     public void clearSelectMessageThis(int position) {
         smsListUiFlagBean.initHasMessageUi();
         mListener.getPopupWindow().dismiss();

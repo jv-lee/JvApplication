@@ -71,7 +71,7 @@ public class AutoLinkmanAdapter extends ArrayAdapter implements Filterable {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.setItem(linkmanList.get(position));
+        viewHolder.bindItemDate(linkmanList.get(position));
         return convertView;
     }
 
@@ -99,7 +99,7 @@ public class AutoLinkmanAdapter extends ArrayAdapter implements Filterable {
             flItemLayout = (FrameLayout) itemView.findViewById(R.id.fl_item_layout);
         }
 
-        public void setItem(LinkmanBean bean) {
+        public void bindItemDate(LinkmanBean bean) {
             tvItemText.setText(bean.getName().substring(0, 1));
             tvItemName.setText(bean.getName());
             tvItemPhoneNumber.setText(bean.getPhoneNumber());
@@ -140,6 +140,11 @@ public class AutoLinkmanAdapter extends ArrayAdapter implements Filterable {
         }
     }
 
+    /**
+     * 跳转至 SmsListActivity
+     *
+     * @param bean
+     */
     public void startSmsList(LinkmanBean bean) {
         SmsBean smsBean = new SmsBean();
         smsBean.setName(bean.getName());

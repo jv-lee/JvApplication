@@ -35,7 +35,6 @@ import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
@@ -67,13 +66,13 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
     @Override
     public SmsDataHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_sms1, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_sms, parent, false);
         return new SmsDataHolder(view);
     }
 
     @Override
     public void onBindViewHolder(SmsDataHolder holder, int position) {
-        holder.initData(mList.get(position));
+        holder.bindItemDate(mList.get(position));
     }
 
     @Override
@@ -88,20 +87,20 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     }
 
     class SmsDataHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.item_sms_textIcon)
-        TextView itemSmsTextIcon;
-        @BindView(R.id.item_sms_imgIcon)
-        ImageView itemSmsImgIcon;
-        @BindView(R.id.item_sms_icon_layout)
-        FrameLayout itemSmsIconLayout;
-        @BindView(R.id.item_sms_number)
-        TextView itemSmsNumber;
-        @BindView(R.id.item_sms_msg)
-        TextView itemSmsMsg;
-        @BindView(R.id.item_sms_date)
-        TextView itemSmsDate;
-        @BindView(R.id.item_sms_layout)
-        LinearLayout itemSmsLayout;
+        @BindView(R.id.tv_item_word)
+        TextView tvWord;
+        @BindView(R.id.iv_item_icon)
+        ImageView tvIcon;
+        @BindView(R.id.fl_item_smsIconLayout)
+        FrameLayout flSmsIconLayout;
+        @BindView(R.id.tv_item_number)
+        TextView tvNumber;
+        @BindView(R.id.tv_item_info)
+        TextView tvInfo;
+        @BindView(R.id.tv_item_date)
+        TextView tvDate;
+        @BindView(R.id.ll_item_smsLayout)
+        LinearLayout llSmsLayout;
         @BindView(R.id.swipe)
         SwipeMenuLayout swipeMenuLayout;
         @BindView(R.id.btn_delete)
@@ -118,20 +117,20 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
          *
          * @param bean
          */
-        private void initData(SmsBean bean) {
+        private void bindItemDate(SmsBean bean) {
 
             //设置短信时间
-            itemSmsDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
+            tvDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
 
             //设置当前消息是否已读样式
             if (bean.getReadType().equals(SmsBean.ReadType.NOT_READ)) {
-                itemSmsNumber.getPaint().setFakeBoldText(true);
-                itemSmsMsg.getPaint().setFakeBoldText(true);
-                itemSmsMsg.setMaxLines(3);
+                tvNumber.getPaint().setFakeBoldText(true);
+                tvInfo.getPaint().setFakeBoldText(true);
+                tvInfo.setMaxLines(3);
             } else {
-                itemSmsMsg.getPaint().setFakeBoldText(false);
-                itemSmsNumber.getPaint().setFakeBoldText(false);
-                itemSmsMsg.setMaxLines(1);
+                tvInfo.getPaint().setFakeBoldText(false);
+                tvNumber.getPaint().setFakeBoldText(false);
+                tvInfo.setMaxLines(1);
             }
 
             //判断当前name是否为数字
@@ -139,28 +138,28 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             if (smsUiFlagBean.hasIconUi.get(getLayoutPosition())) {
                 if (!Pattern.compile("[0-9]*").matcher(name).matches()) {
                     //当前name 非名字 设置第一个字符显示
-                    itemSmsTextIcon.setText(name.substring(0, 1));
-                    itemSmsImgIcon.setImageDrawable(null);
+                    tvWord.setText(name.substring(0, 1));
+                    tvIcon.setImageDrawable(null);
                 } else {
                     //当前name为空 设置头像图片
-                    itemSmsImgIcon.setImageResource(R.mipmap.ic_person_light);
-                    itemSmsTextIcon.setText("");
+                    tvIcon.setImageResource(R.mipmap.ic_person_light);
+                    tvWord.setText("");
                 }
                 //设置背景颜色
-                itemSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
-                GradientDrawable grad = (GradientDrawable) itemSmsIconLayout.getBackground();
+                flSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
+                GradientDrawable grad = (GradientDrawable) flSmsIconLayout.getBackground();
                 grad.setColor(ContextCompat.getColor(mContext, JvApplication.icon_theme_colors[bean.getColorPosition()]));
 
                 //当前为选中状态设置选中layout
             } else if (!smsUiFlagBean.hasIconUi.get(getLayoutPosition())) {
-                itemSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg2);
-                itemSmsImgIcon.setImageResource(R.mipmap.ic_checkmark_small_blue);
-                itemSmsTextIcon.setText("");
+                flSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg2);
+                tvIcon.setImageResource(R.mipmap.ic_checkmark_small_blue);
+                tvWord.setText("");
             }
 
             //设置发件人姓名及 短信内容
-            itemSmsNumber.setText(name);
-            itemSmsMsg.setText(bean.getSmsBody());
+            tvNumber.setText(name);
+            tvInfo.setText(bean.getSmsBody());
             SpannableStringBuilder style;
 
             //设置短信内容 搜索过滤效果
@@ -173,7 +172,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                     int end = start + bean.selectStr.length();
                     style = new SpannableStringBuilder(bean.getSmsBody());
                     style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    itemSmsMsg.setText(style);
+                    tvInfo.setText(style);
                 }
 
                 //设置短信内容过滤效果
@@ -182,21 +181,21 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                     int end = start + bean.selectStr.length();
                     style = new SpannableStringBuilder(bean.getName());
                     style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    itemSmsNumber.setText(style);
+                    tvNumber.setText(style);
                 }
             }
 
 
         }
 
-        @OnClick({R.id.item_sms_layout, R.id.item_sms_icon_layout, R.id.btn_delete})
+        @OnClick({R.id.ll_item_smsLayout, R.id.fl_item_smsIconLayout, R.id.btn_delete})
         public void onSmsLayoutClick(View view) {
             switch (view.getId()) {
-                case R.id.item_sms_layout:
+                case R.id.ll_item_smsLayout:
                     //项点击事件
                     layoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
                     break;
-                case R.id.item_sms_icon_layout:
+                case R.id.fl_item_smsIconLayout:
                     //头像点击事件
                     iconClick(mList.get(getLayoutPosition()));
                     break;
@@ -224,7 +223,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
             }
         }
 
-        @OnLongClick(R.id.item_sms_layout)
+        @OnLongClick(R.id.ll_item_smsLayout)
         public boolean onSmsLayoutLongClick() {
             //项长按事件
             longLayoutClick(mList.get(getLayoutPosition()), getLayoutPosition());

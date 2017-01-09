@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/receive_msg_date"
+        android:id="@+id/tv_item_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -26,14 +26,14 @@
 
 
         <FrameLayout
-            android:id="@+id/item_sms_icon_layout"
+            android:id="@+id/fl_item_smsIconLayout"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="start"
             android:background="@drawable/shape_icon_bg">
 
             <TextView
-                android:id="@+id/receive_textIcon"
+                android:id="@+id/tv_item_word"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -41,14 +41,14 @@
                 android:textSize="26sp" />
 
             <ImageView
-                android:id="@+id/receive_imgIcon"
+                android:id="@+id/iv_item_icon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
         </FrameLayout>
 
         <TextView
-            android:id="@+id/receive_message_info"
+            android:id="@+id/tv_item_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
@@ -62,9 +62,8 @@
 
     </LinearLayout>
 
-
     <TextView
-        android:id="@+id/receive_message_date2"
+        android:id="@+id/tv_item_date2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="60dp"

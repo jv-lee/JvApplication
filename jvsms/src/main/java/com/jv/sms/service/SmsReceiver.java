@@ -2,13 +2,18 @@ package com.jv.sms.service;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.jv.sms.app.JvApplication;
 import com.jv.sms.base.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.constant.Constant;
@@ -16,6 +21,9 @@ import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.NotificationUtils;
 import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TimeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/12/6.
@@ -44,8 +52,10 @@ public class SmsReceiver extends BroadcastReceiver {
                     msg[i] = SmsMessage.createFromPdu((byte[]) pdus[i], format);
                 }
 
+                List<String> timeStr = new ArrayList<>();
                 //获取短信内容并存入数据库
                 for (SmsMessage curMsg : msg) {
+                    timeStr.add(TimeUtils.milliseconds2String(curMsg.getTimestampMillis()));
                     sms.setDate(TimeUtils.milliseconds2String(curMsg.getTimestampMillis()));
                     sms.setPhoneNumber(curMsg.getDisplayOriginatingAddress());
                     sms.setSmsBody(curMsg.getDisplayMessageBody());
@@ -57,8 +67,24 @@ public class SmsReceiver extends BroadcastReceiver {
                     SmsUtils.addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), curMsg.getTimestampMillis(), Constant.SMS_STATUS_NOT_READ, Constant.SMS_STATUS_RECEIVER, -1);
                 }
 
-                //通过RxBus发送新短信通知
-                RxBus.getInstance().post(new EventBase(sms.getPhoneNumber(), sms));
+
+                ContentResolver cr = JvApplication.getInstance().getContentResolver();
+                Cursor cursor = null;
+                SmsBean smsBean = null;
+                Log.i("SmsReceiver", timeStr.size() + "");
+                for (int i = 0; i < timeStr.size(); i++) {
+                    cursor = cr.query(Uri.parse("content://sms/"), new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read", "status"},
+                            "date = ?", new String[]{TimeUtils.string2Milliseconds(timeStr.get(i)) + ""}, null);
+
+                    if (cursor.moveToFirst()) {
+                        smsBean = SmsUtils.simpleSmsBean(cursor);
+                    }
+
+                    Log.i("SmsReceiver", smsBean.getSmsBody());
+                    //通过RxBus发送新短信通知
+                    RxBus.getInstance().post(new EventBase(smsBean.getPhoneNumber(), smsBean));
+
+                }
 
                 NotificationUtils.showNotification(sms.getName(), sms.getSmsBody());
             }

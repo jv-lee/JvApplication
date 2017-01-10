@@ -19,6 +19,7 @@ import android.view.View;
 
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
+import com.jv.sms.constant.Constant;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +55,20 @@ public class SmsUtils {
         return true;
     }
 
+    public static SmsBean findSmsByDate(long time) {
+        SmsBean smsBean = null;
+
+        ContentResolver cr = JvApplication.getInstance().getContentResolver();
+        Cursor cursor = cr.query(Uri.parse("content://sms/"), new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read", "status"},
+                "date = ?", new String[]{time + ""}, null);
+
+        if (cursor.moveToFirst()) {
+            smsBean = SmsUtils.simpleSmsBean(cursor);
+        }
+
+        return smsBean;
+    }
+
     /**
      * 发送短信
      */
@@ -67,13 +82,22 @@ public class SmsUtils {
      */
     public static void addSmsToDB(Context context, String address, String content, long date, int read, int type, int status) {
         ContentValues values = new ContentValues();
-//        values.put("date", date);
+        values.put("date", date);
         values.put("read", read);//0为未读信息
         values.put("type", type);//1为收件箱信息
         values.put("address", address);
         values.put("body", content);
         values.put("status", status);
         context.getContentResolver().insert(Uri.parse("content://sms"), values);
+    }
+
+    public static void updateSmsToDB(String id) {
+        ContentResolver cr = JvApplication.getInstance().getContentResolver();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("status", Constant.SMS_STATUS_ERROR);
+
+        cr.update(Uri.parse("content://sms/"), contentValues, "_id = ?", new String[]{id});
     }
 
     /**
@@ -103,7 +127,8 @@ public class SmsUtils {
         SmsBean.Type type = typeId == 1 ? SmsBean.Type.RECEIVE : SmsBean.Type.SEND;
         SmsBean.ReadType readType = read == 0 ? SmsBean.ReadType.NOT_READ : SmsBean.ReadType.IS_READ;
 
-        return new SmsBean(id, name, phoneNumber, smsBody, date, type, thread_id, readType, status);
+        SmsBean smsBean = new SmsBean(id, name, phoneNumber, smsBody, date, type, thread_id, readType, status);
+        return smsBean;
     }
 
     /**

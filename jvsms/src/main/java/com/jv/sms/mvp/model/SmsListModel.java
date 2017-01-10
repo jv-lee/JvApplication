@@ -76,32 +76,24 @@ public class SmsListModel implements ISmsListModel {
     }
 
     @Override
-    public SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content) {
-        //设置时间
-        long date = System.currentTimeMillis();
-        String dateStr = TimeUtils.milliseconds2String(date);
+    public SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content, long time) {
 
-        //返回发送的短信对象
-        SmsBean sms = new SmsBean();
-        sms.setDate(dateStr);
-        sms.setSmsBody(content);
-        sms.setPhoneNumber(phoneNumber);
-        sms.setName(SmsUtils.getPeopleNameFromPerson(phoneNumber, JvApplication.getInstance()));
-        sms.setReadType(SmsBean.ReadType.IS_READ);
-        sms.setType(SmsBean.Type.SEND);
-        sms.setShowDate(TimeUtils.isShowTime(dateStr));
-        sms.setStatus(-1);
+        SmsUtils.addSmsToDB(JvApplication.getInstance(), phoneNumber, content, time, Constant.SMS_STATUS_IS_READ, Constant.SMS_STATUS_SEND, -1);
+
+        SmsBean smsBean = SmsUtils.findSmsByDate(time);
+        smsBean.setShowDate(TimeUtils.isShowTime(smsBean.getDate()));
+        TimeUtils.clearTimeList();
 
         //发送短信
         SmsUtils.sendSms(sentPI, phoneNumber, content);
-        return sms;
-    }
-
-    public SmsBean saveSmsToDb(SmsBean smsBean, int status) {
-        //将发送短信保存至数据库
-        SmsUtils.addSmsToDB(JvApplication.getInstance(), smsBean.getPhoneNumber(), smsBean.getSmsBody(), TimeUtils.string2Milliseconds(smsBean.getDate()), Constant.SMS_STATUS_IS_READ, Constant.SMS_STATUS_SEND, status);
         return smsBean;
     }
 
+    public SmsBean updateSmsStatus(SmsBean smsBean) {
+        //将发送短信保存至数据库
+        SmsUtils.updateSmsToDB(smsBean.getId());
+        smsBean.setStatus(Constant.SMS_STATUS_ERROR);
+        return smsBean;
+    }
 
 }

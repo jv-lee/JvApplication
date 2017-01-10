@@ -1,10 +1,14 @@
 package com.jv.sms.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +21,12 @@ import android.widget.Toast;
 
 import com.jv.sms.R;
 import com.jv.sms.app.JvApplication;
+import com.jv.sms.base.EventBase;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsListUiFlagBean;
+import com.jv.sms.constant.Constant;
 import com.jv.sms.mvp.presenter.ISmsListPresenter;
+import com.jv.sms.rx.RxBus;
 import com.jv.sms.utils.SmsUtils;
 import com.jv.sms.utils.TextUtils;
 
@@ -45,6 +52,10 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private OnSmsListAdapterListener mListener;
     public SmsListUiFlagBean smsListUiFlagBean;
     private int hasSelecting = -1;
+    //重发Flag
+    public boolean reFlag = true;
+
+    public boolean sendFlag = true;
 
     public SmsListDataAdapter(Context context, LinkedList<SmsBean> list, OnSmsListAdapterListener listener) {
         mContext = context;
@@ -57,6 +68,10 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         return mList.size();
+    }
+
+    public SmsBean getItemBean(int position) {
+        return mList.get(position);
     }
 
     //根据当前类型返回相应短信类型
@@ -169,12 +184,13 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         @OnClick(R.id.iv_sendSms_statusIcon)
         public void statusIconClick(View view) {
-            SmsBean smsBean = mList.get(getLayoutPosition());
-            mListener.getPresenter().removeSmsById(smsBean.getId());
-            mList.remove(getLayoutPosition());
-            smsListUiFlagBean.deleteAllSize(getLayoutPosition());
-            notifyItemRemoved(getLayoutPosition());
-            mListener.getSendSms(smsBean.getSmsBody(), smsBean.getPhoneNumber());
+            if (reFlag) {
+                reFlag = false;
+                SmsBean smsBean = mList.get(getLayoutPosition());
+                mListener.getPresenter().reSendSms(smsBean.getId(), getLayoutPosition());
+            } else {
+                Toast.makeText(mContext, "操作频繁", Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
@@ -301,6 +317,15 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
+    public void statusIconClickResult(int position) {
+        SmsBean smsBean = mList.get(position);
+        mList.remove(position);
+        smsListUiFlagBean.deleteAllSize(position);
+        notifyItemRemoved(position);
+        mListener.getSendSms(smsBean.getSmsBody(), smsBean.getPhoneNumber());
+        reFlag = true;
+    }
+
     /**
      * 接受到短信至当前适配器
      *
@@ -329,13 +354,14 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void initHasSendProgressbar() {
         smsListUiFlagBean.initHasSendProgressbar();
         notifyItemChanged(0);
+        sendFlag = true;
     }
 
-    public void sendSmsError() {
+    public void sendSmsError(SmsBean smsBean) {
         smsListUiFlagBean.initHasSendProgressbar();
-        mList.get(0).setStatus(128);
-        Toast.makeText(JvApplication.getInstance(), "" + mList.get(0).getSmsBody(), Toast.LENGTH_SHORT).show();
+        mList.get(0).setStatus(Constant.SMS_STATUS_ERROR);
         notifyItemChanged(0);
+        sendFlag = true;
     }
 
 

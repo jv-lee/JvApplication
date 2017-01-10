@@ -2,6 +2,7 @@ package com.jv.sms.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -23,7 +25,9 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.jv.sms.R;
+import com.jv.sms.activity.SettingsActivity;
 import com.jv.sms.app.JvApplication;
+import com.jv.sms.constant.Constant;
 import com.jv.sms.interfaces.DataLoadLayoutListener;
 import com.jv.sms.adapter.SmsDataAdapter;
 import com.jv.sms.base.BaseFragment;
@@ -105,7 +109,10 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
      */
     @Override
     protected void initAllView(Bundle savedInstanceState) {
-        listener.showDataBar(); //显示数据加载bar
+        if (listener != null) {
+            listener.showDataBar(); //显示数据加载bar
+        }
+
         initPopupView(); //初始化长按弹窗
 
         //创建显示容器 rv
@@ -143,7 +150,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_settings:
-                Toast.makeText(mContext, "设置功能暂未开放", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
             case R.id.menu_item_hideContacts:
                 Toast.makeText(mContext, "屏蔽功能暂未开放", Toast.LENGTH_SHORT).show();
@@ -200,11 +207,13 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                     @Override
                     public void call(final EventBase eventBase) {
                         //接受到删除通知 执行逻辑
-                        if (((String) eventBase.getOption()).equals("deleteByThreadId")) {
+                        if (((String) eventBase.getOption()).equals(Constant.RX_CODE_DELETE_THREAD_ID)) {
                             mAdapter.deleteByThreadId((String) eventBase.getObj());
+                        } else if (((String) eventBase.getOption()).equals(Constant.RX_CODE_UPDATE_MESSAGE)) {
+                            mAdapter.updateShowMessage((SmsBean) eventBase.getObj());
                         } else {
                             //添加短信通知执行逻辑
-                            boolean hasSms = true;
+                            boolean hasSms = true; //是否为存在短信
                             for (int i = 0; i < mAdapter.getItemCount(); i++) {
                                 if (mAdapter.getItemBean(i).getPhoneNumber().equals(eventBase.getOption())) {
                                     hasSms = false;
@@ -358,7 +367,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if(mSmsBeans == null)return true;
+        if (mSmsBeans == null) return true;
         final List<SmsBean> filteredModelList = filter(mSmsBeans, newText);
 
         mAdapter.setFilter(filteredModelList);

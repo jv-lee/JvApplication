@@ -22,6 +22,7 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 import com.jv.sms.R;
 import com.jv.sms.activity.NewSmsActivity;
 import com.jv.sms.adapter.ForwardDialogAdapter;
+import com.jv.sms.constant.Constant;
 import com.jv.sms.interfaces.ToolbarSetListener;
 import com.jv.sms.adapter.SmsListDataAdapter;
 import com.jv.sms.app.JvApplication;
@@ -218,8 +220,11 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     public void ivOnClick(View view) {
         switch (view.getId()) {
             case R.id.iv_sendSms: //发送短信
-                if (SmsUtils.setDefaultSms(rvContainer, mContext)) { //判断当前应用是否获取默认 短信应用权限
+                if (SmsUtils.setDefaultSms(rvContainer, mContext) && mAdapter.sendFlag) { //判断当前应用是否获取默认 短信应用权限
+                    mAdapter.sendFlag = false;
                     sendSms(etSmsContent.getText().toString(), bean.getPhoneNumber());
+                } else {
+                    Toast.makeText(mContext, "操作频繁", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.iv_addSms:
@@ -314,21 +319,27 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     }
 
     @Override
+    public void sendSmsLoading(SmsBean smsBean) {
+        //设置发送短信内容至显示
+        mAdapter.insertSmsListUi(smsBean);
+        etSmsContent.setText("");
+        JvApplication.smsBean = smsBean; //当前浏览短信实体
+    }
+
+    @Override
     public void sendSmsSuccess(SmsBean smsBean) {
         mAdapter.initHasSendProgressbar();
-        mPresenter.saveSmsToDb(smsBean, -1);
     }
 
     @Override
     public void sendSmsError(SmsBean smsBean) {
-        mAdapter.sendSmsError();
-        mPresenter.saveSmsToDb(smsBean, 128);
+        mAdapter.sendSmsError(smsBean);
     }
 
     @Override
     public void deleteThreadSuccess() {
         getActivity().finish(); //删除当前会话成功 后关闭当前会话
-        RxBus.getInstance().post(new EventBase("deleteByThreadId", bean.getThread_id())); //发送通知删除会话列表当前会话
+        RxBus.getInstance().post(new EventBase(Constant.RX_CODE_DELETE_THREAD_ID, bean.getThread_id())); //发送通知删除会话列表当前会话
     }
 
     @Override
@@ -337,11 +348,12 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     }
 
     @Override
-    public void sendSmsLoading(SmsBean smsBean) {
-        //设置发送短信内容至显示
-        mAdapter.insertSmsListUi(smsBean);
-        etSmsContent.setText("");
-        JvApplication.smsBean = smsBean;
+    public void reSendSms(boolean flag, int position) {
+        if (flag) {
+            mAdapter.statusIconClickResult(position);
+        } else {
+            Toast.makeText(mContext, "reSend sms error", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -357,9 +369,18 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         TimeUtils.clearTimeList();//清空列表时间差管理集合
         getActivity().unregisterReceiver(sendMessage);//注销广播
         JvApplication.THIS_SMS_FRAGMENT_FLAG = "";//将当前全局号码初始化
+
+        //退出时刷新显示
+        if (mAdapter.getItemCount() == 0) {
+            RxBus.getInstance().post(new EventBase(Constant.RX_CODE_DELETE_THREAD_ID, bean.getThread_id()));
+        } else {
+            RxBus.getInstance().post(new EventBase(Constant.RX_CODE_UPDATE_MESSAGE, mSmsBeans.get(0)));
+        }
+
     }
 
 
@@ -382,7 +403,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         if (content.length() > 0) {
             Intent sendIntent = new Intent(SENT_SMS_ACTION);
             PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
-            mPresenter.sendSms(sendPi, phoneNumber, content);
+            mPresenter.sendSms(sendPi, phoneNumber, content, System.currentTimeMillis());
             ClickUtils.sendMusic();
         }
     }

@@ -78,11 +78,11 @@ public class SmsListPresenter implements ISmsListPresenter {
     }
 
     @Override
-    public void sendSms(final PendingIntent sentPI, final String phoneNumber, final String content) {
+    public void sendSms(final PendingIntent sentPI, final String phoneNumber, final String content, final long time) {
         Observable.create(new Observable.OnSubscribe<SmsBean>() {
             @Override
             public void call(Subscriber<? super SmsBean> subscriber) {
-                subscriber.onNext(mModel.sendSms(sentPI, phoneNumber, content));
+                subscriber.onNext(mModel.sendSms(sentPI, phoneNumber, content, time));
                 subscriber.onCompleted();
             }
         })
@@ -95,6 +95,7 @@ public class SmsListPresenter implements ISmsListPresenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i("错误信息", e.getMessage());
                         Toast.makeText(JvApplication.getInstance(), "发送短信启动代码错误", Toast.LENGTH_SHORT).show();
                     }
 
@@ -111,16 +112,11 @@ public class SmsListPresenter implements ISmsListPresenter {
     }
 
     @Override
-    public void sendSmsError(SmsBean smsbean) {
-        mView.sendSmsError(smsbean);
-    }
-
-    @Override
-    public void saveSmsToDb(final SmsBean smsBean, final int status) {
+    public void sendSmsError(final SmsBean smsbean) {
         Observable.create(new Observable.OnSubscribe<SmsBean>() {
             @Override
             public void call(Subscriber<? super SmsBean> subscriber) {
-                subscriber.onNext(mModel.saveSmsToDb(smsBean, status));
+                subscriber.onNext(mModel.updateSmsStatus(smsbean));
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -132,12 +128,13 @@ public class SmsListPresenter implements ISmsListPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(JvApplication.getInstance(), "保存至DB失败", Toast.LENGTH_SHORT).show();
+                        Log.i("错误信息", e.getMessage());
+                        Toast.makeText(JvApplication.getInstance(), "db update sms status error", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onNext(SmsBean smsBean) {
-                        Toast.makeText(JvApplication.getInstance(), "保持至DB", Toast.LENGTH_SHORT).show();
+                        mView.sendSmsError(smsbean);
                     }
                 });
     }
@@ -169,6 +166,33 @@ public class SmsListPresenter implements ISmsListPresenter {
                         } else {
                             mView.deleteThreadError();
                         }
+                    }
+                });
+    }
+
+    @Override
+    public void reSendSms(final String id, final int position) {
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onNext(mModel.deleteSmsListById(id));
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(JvApplication.getInstance(), "重发短信 删除失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        mView.reSendSms(aBoolean, position);
                     }
                 });
     }

@@ -11,4 +11,9 @@ public class Constant {
     public static final int SMS_STATUS_RECEIVER = 0x01;
     public static final int SMS_STATUS_SEND = 0x02;
 
+    public static final String RX_CODE_DELETE_THREAD_ID = "rx_code_delete_thread_id";
+    public static final String RX_CODE_UPDATE_MESSAGE = "rx_code_update_message";
+
+    public static final int SMS_STATUS_ERROR = 128;
+
 }

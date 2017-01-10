@@ -442,12 +442,25 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         }
     }
 
+    //通知删除当前会话
     public void deleteByThreadId(String thread_id) {
         for (int i = 0; i < mList.size(); i++) {
             if (mList.get(i).getThread_id().equals(thread_id)) {
                 mList.remove(i);
                 smsUiFlagBean.hasIconUi.remove(i);
                 notifyItemRemoved(i);
+            }
+        }
+    }
+
+    //通知更新内容变更
+    public void updateShowMessage(SmsBean smsBean) {
+        Log.i("SmsDataAdapter", "deleteById");
+        for (int i = 0; i < mList.size(); i++) {
+            if (mList.get(i).getPhoneNumber().equals(smsBean.getPhoneNumber())) {
+                Log.i("SmsDataAdapter", smsBean.getSmsBody());
+                mList.get(i).setSmsBody(smsBean.getSmsBody());
+                notifyItemChanged(i);
             }
         }
     }

@@ -36,7 +36,7 @@ public interface ISmsListModel {
      * @param content
      * @return
      */
-    SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content);
+    SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content, long time);
 
     /**
      * 根据会话ID thread_id 删除当前会话列表所有内容
@@ -46,5 +46,6 @@ public interface ISmsListModel {
      */
     boolean removeSmsByThreadId(String thread_id);
 
-    SmsBean saveSmsToDb(SmsBean smsBean,int status);
+    SmsBean updateSmsStatus(SmsBean smsBean);
+
 }

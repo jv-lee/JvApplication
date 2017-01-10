@@ -31,4 +31,6 @@ public interface ISmsListView {
 
     void deleteThreadError();
 
+    void reSendSms(boolean flag, int position);
+
 }

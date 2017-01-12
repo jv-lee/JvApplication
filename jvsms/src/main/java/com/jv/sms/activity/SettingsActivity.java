@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Telephony;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.jv.sms.R;
 import com.jv.sms.adapter.SettingsAdapter;
+import com.jv.sms.adapter.SettingsAlertAdapter;
 import com.jv.sms.base.BaseActivity;
 import com.jv.sms.bean.SettingBean;
 import com.jv.sms.bean.SmsAppBean;
@@ -23,7 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class SettingsActivity extends BaseActivity implements ISettingsView, AdapterView.OnItemClickListener {
+public class SettingsActivity extends BaseActivity implements ISettingsView, AdapterView.OnItemClickListener, SettingsAlertAdapter.AlertInterface {
 
 
     @BindView(R.id.lv_item_container)
@@ -31,6 +36,8 @@ public class SettingsActivity extends BaseActivity implements ISettingsView, Ada
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    AlertDialog defaultAlert;
 
     private List<SettingBean> settingBeans;
     private SettingsAdapter adapter;
@@ -87,6 +94,16 @@ public class SettingsActivity extends BaseActivity implements ISettingsView, Ada
 
     @Override
     public void isDefaultApplication(List<SmsAppBean> smsAppBeans) {
+        RecyclerView recyclerView = new RecyclerView(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new SettingsAlertAdapter(this, this, smsAppBeans));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        defaultAlert = builder.setTitle("要更改短信应用吗？")
+                .setView(recyclerView)
+                .setPositiveButton("取消", null)
+                .create();
+        defaultAlert.show();
 
     }
 
@@ -122,5 +139,11 @@ public class SettingsActivity extends BaseActivity implements ISettingsView, Ada
             mPresenter.findSettingBeans();
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void dismissAlert() {
+        defaultAlert.dismiss();
+        mPresenter.findSettingBeans();
     }
 }

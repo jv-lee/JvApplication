@@ -1,8 +1,11 @@
 package com.jv.sms.mvp.model;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.provider.Telephony;
 
+import com.jv.sms.R;
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SettingBean;
 import com.jv.sms.bean.SmsAppBean;
@@ -16,12 +19,12 @@ import java.util.List;
  */
 
 public class SettingsModel implements ISettingsModel {
-
-    String[] settingTitles = {"默认短信应用", "接受通知", "通知提示音", "听到短信发送提示音", "震动", "您当前所在国家/地区", "当前手机号"};
+    String[] settingTitles = JvApplication.getInstance().getResources().getStringArray(R.array.settings);
     boolean[] settingOps = {false, true, false, true, true, false, false};
 
     @Override
     public List<SettingBean> findSettingBeans() {
+
         List<SettingBean> settingBeans = new ArrayList<>();
 
         for (int i = 0; i < settingOps.length; i++) {
@@ -30,11 +33,22 @@ public class SettingsModel implements ISettingsModel {
         return settingBeans;
     }
 
+    @SuppressWarnings("WrongConstant")
     @Override
     public List<SmsAppBean> hasDefaultSmsApplication() {
+        List<SmsAppBean> smsAppBeans = new ArrayList<>();
+
         //是默认应用返回应用列表 提供选择
         if (Telephony.Sms.getDefaultSmsPackage(JvApplication.getInstance()).equals(JvApplication.getInstance().getPackageName())) {
-            return null;
+            PackageManager packageManager = JvApplication.getInstance().getPackageManager();
+            Intent intent = new Intent();
+            intent.setAction("android.provider.Telephony.SMS_DELIVER");
+            List<ResolveInfo> resolveInfos = packageManager.queryBroadcastReceivers(intent, PackageManager.GET_INTENT_FILTERS);
+
+            for (ResolveInfo res : resolveInfos) {
+                smsAppBeans.add(new SmsAppBean(res.activityInfo.loadLabel(JvApplication.getInstance().getPackageManager()).toString(), res.activityInfo.packageName, res.activityInfo.loadIcon(JvApplication.getInstance().getPackageManager())));
+            }
+            return smsAppBeans;
         } else { //非默认应用返回空 使其设置
             return null;
         }

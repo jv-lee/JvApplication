@@ -57,7 +57,7 @@
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="跳过"
+            android:text="@string/upOut"
             android:textColor="#84A2EE" />
 
         <TextView
@@ -67,7 +67,7 @@
             android:layout_marginLeft="20dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="下一步"
+            android:text="@string/next"
             android:textColor="#ffffff" />
 
 

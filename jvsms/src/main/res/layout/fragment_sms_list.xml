@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:background="@null"
-                android:hint="请输入短信内容"
+                android:hint="@string/inputSmsContent"
                 android:textColor="@android:color/black"
                 android:textColorHint="@color/colorSmsEditTextIcon"
                 android:textSize="16sp" />

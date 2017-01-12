@@ -14,4 +14,21 @@
     <string name="str_item_phoneNumber">13201567738</string>
     <string name="str_item_name">文文</string>
     <string name="settings">设置</string>
+    <string name="sessionShow">您的会话会显示在此处</string>
+    <string name="upOut">跳过</string>
+    <string name="next">下一步</string>
+    <string name="inputSmsContent">请输入短信内容</string>
+    <string name="delete">删除</string>
+
+
+    <string-array name="settings">
+        <item>默认短信应用</item>
+        <item>接受通知</item>
+        <item>通知提示音</item>
+        <item>听到短信发送提示音</item>
+        <item>震动</item>
+        <item>您当前所在国家/地区</item>
+        <item>当前手机号</item>
+    </string-array>
+
 </resources>

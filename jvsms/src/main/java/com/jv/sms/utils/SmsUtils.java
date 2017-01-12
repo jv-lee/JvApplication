@@ -49,6 +49,19 @@ public class SmsUtils {
     }
 
     /**
+     * 使用packageName设置为 默认短信应用
+     *
+     * @param context
+     * @param request_code
+     * @param packageName
+     */
+    public static void setDefaultSmsApplicationStartSettings(Context context, int request_code, String packageName) {
+        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName);
+        ((Activity) context).startActivityForResult(intent, request_code);
+    }
+
+    /**
      * 获取当前默认短信应用名称
      *
      * @return

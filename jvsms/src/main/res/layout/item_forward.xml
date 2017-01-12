@@ -43,14 +43,14 @@
             android:id="@+id/tv_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="张三"
+            android:text="@string/name"
             android:textColor="#000000" />
 
         <TextView
             android:id="@+id/tv_item_phoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1567865146584" />
+            android:text="@string/str_item_phoneNumber" />
 
 
     </LinearLayout>

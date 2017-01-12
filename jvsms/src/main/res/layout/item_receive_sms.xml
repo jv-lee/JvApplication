@@ -56,7 +56,7 @@
             android:background="@drawable/shape_message_blue"
             android:gravity="center_vertical"
             android:padding="10dp"
-            android:text="你真的是卖火车票的嘛？"
+            android:text="@string/inputSmsContent"
             android:textColor="@android:color/white"
             android:textColorLink="@android:color/white" />
 

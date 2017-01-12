@@ -15,8 +15,8 @@
             android:id="@+id/tv_settings_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="默认短信应用"
             android:layout_gravity="center_vertical"
+            android:text="@string/title_activity_newsms"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
@@ -24,8 +24,8 @@
             android:id="@+id/tv_settings_des"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

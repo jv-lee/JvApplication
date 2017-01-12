@@ -52,11 +52,12 @@ public class SmsReceiver extends BroadcastReceiver {
                     msg[i] = SmsMessage.createFromPdu((byte[]) pdus[i], format);
                 }
 
-                List<String> timeStr = new ArrayList<>();
+                List<Long> times = new ArrayList<>();
                 //获取短信内容并存入数据库
                 for (SmsMessage curMsg : msg) {
-                    timeStr.add(TimeUtils.milliseconds2String(curMsg.getTimestampMillis()));
-                    sms.setDate(TimeUtils.milliseconds2String(curMsg.getTimestampMillis()));
+                    long time = System.currentTimeMillis();
+                    times.add(time);
+                    sms.setDate(TimeUtils.milliseconds2String(time));
                     sms.setPhoneNumber(curMsg.getDisplayOriginatingAddress());
                     sms.setSmsBody(curMsg.getDisplayMessageBody());
                     sms.setType(SmsBean.Type.RECEIVE);
@@ -64,17 +65,17 @@ public class SmsReceiver extends BroadcastReceiver {
                     sms.setName(SmsUtils.getPeopleNameFromPerson(sms.getPhoneNumber(), context));
 
                     //添加接受短信至数据库
-                    SmsUtils.addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), curMsg.getTimestampMillis(), Constant.SMS_STATUS_NOT_READ, Constant.SMS_STATUS_RECEIVER, -1);
+                    SmsUtils.addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), time, Constant.SMS_STATUS_NOT_READ, Constant.SMS_STATUS_RECEIVER, -1);
                 }
 
 
                 ContentResolver cr = JvApplication.getInstance().getContentResolver();
                 Cursor cursor = null;
                 SmsBean smsBean = null;
-                Log.i("SmsReceiver", timeStr.size() + "");
-                for (int i = 0; i < timeStr.size(); i++) {
+                Log.i("SmsReceiver", times.size() + "");
+                for (int i = 0; i < times.size(); i++) {
                     cursor = cr.query(Uri.parse("content://sms/"), new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read", "status"},
-                            "date = ?", new String[]{TimeUtils.string2Milliseconds(timeStr.get(i)) + ""}, null);
+                            "date = ?", new String[]{times.get(i) + ""}, null);
 
                     if (cursor.moveToFirst()) {
                         smsBean = SmsUtils.simpleSmsBean(cursor);

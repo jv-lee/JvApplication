@@ -39,7 +39,7 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mObservable = getRxBus();
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true); // 在fragment中操作Menu
     }
 
     @Nullable

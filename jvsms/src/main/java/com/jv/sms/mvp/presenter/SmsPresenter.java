@@ -2,6 +2,7 @@ package com.jv.sms.mvp.presenter;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
@@ -9,6 +10,7 @@ import com.jv.sms.mvp.model.ISmsModel;
 import com.jv.sms.mvp.model.SmsModel;
 import com.jv.sms.mvp.view.ISmsView;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import rx.Observable;
@@ -37,15 +39,15 @@ public class SmsPresenter implements ISmsPresenter {
     public void findSmsAll() {
 
         Observable.just(JvApplication.getInstance())
-                .map(new Func1<Context, List<SmsBean>>() {
+                .map(new Func1<Context, LinkedList<SmsBean>>() {
                     @Override
-                    public List<SmsBean> call(Context context1) {
+                    public LinkedList<SmsBean> call(Context context1) {
                         return mSmsModel.findSmsAll(context1);
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<SmsBean>>() {
+                .subscribe(new Subscriber<LinkedList<SmsBean>>() {
                     @Override
                     public void onCompleted() {
                     }
@@ -57,19 +59,19 @@ public class SmsPresenter implements ISmsPresenter {
                     }
 
                     @Override
-                    public void onNext(List<SmsBean> smsBean) {
+                    public void onNext(LinkedList<SmsBean> smsBean) {
                         if (smsBean.size() == 0) {
                             mSmsView.setDataError();
                         } else {
-                            mSmsView.setData(smsBean);
                             mSmsView.setDataSuccess();
                         }
+                        mSmsView.setData(smsBean);
                     }
                 });
     }
 
     @Override
-    public void removeSmsByThreadId(String id,int position) {
+    public void removeSmsByThreadId(String id, int position) {
         if (mSmsModel.removeSmsByThreadId(id)) {
             mSmsView.removeDataSuccess(position);
         } else {
@@ -80,20 +82,22 @@ public class SmsPresenter implements ISmsPresenter {
     @Override
     public void getNewSms() {
 
-        Observable.just("123").map(new Func1<String, SmsBean>() {
+        Observable.create(new Observable.OnSubscribe<SmsBean>() {
             @Override
-            public SmsBean call(String s) {
-                return mSmsModel.getNewSms();
+            public void call(Subscriber<? super SmsBean> subscriber) {
+                subscriber.onNext(mSmsModel.getNewSms());
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<SmsBean>() {
                     @Override
                     public void onCompleted() {
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Toast.makeText(JvApplication.getInstance(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.i("错误信息", e.getMessage());
                     }
 
@@ -102,31 +106,6 @@ public class SmsPresenter implements ISmsPresenter {
                         mSmsView.setNewSms(smsBean);
                     }
                 });
-
-//        Observable.create(new Observable.OnSubscribe<SmsBean>() {
-//            @Override
-//            public void call(Subscriber<? super SmsBean> subscriber) {
-//                subscriber.onNext(mSmsModel.getNewSms());
-//                subscriber.onCompleted();
-//            }
-//        })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<SmsBean>() {
-//                    @Override
-//                    public void onCompleted() {
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.i("错误信息", e.getMessage());
-//                    }
-//
-//                    @Override
-//                    public void onNext(SmsBean smsBean) {
-//                        mSmsView.setNewSms(smsBean);
-//                    }
-//                });
     }
 
     @Override

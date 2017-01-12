@@ -81,6 +81,31 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
 
     private INewSmsPresenter mPresenter;
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        etInputTel.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+        KeyboardUtils.showSoftInput2(mContext, etInputTel);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        KeyboardUtils.hideSoftInput(getActivity());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        JvApplication.text = "";
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
+    }
+
     @Override
     public int getContentViewId() {
         return R.layout.fragment_new_sms;
@@ -92,13 +117,8 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new NewSmsPresenter(this);
-    }
-
-    @Override
     protected void initAllView(Bundle savedInstanceState) {
+        mPresenter = new NewSmsPresenter(this);
         rvContainer.setLayoutManager(new LinearLayoutManager(mContext));
         mPresenter.findContactsAll();
         mPresenter.findLinkmanAll();
@@ -113,27 +133,10 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
         });
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return false;
-    }
 
     @Override
     protected void rxEvent() {
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        etInputTel.setInputType(EditorInfo.TYPE_CLASS_TEXT);
-        KeyboardUtils.showSoftInput2(mContext, etInputTel);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        KeyboardUtils.hideSoftInput(getActivity());
     }
 
     @OnCheckedChanged(R.id.cb_keyBoard)
@@ -221,18 +224,5 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
         linkmanAdapter.startSmsList(smsBean);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        JvApplication.text = "";
-    }
 }

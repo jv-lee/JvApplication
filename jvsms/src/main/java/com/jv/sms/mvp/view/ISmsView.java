@@ -2,6 +2,7 @@ package com.jv.sms.mvp.view;
 
 import com.jv.sms.bean.SmsBean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface ISmsView {
 
-    void setData(List<SmsBean> beanList);
+    void setData(LinkedList<SmsBean> beanList);
 
     void setDataError();
 

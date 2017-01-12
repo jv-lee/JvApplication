@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
@@ -36,7 +37,7 @@ public class SmsModel implements ISmsModel {
         threads = SmsUtils.getThreadsId(context);
 
         final ContentResolver cr = context.getContentResolver();
-        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read","status"};
+        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read", "status"};
         final Uri uri = Uri.parse("content://sms/");
 
         try {
@@ -72,14 +73,15 @@ public class SmsModel implements ISmsModel {
     @Override
     public SmsBean getNewSms() {
         final ContentResolver cr = JvApplication.getInstance().getContentResolver();
-        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read","status"};
+        final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read", "status"};
         final Uri uri = Uri.parse("content://sms/");
 
         Cursor cur = cr.query(uri, projection, null, null, "date desc limit 1");
         if (cur.moveToFirst()) {
             return SmsUtils.simpleSmsBean(cur);
         }
-        return null;
+        Toast.makeText(JvApplication.getInstance(), "Null", Toast.LENGTH_SHORT).show();
+        return new SmsBean("12", "你好", "10077", "这是一条短信", "2016-12-12", SmsBean.Type.SEND, "2855", SmsBean.ReadType.IS_READ, -1);
     }
 
     @Override

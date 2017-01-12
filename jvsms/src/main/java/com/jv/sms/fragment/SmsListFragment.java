@@ -137,43 +137,35 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         //当前显示的会话Fragment 是哪一个 记录FLAG
         JvApplication.THIS_SMS_FRAGMENT_FLAG = bean.getPhoneNumber();
 
-        //实例化Presenter  and 注册发送短信通知广播
-        mPresenter = new SmsListPresenter(this);
+        //注册发送短信通知广播
         getActivity().registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
     }
 
     @Override
-    public int getContentViewId() {
-        return R.layout.fragment_sms_list;
+    public void onResume() {
+        super.onResume();
+        toolbarSetListener.setToolbarTitle(bean.getName());
+        if (JvApplication.text != null && !JvApplication.text.equals("")) {
+            etSmsContent.setText(JvApplication.text);
+            JvApplication.text = "";
+        }
     }
 
     @Override
-    public Observable<EventBase> getRxBus() {
-        return RxBus.getInstance().register(this);
-    }
+    public void onDestroy() {
+        super.onDestroy();
 
-    @Override
-    protected void initAllView(Bundle savedInstanceState) {
-        initPopupView(); //初始化长按弹窗
-        ivAddSms.setColorFilter(ContextCompat.getColor(mContext, JvApplication.icon_theme_darkColors[bean.getColorPosition()])); //设置添加按钮颜色
+        TimeUtils.clearTimeList();//清空列表时间差管理集合
+        getActivity().unregisterReceiver(sendMessage);//注销广播
+        JvApplication.THIS_SMS_FRAGMENT_FLAG = "";//将当前全局号码初始化
 
-        //初始化消息显示列表
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setReverseLayout(true);//设置倒叙显示消息列表
-        rvContainer.setLayoutManager(linearLayoutManager);
-        rvContainer.setItemAnimator(new DefaultItemAnimator());
-        rvContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext, "点击了 rv", Toast.LENGTH_SHORT).show();
-            }
-        });
+        //退出时刷新显示
+        if (mAdapter.getItemCount() == 0) {
+            RxBus.getInstance().post(new EventBase(Constant.RX_CODE_DELETE_THREAD_ID, bean.getThread_id()));
+        } else {
+            RxBus.getInstance().post(new EventBase(Constant.RX_CODE_UPDATE_MESSAGE, mSmsBeans.get(0)));
+        }
 
-        //加载数据
-        mPresenter.findSmsBeansAll(bean.getThread_id());
-
-        //初始化Emoj表情
-        createEjmoLayout(savedInstanceState);
     }
 
     @Override
@@ -214,6 +206,41 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
             return mAdapter.clearSelectMessageState();
         }
         return true;
+    }
+
+    @Override
+    public int getContentViewId() {
+        return R.layout.fragment_sms_list;
+    }
+
+    @Override
+    public Observable<EventBase> getRxBus() {
+        return RxBus.getInstance().register(this);
+    }
+
+    @Override
+    protected void initAllView(Bundle savedInstanceState) {
+        mPresenter = new SmsListPresenter(this);
+        initPopupView(); //初始化长按弹窗
+        ivAddSms.setColorFilter(ContextCompat.getColor(mContext, JvApplication.icon_theme_darkColors[bean.getColorPosition()])); //设置添加按钮颜色
+
+        //初始化消息显示列表
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(true);//设置倒叙显示消息列表
+        rvContainer.setLayoutManager(linearLayoutManager);
+        rvContainer.setItemAnimator(new DefaultItemAnimator());
+        rvContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "点击了 rv", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //加载数据
+        mPresenter.findSmsBeansAll(bean.getThread_id());
+
+        //初始化Emoj表情
+        createEjmoLayout(savedInstanceState);
     }
 
     @OnClick({R.id.iv_addSms, R.id.iv_sendSms})
@@ -273,7 +300,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                     @Override
                     public void call(EventBase eventBase) { //收到新增短信通知 判断会话号码 做逻辑操作
                         if (eventBase.getOption().equals(bean.getPhoneNumber())) {
-                            mAdapter.receiverSmsListUi((SmsBean) eventBase.getObj());
+                            mAdapter.insertSmsListUi((SmsBean) eventBase.getObj());
                         }
                     }
                 });
@@ -321,7 +348,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     @Override
     public void sendSmsLoading(SmsBean smsBean) {
         //设置发送短信内容至显示
-        mAdapter.insertSmsListUi(smsBean);
+        RxBus.getInstance().post(new EventBase(smsBean.getPhoneNumber(), smsBean));
         etSmsContent.setText("");
         JvApplication.smsBean = smsBean; //当前浏览短信实体
     }
@@ -354,33 +381,6 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         } else {
             Toast.makeText(mContext, "reSend sms error", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        toolbarSetListener.setToolbarTitle(bean.getName());
-        if (JvApplication.text != null && !JvApplication.text.equals("")) {
-            etSmsContent.setText(JvApplication.text);
-            JvApplication.text = "";
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        TimeUtils.clearTimeList();//清空列表时间差管理集合
-        getActivity().unregisterReceiver(sendMessage);//注销广播
-        JvApplication.THIS_SMS_FRAGMENT_FLAG = "";//将当前全局号码初始化
-
-        //退出时刷新显示
-        if (mAdapter.getItemCount() == 0) {
-            RxBus.getInstance().post(new EventBase(Constant.RX_CODE_DELETE_THREAD_ID, bean.getThread_id()));
-        } else {
-            RxBus.getInstance().post(new EventBase(Constant.RX_CODE_UPDATE_MESSAGE, mSmsBeans.get(0)));
-        }
-
     }
 
 

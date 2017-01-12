@@ -49,11 +49,11 @@ import butterknife.OnLongClick;
 public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataHolder> {
 
     private Context mContext;
-    public List<SmsBean> mList;
+    public LinkedList<SmsBean> mList;
     private OnSmsDataListener mListener;
     public SmsUiFlagBean smsUiFlagBean;
 
-    public SmsDataAdapter(Context context, List<SmsBean> list, OnSmsDataListener listener) {
+    public SmsDataAdapter(Context context, LinkedList<SmsBean> list, OnSmsDataListener listener) {
         mContext = context;
         mList = list;
         mListener = listener;
@@ -77,7 +77,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return mList == null ? 0 : mList.size();
     }
 
     public void setFilter(List<SmsBean> list) {
@@ -368,6 +368,13 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
      * @param sms
      */
     public void receiverSmsAdd(SmsBean sms) {
+        if (sms == null) return;
+        for (int i = 0; i < mList.size(); i++) {
+            if (mList.get(i).getPhoneNumber().equals(sms.getPhoneNumber())) {
+                receiverSmsUpdate(i, sms);
+                return;
+            }
+        }
         mList.add(0, sms);
         smsUiFlagBean.updateSize(1);
         notifyItemInserted(0);
@@ -436,14 +443,17 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
 
         //当前未有被选中 则隐藏Window
         if (smsUiFlagBean.selectFlag()) {
-            if (mListener.getPopupWindow().isShowing()) {
-                mListener.getPopupWindow().dismiss();
+            if (mListener.getPopupWindow() != null) {
+                if (mListener.getPopupWindow().isShowing()) {
+                    mListener.getPopupWindow().dismiss();
+                }
             }
         }
     }
 
     //通知删除当前会话
     public void deleteByThreadId(String thread_id) {
+        if (mList.size() == 0) return;
         for (int i = 0; i < mList.size(); i++) {
             if (mList.get(i).getThread_id().equals(thread_id)) {
                 mList.remove(i);
@@ -456,11 +466,19 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     //通知更新内容变更
     public void updateShowMessage(SmsBean smsBean) {
         Log.i("SmsDataAdapter", "deleteById");
+        boolean flag = true;
         for (int i = 0; i < mList.size(); i++) {
             if (mList.get(i).getPhoneNumber().equals(smsBean.getPhoneNumber())) {
+                flag = false;
                 Log.i("SmsDataAdapter", smsBean.getSmsBody());
                 mList.get(i).setSmsBody(smsBean.getSmsBody());
                 notifyItemChanged(i);
+            }
+        }
+        if (flag || mList.size() == 0) {
+            if (mList.size() == 0) {
+                mList.addFirst(smsBean);
+                notifyItemChanged(0);
             }
         }
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.jv.sms.bean.SmsBean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public interface ISmsModel {
      * @param context
      * @return
      */
-    List<SmsBean> findSmsAll(Context context);
+    LinkedList<SmsBean> findSmsAll(Context context);
 
     /**
      * 主界面删除当前会话

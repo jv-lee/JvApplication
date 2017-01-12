@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.jv.sms.R;
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.utils.BarUtils;
+import com.jv.sms.utils.SmsUtils;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //判断当前应用是否为系统默认应用
-        if (Telephony.Sms.getDefaultSmsPackage(this).equals(getPackageName())) {
+        if (Telephony.Sms.getDefaultSmsPackage(JvApplication.getInstance()).equals(getPackageName())) {
             startSmsActivity();
         }
 
@@ -82,12 +83,13 @@ public class WelcomeActivity extends AppCompatActivity {
      */
     @OnClick(R.id.tv_next)
     public void nextClick(View view) {
-        String packageName = getPackageName();
-        if (!Telephony.Sms.getDefaultSmsPackage(WelcomeActivity.this).equals(packageName)) {
-            Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName);
-            startActivityForResult(intent, REQUEST_CODE);
-        }
+//        String packageName = getPackageName();
+//        if (!Telephony.Sms.getDefaultSmsPackage(WelcomeActivity.this).equals(packageName)) {
+//            Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+//            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName);
+//            startActivityForResult(intent, REQUEST_CODE);
+//        }
+        SmsUtils.hasDefaultSmsApplicationStartSettings(this, REQUEST_CODE);
     }
 
     /**

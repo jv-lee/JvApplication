@@ -1,24 +1,29 @@
 package com.jv.sms.activity;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.jv.sms.R;
 import com.jv.sms.adapter.SettingsAdapter;
 import com.jv.sms.base.BaseActivity;
 import com.jv.sms.bean.SettingBean;
-import com.jv.sms.utils.KeyboardUtils;
+import com.jv.sms.bean.SmsAppBean;
+import com.jv.sms.mvp.presenter.ISettingsPresenter;
+import com.jv.sms.mvp.presenter.SettingsPresenter;
+import com.jv.sms.mvp.view.ISettingsView;
+import com.jv.sms.utils.SmsUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 
-public class SettingsActivity extends BaseActivity {
+public class SettingsActivity extends BaseActivity implements ISettingsView, AdapterView.OnItemClickListener {
 
 
     @BindView(R.id.lv_item_container)
@@ -26,6 +31,13 @@ public class SettingsActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    private List<SettingBean> settingBeans;
+    private SettingsAdapter adapter;
+
+    private ISettingsPresenter mPresenter;
+
+    private int REQUEST_CODE = 0x025;
 
     @Override
     public int getContentViewId() {
@@ -39,33 +51,11 @@ public class SettingsActivity extends BaseActivity {
     @Override
     protected void initAllView(Bundle savedInstanceState) {
 
+        mItemContainer.setOnItemClickListener(this);
 
-        PackageManager pm = getPackageManager();
-        String name = "";
-        try {
-            name = pm.getApplicationLabel(
-                    pm.getApplicationInfo(Telephony.Sms.getDefaultSmsPackage(this),
-                            PackageManager.GET_META_DATA)).toString();
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        mPresenter = new SettingsPresenter(this);
 
-        SettingBean settingBean1 = new SettingBean("默认短信应用", name, false, false);
-        SettingBean settingBean2 = new SettingBean("接受通知", "", true, true);
-        SettingBean settingBean3 = new SettingBean("通知提示音", "默认铃声", false, false);
-        SettingBean settingBean4 = new SettingBean("听到信息发送提示音", "", true, true);
-        SettingBean settingBean5 = new SettingBean("震动", "", true, true);
-        SettingBean settingBean6 = new SettingBean("您当前所在的国家/地区", "自动检测 (中国)", false, false);
-        SettingBean settingBean7 = new SettingBean("当前手机号", "1325889965", false, false);
-        List<SettingBean> settingBeans = new ArrayList<>();
-        settingBeans.add(settingBean1);
-        settingBeans.add(settingBean2);
-        settingBeans.add(settingBean3);
-        settingBeans.add(settingBean4);
-        settingBeans.add(settingBean5);
-        settingBeans.add(settingBean6);
-        settingBeans.add(settingBean7);
-        mItemContainer.setAdapter(new SettingsAdapter(this, settingBeans));
+        mPresenter.findSettingBeans();
     }
 
 
@@ -80,5 +70,57 @@ public class SettingsActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void setSettingsBeans(List<SettingBean> settingBeans) {
 
+        if (this.settingBeans == null) {
+            this.settingBeans = settingBeans;
+            adapter = new SettingsAdapter(this, this.settingBeans);
+            mItemContainer.setAdapter(adapter);
+        } else {
+            this.settingBeans.clear();
+            this.settingBeans.addAll(settingBeans);
+            adapter.notifyDataSetChanged();
+        }
+
+    }
+
+    @Override
+    public void isDefaultApplication(List<SmsAppBean> smsAppBeans) {
+
+    }
+
+    @Override
+    public void notDefaultApplication() {
+        SmsUtils.hasDefaultSmsApplicationStartSettings(this, 0x0025);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        switch (position) {
+            case 0:
+                mPresenter.clickDefaultSmsApplication();
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            mPresenter.findSettingBeans();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

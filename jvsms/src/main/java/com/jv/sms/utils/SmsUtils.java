@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 
+import com.jv.sms.activity.WelcomeActivity;
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.constant.Constant;
@@ -31,6 +33,39 @@ import java.util.List;
  */
 
 public class SmsUtils {
+
+    /**
+     * 判断当前是否为默认短信应用 并启动设置
+     *
+     * @return
+     */
+    public static void hasDefaultSmsApplicationStartSettings(Context context, int request_code) {
+        String packageName = context.getPackageName();
+        if (!Telephony.Sms.getDefaultSmsPackage(context).equals(packageName)) {
+            Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName);
+            ((Activity) context).startActivityForResult(intent, request_code);
+        }
+    }
+
+    /**
+     * 获取当前默认短信应用名称
+     *
+     * @return
+     */
+    public static String getDefaultSmsApplicationName() {
+
+        PackageManager pm = JvApplication.getInstance().getPackageManager();
+        String name = "";
+        try {
+            name = pm.getApplicationLabel(
+                    pm.getApplicationInfo(Telephony.Sms.getDefaultSmsPackage(JvApplication.getInstance()),
+                            PackageManager.GET_META_DATA)).toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
 
     /**
      * 判断当前应用是否获得短信权限

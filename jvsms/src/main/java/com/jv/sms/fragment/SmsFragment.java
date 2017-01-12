@@ -70,7 +70,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     //数据 及 适配器
     private SmsDataAdapter mAdapter;
-    private List<SmsBean> mSmsBeans;
+    private LinkedList<SmsBean> mSmsBeans;
 
     // 加载数据 及 toolbar 监听接口回调
     private DataLoadLayoutListener listener;
@@ -85,42 +85,23 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         this.listener = listener;
     }
 
+    /**
+     * 清楚当前短信推送数量
+     */
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new SmsPresenter(this);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public int getContentViewId() {
-        return R.layout.fragment_sms;
-    }
-
-    @Override
-    public Observable<EventBase> getRxBus() {
-        return RxBus.getInstance().register(this);
+    public void onResume() {
+        super.onResume();
+        NotificationUtils.clearNum();
     }
 
     /**
-     * 初始化 view函数
-     *
-     * @param savedInstanceState
+     * 释放引用数据
      */
     @Override
-    protected void initAllView(Bundle savedInstanceState) {
-        if (listener != null) {
-            listener.showDataBar(); //显示数据加载bar
-        }
-
-        initPopupView(); //初始化长按弹窗
-
-        //创建显示容器 rv
-        rvContainer.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        rvContainer.setItemAnimator(new DefaultItemAnimator());
-
-        //控制层获取数据填充
-        mPresenter.findSmsAll();
+    public void onDestroy() {
+        super.onDestroy();
+        mSmsBeans = null;
+        mPresenter = null;
     }
 
     /**
@@ -176,26 +157,41 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         return true;
     }
 
-    /**
-     * 清楚当前短信推送数量
-     */
     @Override
-    public void onResume() {
-        super.onResume();
-        NotificationUtils.clearNum();
+    public int getContentViewId() {
+        return R.layout.fragment_sms;
+    }
 
+    @Override
+    public Observable<EventBase> getRxBus() {
+        return RxBus.getInstance().register(this);
     }
 
     /**
-     * 释放引用数据
+     * 初始化 view函数
+     *
+     * @param savedInstanceState
      */
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mSmsBeans = null;
-        mPresenter = null;
+    protected void initAllView(Bundle savedInstanceState) {
+        initPresenter();
+        if (listener != null) {
+            listener.showDataBar(); //显示数据加载bar
+        }
+
+        initPopupView(); //初始化长按弹窗
+
+        //创建显示容器 rv
+        rvContainer.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        rvContainer.setItemAnimator(new DefaultItemAnimator());
+
+        //控制层获取数据填充
+        mPresenter.findSmsAll();
     }
 
+    private void initPresenter() {
+        mPresenter = new SmsPresenter(this);
+    }
 
     /**
      * RxBus事件监听函数 监听通知 接受短信 新增短信
@@ -225,6 +221,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                                 }
                             }
                             if (hasSms) {
+                                if (mPresenter == null) initPresenter();
                                 mPresenter.getNewSms();
                             }
                         }
@@ -238,15 +235,15 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
      * @param beanList
      */
     @Override
-    public void setData(List<SmsBean> beanList) {
+    public void setData(LinkedList<SmsBean> beanList) {
         JvApplication.smsBeans = beanList; //保存当前临时数据
         if (mSmsBeans == null) {
-            mSmsBeans = beanList;
+            mSmsBeans = beanList == null ? new LinkedList<SmsBean>() : beanList;
             mAdapter = new SmsDataAdapter(getActivity(), mSmsBeans, this);
             rvContainer.setAdapter(mAdapter);
         } else {
             mSmsBeans.clear();
-            mSmsBeans = beanList;
+            mSmsBeans = beanList == null ? new LinkedList<SmsBean>() : beanList;
             mAdapter = new SmsDataAdapter(getActivity(), mSmsBeans, this);
             rvContainer.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
@@ -273,10 +270,18 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
     @Override
     public void removeDataSuccess(int position) {
         mAdapter.deleteWindowBtnMethodResult(position);
+        if (mAdapter.getItemCount() == 0) {
+            listener.showDataLayout();
+        }
     }
 
     @Override
     public void setNewSms(SmsBean sms) {
+        if (mAdapter.getItemCount() == 0) {
+            listener.hideDataLayout();
+        }
+        if (sms == null)
+            return;
         mAdapter.receiverSmsAdd(sms);
         rvContainer.scrollToPosition(0);
     }

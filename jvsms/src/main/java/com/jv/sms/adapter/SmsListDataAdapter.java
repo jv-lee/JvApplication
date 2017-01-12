@@ -331,22 +331,10 @@ public class SmsListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      *
      * @param smsBean
      */
-    public void receiverSmsListUi(SmsBean smsBean) {
-        mList.addFirst(smsBean);
-        smsListUiFlagBean.updateSize(1);
-        notifyItemInserted(0);
-        mListener.getRvContainer().scrollToPosition(0);
-    }
-
-    /**
-     * 新增短信至当前适配器
-     *
-     * @param smsBean
-     */
     public void insertSmsListUi(SmsBean smsBean) {
         mList.addFirst(smsBean);
         smsListUiFlagBean.updateSize(1);
-        smsListUiFlagBean.hasSendProgressbar.set(0, false);
+        if (!sendFlag) smsListUiFlagBean.hasSendProgressbar.set(0, false);
         notifyItemInserted(0);
         mListener.getRvContainer().scrollToPosition(0);
     }

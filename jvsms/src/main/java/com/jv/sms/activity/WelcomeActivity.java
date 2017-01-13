@@ -47,20 +47,30 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //判断当前应用是否为系统默认应用
-        if (Telephony.Sms.getDefaultSmsPackage(JvApplication.getInstance()).equals(getPackageName())) {
+        if (SmsUtils.hasDefaultsSmsApplication(JvApplication.getInstance())) {
             startSmsActivity();
         }
 
         //set视图 注入View
         setContentView(R.layout.activity_welcome);
+
         ButterKnife.bind(this);
 
         //获取全屏试图容器
-        mDecorView = getWindow().getDecorView();
+        mDecorView =
+
+                getWindow()
+
+                        .
+
+                                getDecorView();
+
         BarUtils.hideBar(mDecorView); //隐藏状态栏 和控制栏
 
         int navigationHeight = BarUtils.getNavigationBarHeight(this);
-        if (navigationHeight != 0) {
+        if (navigationHeight != 0)
+
+        {
             llNavigationLayout.setWeightSum(0);
             llNavigationLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, navigationHeight));
         }

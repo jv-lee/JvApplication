@@ -35,6 +35,20 @@ import java.util.List;
 public class SmsUtils {
 
     /**
+     * 判断当前是否为默认短信应用
+     *
+     * @param context
+     * @return
+     */
+    public static boolean hasDefaultsSmsApplication(Context context) {
+        if (Telephony.Sms.getDefaultSmsPackage(context).equals(context.getPackageName())) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * 判断当前是否为默认短信应用 并启动设置
      *
      * @return

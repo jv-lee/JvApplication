@@ -115,7 +115,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
         inflater.inflate(R.menu.main_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.menu_item_search);
         mSearchView = (SearchView) menuItem.getActionView();
-        mSearchView.setQueryHint("搜索信息");
+        mSearchView.setQueryHint(JvApplication.getInstance().getString(R.string.search_message));
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnCloseListener(this);
         super.onCreateOptionsMenu(menu, inflater);
@@ -134,7 +134,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
             case R.id.menu_item_hideContacts:
-                Toast.makeText(mContext, "屏蔽功能暂未开放", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, JvApplication.getInstance().getString(R.string.function_not), Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -264,7 +264,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
 
     @Override
     public void removeDataError() {
-        Toast.makeText(getActivity(), "删除失败", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), JvApplication.getInstance().getString(R.string.delete_error), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -354,7 +354,7 @@ public class SmsFragment extends BaseFragment implements ISmsView, SmsDataAdapte
                 }
                 break;
             case R.id.iv_window_add:
-                Toast.makeText(getActivity(), "联系人App正在开发中", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), JvApplication.getInstance().getString(R.string.function_not), Toast.LENGTH_SHORT).show();
                 break;
         }
     }

@@ -9,6 +9,8 @@ import com.jv.sms.R;
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.SettingBean;
 import com.jv.sms.bean.SmsAppBean;
+import com.jv.sms.constant.Constant;
+import com.jv.sms.utils.SPHelper;
 import com.jv.sms.utils.SmsUtils;
 
 import java.util.ArrayList;
@@ -67,16 +69,16 @@ public class SettingsModel implements ISettingsModel {
                 settingBean = new SettingBean(settingTitles[i], SmsUtils.getDefaultSmsApplicationName(), false, false);
                 break;
             case 1: //是否接受通知
-                settingBean = new SettingBean(settingTitles[i], "", true, true);
+                settingBean = new SettingBean(settingTitles[i], "", true, (boolean) SPHelper.get(Constant.SETTINGS_NOTIFICATION, true));
                 break;
             case 2: //通知提示音
-                settingBean = new SettingBean(settingTitles[i], "默认铃声", false, false); //
+                settingBean = new SettingBean(settingTitles[i], "默认铃声", false, false);
                 break;
             case 3: //听到信息发送提示音
-                settingBean = new SettingBean(settingTitles[i], "", true, true);
+                settingBean = new SettingBean(settingTitles[i], "", true, (boolean) SPHelper.get(Constant.SETTINGS_VOICE, true));
                 break;
             case 4: //震动
-                settingBean = new SettingBean(settingTitles[i], "", true, true);
+                settingBean = new SettingBean(settingTitles[i], "", true, (boolean) SPHelper.get(Constant.SETTINGS_SHOCK, true));
                 break;
             case 5: //当前所在的国家地址
                 settingBean = new SettingBean(settingTitles[i], "自动检测 (中国)", false, false);

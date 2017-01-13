@@ -20,6 +20,21 @@
     <string name="inputSmsContent">请输入短信内容</string>
     <string name="delete">删除</string>
 
+    <string name="str_dialog_yes">确认</string>
+    <string name="str_dialog_no">取消</string>
+    <string name="has_delete_session">确认删除当前会话？</string>
+    <string name="prompt">提示</string>
+    <string name="click_max">操作频繁</string>
+    <string name="function_not">该功能暂未开放</string>
+    <string name="delete_error">删除失败，请检查权限</string>
+    <string name="new_sms">新信息</string>
+    <string name="forward_message">转发信息</string>
+    <string name="search_message">搜索信息</string>
+    <string name="not_linkman">非联系人请直接输入号码</string>
+    <string name="load_linkman_error">加载联系人失败</string>
+    <string name="load_input_linkman_list_error">加载输入提示联系人列表失败</string>
+    <string name="update_default_sms_application">要更改短信应用吗？</string>
+
 
     <string-array name="settings">
         <item>默认短信应用</item>

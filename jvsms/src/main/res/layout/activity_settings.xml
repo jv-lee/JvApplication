@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:fitsSystemWindows="true"
     tools:context="com.jv.sms.activity.SettingsActivity">
 
@@ -25,7 +26,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/lv_item_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

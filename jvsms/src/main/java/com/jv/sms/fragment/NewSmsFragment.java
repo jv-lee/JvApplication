@@ -161,7 +161,7 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
                 if (Pattern.compile("[0-9]*").matcher(etInputTel.getText().toString()).matches()) {
                     mPresenter.findLinkmanByPhoneNumber(etInputTel.getText().toString());
                 } else {
-                    Toast.makeText(mContext, "非联系人请直接输入号码", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, JvApplication.getInstance().getString(R.string.not_linkman), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case EditorInfo.IME_ACTION_SEARCH:
@@ -198,7 +198,7 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
 
     @Override
     public void findContactsAllError() {
-        Toast.makeText(mContext, "加载联系人失败", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, JvApplication.getInstance().getString(R.string.load_linkman_error), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -216,7 +216,7 @@ public class NewSmsFragment extends BaseFragment implements INewSmsView {
 
     @Override
     public void findLinkmanAllError() {
-        Toast.makeText(mContext, "加载输入提示联系人列表失败", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, JvApplication.getInstance().getString(R.string.load_input_linkman_list_error), Toast.LENGTH_SHORT).show();
     }
 
     @Override

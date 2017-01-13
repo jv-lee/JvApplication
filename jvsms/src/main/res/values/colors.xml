@@ -12,6 +12,7 @@
     <color name="colorNewSmsText">#546E7A</color>
     <color name="colorNewNameText">#37474F</color>
 
+
     <!--色调1-->
     <color name="colorPrimary1">#9C27B0</color>
     <color name="colorPrimaryDark1">#7C1F8C</color>
@@ -56,6 +57,17 @@
     <color name="colorPrimary9">#DB4437</color>
     <color name="colorPrimaryDark9">#AF362C</color>
     <color name="colorAccent9">#AF362C</color>
+
+
+    <!--  switch default 选择颜色 -->
+    <color name="switch_true_thumb">#026BA4</color>
+    <color name="switch_false_thumb">#ECECEC</color>
+    <color name="switch_true_track">#B0D0E1</color>
+    <color name="switch_false_track">#AFAFAF</color>
+
+    <!--  switch 锁定后选择色 -->
+    <color name="switch_thumb_dark">#B9B9B9</color>
+    <color name="switch_track_dark">#E9E9E9</color>
 
 
 </resources>

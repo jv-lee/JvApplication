@@ -37,6 +37,12 @@ public class SettingsAlertAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.smsAppBeans = smsAppBeans;
     }
 
+    public void clearData(List<SmsAppBean> smsAppBeans) {
+        this.smsAppBeans.clear();
+        this.smsAppBeans = smsAppBeans;
+        notifyDataSetChanged();
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new SettingsAlertViewHolder(LayoutInflater.from(context).inflate(R.layout.item_settings_default_dialog, parent, false));

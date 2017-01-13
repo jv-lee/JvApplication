@@ -97,6 +97,10 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
     private PopupWindow mPopupWindow;
     private View popupView;
 
+    //Dialog
+    AlertDialog deleteDialog;
+    AlertDialog forwardDialog;
+
     //toolbar监听回调接口
     private ToolbarSetListener toolbarSetListener;
 
@@ -160,6 +164,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         JvApplication.THIS_SMS_FRAGMENT_FLAG = "";//将当前全局号码初始化
 
         //退出时刷新显示
+        if (mAdapter == null) return;
         if (mAdapter.getItemCount() == 0) {
             RxBus.getInstance().post(new EventBase(Constant.RX_CODE_DELETE_THREAD_ID, bean.getThread_id()));
         } else {
@@ -176,17 +181,19 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                 break;
             case R.id.menu_item_delete: // 菜单点击删除当前联系人会话
                 if (SmsUtils.setDefaultSms(rvContainer, mContext)) {
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-                    alertDialog.setTitle("提示")
-                            .setMessage("确认删除当前会话？")
-                            .setNegativeButton("取消", null)
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mPresenter.deleteSmsByThreadId(bean.getThread_id());
-                                }
-                            })
-                            .create().show();
+                    if (deleteDialog == null) {
+                        deleteDialog = new AlertDialog.Builder(mContext).setTitle(JvApplication.getInstance().getString(R.string.prompt))
+                                .setMessage(JvApplication.getInstance().getString(R.string.has_delete_session))
+                                .setNegativeButton(JvApplication.getInstance().getString(R.string.str_dialog_no), null)
+                                .setPositiveButton(JvApplication.getInstance().getString(R.string.str_dialog_yes), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mPresenter.deleteSmsByThreadId(bean.getThread_id());
+                                    }
+                                }).create();
+                    }
+                    deleteDialog.show();
+
                 }
                 break;
             case R.id.menu_item_addContacts: // 菜单点击 添加当前会话人 为联系人
@@ -251,11 +258,11 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
                     mAdapter.sendFlag = false;
                     sendSms(etSmsContent.getText().toString(), bean.getPhoneNumber());
                 } else {
-                    Toast.makeText(mContext, "操作频繁", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, JvApplication.getInstance().getString(R.string.click_max), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.iv_addSms:
-                Toast.makeText(getActivity(), "该功能暂未开放", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), JvApplication.getInstance().getString(R.string.function_not), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.et_smsContent:
                 hideEmotionView(true);
@@ -371,7 +378,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
 
     @Override
     public void deleteThreadError() {
-        Toast.makeText(mContext, "删除失败，请检查权限", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, JvApplication.getInstance().getString(R.string.delete_error), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -502,23 +509,27 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
      */
     private void showForward(final String text) {
 
-        //初始化转发列表View
-        RecyclerView rvForwardView = new RecyclerView(mContext);
-        rvForwardView.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        rvForwardView.setLayoutManager(new LinearLayoutManager(mContext));
-        rvForwardView.setAdapter(new ForwardDialogAdapter(mContext, text));
+        if (forwardDialog == null) {
+            //初始化转发列表View
+            RecyclerView rvForwardView = new RecyclerView(mContext);
+            rvForwardView.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            rvForwardView.setLayoutManager(new LinearLayoutManager(mContext));
+            rvForwardView.setAdapter(new ForwardDialogAdapter(mContext, text));
 
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-        alertDialog.setTitle("转发信息")
-                .setView(rvForwardView)
-                .setNegativeButton("取消", null)
-                .setPositiveButton("新信息", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        JvApplication.text = text;
-                        startActivity(new Intent(mContext, NewSmsActivity.class));
-                    }
-                }).create().show();
+            forwardDialog = new AlertDialog.Builder(mContext).setTitle(JvApplication.getInstance().getString(R.string.forward_message))
+                    .setView(rvForwardView)
+                    .setNegativeButton(JvApplication.getInstance().getString(R.string.str_dialog_no), null)
+                    .setPositiveButton(JvApplication.getInstance().getString(R.string.new_sms), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            JvApplication.text = text;
+                            startActivity(new Intent(mContext, NewSmsActivity.class));
+                        }
+                    }).create();
+        }
+
+        forwardDialog.show();
+
     }
 
     private void createEjmoLayout(Bundle savedInstanceState) {

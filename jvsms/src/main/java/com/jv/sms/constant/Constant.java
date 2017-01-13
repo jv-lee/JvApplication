@@ -16,4 +16,9 @@ public class Constant {
 
     public static final int SMS_STATUS_ERROR = 128;
 
+    //记录设置 是否接受通知
+    public static final String SETTINGS_NOTIFICATION = "has_receiver_notification";
+    public static final String SETTINGS_VOICE = "settings_voice";
+    public static final String SETTINGS_SHOCK = "settings_shock";
+
 }

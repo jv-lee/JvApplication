@@ -43,7 +43,7 @@
         <item>听到短信发送提示音</item>
         <item>震动</item>
         <item>您当前所在国家/地区</item>
-        <item>当前手机号</item>
+        <item>手机号码</item>
     </string-array>
 
 </resources>

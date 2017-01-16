@@ -84,7 +84,7 @@ public class SettingsModel implements ISettingsModel {
                 settingBean = new SettingBean(settingTitles[i], "自动检测 (中国)", false, false);
                 break;
             case 6: //当前手机号
-                settingBean = new SettingBean(settingTitles[i], "1325889965", false, false);
+                settingBean = new SettingBean(settingTitles[i], SmsUtils.getThisPhoneNumber(), false, false);
                 break;
         }
         return settingBean;

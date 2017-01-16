@@ -134,7 +134,7 @@ public class SettingsActivity extends BaseActivity implements ISettingsView, Set
             case 1:
                 if (!adapter.defaultFlag) return;
                 adapter.switchFlag = settingBean.isHasOp() == true ? false : true;
-                itemClickMethod(settingBean, view, Constant.SETTINGS_NOTIFICATION);
+                itemClickMethod(settingBean, view, Constant.SETTINGS_NOTIFICATION, position);
                 adapter.notifyItemChanged(3);
                 adapter.notifyItemChanged(4);
                 break;
@@ -143,11 +143,11 @@ public class SettingsActivity extends BaseActivity implements ISettingsView, Set
                 break;
             case 3:
                 if (!adapter.switchFlag || !adapter.defaultFlag) return;
-                itemClickMethod(settingBean, view, Constant.SETTINGS_VOICE);
+                itemClickMethod(settingBean, view, Constant.SETTINGS_VOICE, position);
                 break;
             case 4:
                 if (!adapter.switchFlag || !adapter.defaultFlag) return;
-                itemClickMethod(settingBean, view, Constant.SETTINGS_SHOCK);
+                itemClickMethod(settingBean, view, Constant.SETTINGS_SHOCK, position);
                 break;
             case 5:
                 break;
@@ -163,12 +163,12 @@ public class SettingsActivity extends BaseActivity implements ISettingsView, Set
      * @param view
      * @param code
      */
-    public void itemClickMethod(SettingBean settingBean, View view, String code) {
+    public void itemClickMethod(SettingBean settingBean, View view, String code, int position) {
         boolean hasOp = settingBean.isHasOp() == true ? false : true;
         SPHelper.save(code, hasOp);
         SwitchCompat switchCompat = (SwitchCompat) view.findViewById(R.id.sc_settings_op);
         switchCompat.setChecked(hasOp);
-        settingBean.setHasOp(hasOp);
+        settingBeans.get(position).setHasOp(hasOp);
     }
 
     @Override

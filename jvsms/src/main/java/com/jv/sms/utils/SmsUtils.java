@@ -15,6 +15,7 @@ import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 
@@ -33,6 +34,15 @@ import java.util.List;
  */
 
 public class SmsUtils {
+
+    public static String getThisPhoneNumber() {
+        TelephonyManager telephonyManager = (TelephonyManager) JvApplication.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
+        String phoneNumber = telephonyManager.getLine1Number();
+        if (phoneNumber.equals("") || phoneNumber == null) {
+            phoneNumber = "获取号码失败";
+        }
+        return phoneNumber;
+    }
 
     /**
      * 判断当前是否为默认短信应用

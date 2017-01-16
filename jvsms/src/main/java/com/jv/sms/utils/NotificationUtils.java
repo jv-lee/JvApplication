@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
+import android.widget.TextView;
 
 import com.jv.sms.R;
 import com.jv.sms.activity.SmsActivity;
@@ -18,6 +20,7 @@ import com.jv.sms.bean.SmsBean;
 import com.jv.sms.bean.SmsListUiFlagBean;
 import com.jv.sms.constant.Constant;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,12 +77,19 @@ public class NotificationUtils {
                 .setTicker(content)
                 .setWhen(System.currentTimeMillis())
                 .setPriority(Notification.PRIORITY_HIGH)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
+//                .setDefaults(Notification.DEFAULT_VIBRATE) //设置默认提示震动 和 提示音
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
-                .addAction(R.mipmap.ic_call_back, "点击回复", null) //添加点击Action事件
-        ;
+                .addAction(R.mipmap.ic_call_back, "点击回复", null); //添加点击Action事件
 
+        //设置提示音
+        if ((boolean) SPHelper.get(Constant.SETTINGS_VOICE, true)) {
+            nBuilder.setSound(Uri.parse("android.resource://" + JvApplication.getInstance().getPackageName() + "/" + R.raw.notif));
+        }
+        //设置震动
+        if ((boolean) SPHelper.get(Constant.SETTINGS_SHOCK, true)) {
+            nBuilder.setVibrate(new long[]{0, 1000, 0, 0});
+        }
         notificationManager.notify(1, nBuilder.build());
     }
 

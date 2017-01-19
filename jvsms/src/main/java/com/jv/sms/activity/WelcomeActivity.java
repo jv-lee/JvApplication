@@ -57,13 +57,7 @@ public class WelcomeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         //获取全屏试图容器
-        mDecorView =
-
-                getWindow()
-
-                        .
-
-                                getDecorView();
+        mDecorView = getWindow().getDecorView();
 
         BarUtils.hideBar(mDecorView); //隐藏状态栏 和控制栏
 

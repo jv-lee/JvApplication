@@ -2,8 +2,10 @@ package com.jv.sms.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,10 +18,11 @@ import com.jv.sms.fragment.SmsFragment;
 import com.jv.sms.interfaces.DataLoadLayoutListener;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class SmsActivity extends BaseActivity implements DataLoadLayoutListener {
+public class SmsActivity extends AppCompatActivity implements DataLoadLayoutListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -33,21 +36,14 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
     private Fragment mFragment;
 
     @Override
-    public int getContentViewId() {
-        return R.layout.activity_sms;
-    }
-
-    @Override
-    protected void setThemes() {
-    }
-
-    @Override
-    protected void initAllView(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sms);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         mFragment = new SmsFragment(this);
         getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container, mFragment).commit();
     }
-
 
     @Override
     public void showDataBar() {

@@ -97,7 +97,7 @@ public class SmsListActivity extends BaseActivity implements ToolbarSetListener,
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mFragment != null && mFragment instanceof SmsListFragment) {
             if (!((SmsListFragment) mFragment).onKeyDown(keyCode, event)) {
-                finish();
+//                finish(); swipeBack 自动调用finish
             } else {
                 return false;
             }

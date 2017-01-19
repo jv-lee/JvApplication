@@ -212,7 +212,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
             }
             return mAdapter.clearSelectMessageState();
         }
-        return true;
+        return false;
     }
 
     @Override

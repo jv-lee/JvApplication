@@ -28,6 +28,7 @@ import com.jv.sms.utils.SmsUtils;
 import java.util.List;
 
 import butterknife.BindView;
+import lib.SwipeBackLayout;
 
 public class SettingsActivity extends BaseActivity implements ISettingsView, SettingsAdapter.OnItemClick, SettingsAlertAdapter.AlertInterface {
 

@@ -7,12 +7,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -27,12 +29,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark1</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme1.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--                                        主题2                                                                 -->
@@ -42,12 +46,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark2</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme2.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--                                        主题3                                                                 -->
@@ -57,12 +63,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark3</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme3.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--                                        主题4                                                                 -->
@@ -72,12 +80,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark4</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme4.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--                                        主题5                                                                 -->
@@ -87,12 +97,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark5</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme5.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--                                        主题6                                                                 -->
@@ -102,12 +114,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark6</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme6.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
 
@@ -118,12 +132,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark7</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme7.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
 
@@ -134,12 +150,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark8</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme8.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--                                        主题9                                                                 -->
@@ -149,12 +167,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark9</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!--取消头部ActionBar-->
     <style name="AppTheme9.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
 
@@ -183,6 +203,13 @@
         <!-- active thumb & track color (30% transparency) -->
         <item name="colorControlActivated">#e6e600</item>
         <item name="colorSwitchThumbNormal">#cc0000</item>
+    </style>
+
+    <style name="SwipeBackLayout">
+        <item name="EdgeSize">20dip</item>
+        <item name="ShadowLeft">@drawable/shadow_left</item>
+        <item name="ShadowRight">@drawable/shadow_right</item>
+        <item name="ShadowBottom">@drawable/shadow_bottom</item>
     </style>
 
 

@@ -470,9 +470,10 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         for (int i = 0; i < mList.size(); i++) {
             if (mList.get(i).getPhoneNumber().equals(smsBean.getPhoneNumber())) {
                 flag = false;
-                Log.i("SmsDataAdapter", smsBean.getSmsBody());
-                mList.get(i).setSmsBody(smsBean.getSmsBody());
-                notifyItemChanged(i);
+                if (!mList.get(i).getSmsBody().equals(smsBean.getSmsBody())) {
+                    mList.get(i).setSmsBody(smsBean.getSmsBody());
+                    notifyItemChanged(i);
+                }
             }
         }
         if (flag || mList.size() == 0) {

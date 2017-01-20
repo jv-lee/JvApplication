@@ -1,5 +1,5 @@
 
-package lib;
+package com.jv.sms.widget.swipebacklayout;
 
 import android.app.Activity;
 import android.content.Context;

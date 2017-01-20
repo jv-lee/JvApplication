@@ -1,12 +1,10 @@
 
-package lib.app;
+package com.jv.sms.widget.swipebacklayout;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
-import lib.SwipeBackLayout;
 
 
 public class SwipeBackActivity extends AppCompatActivity {

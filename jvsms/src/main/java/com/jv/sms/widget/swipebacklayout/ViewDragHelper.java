@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package lib;
+package com.jv.sms.widget.swipebacklayout;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;

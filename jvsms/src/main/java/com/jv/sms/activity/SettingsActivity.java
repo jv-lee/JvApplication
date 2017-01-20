@@ -8,8 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.jv.sms.R;
 import com.jv.sms.adapter.SettingsAdapter;
@@ -28,7 +26,6 @@ import com.jv.sms.utils.SmsUtils;
 import java.util.List;
 
 import butterknife.BindView;
-import lib.SwipeBackLayout;
 
 public class SettingsActivity extends BaseActivity implements ISettingsView, SettingsAdapter.OnItemClick, SettingsAlertAdapter.AlertInterface {
 

@@ -2,10 +2,9 @@ package com.jv.sms.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import butterknife.ButterKnife;
-import lib.app.SwipeBackActivity;
+import com.jv.sms.widget.swipebacklayout.SwipeBackActivity;
 
 /**
  * Created by Administrator on 2016/12/14.

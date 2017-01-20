@@ -243,6 +243,23 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
             }
         });
 
+//        rvContainer.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+//
+//                int totalItemCount = layoutManager.getItemCount();
+//
+//                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+//
+//                if ((lastVisibleItem + 1) == totalItemCount) {
+//                    Toast.makeText(mContext, "到底部了 itemCount = " + totalItemCount + "  lastVisibleItem = " + lastVisibleItem, Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+
         //加载数据
         mPresenter.findSmsBeansAll(bean.getThread_id());
 

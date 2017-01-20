@@ -27,7 +27,7 @@ public abstract class BaseActivity extends SwipeBackActivity {
 
         mSwipeBackLayout = getSwipeBackLayout();
         //设置可以滑动的区域，推荐用屏幕像素的一半来指定
-        mSwipeBackLayout.setEdgeSize(350);
+        mSwipeBackLayout.setEdgeSize(200);
         //设定滑动关闭的方向，SwipeBackLayout.EDGE_ALL表示向下、左、右滑动均可。EDGE_LEFT，EDGE_RIGHT，EDGE_BOTTOM
         mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
 

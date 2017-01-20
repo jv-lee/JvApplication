@@ -316,7 +316,9 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         JvApplication.themeId = bean.getColorPosition();
         mContext.startActivity(intent);
         if (SmsUtils.setDefaultSms(mListener.getRvContainer(), mContext)) {
-            updateReadState(bean, position);
+            if (!mList.get(position).getReadType().equals(SmsBean.ReadType.IS_READ)) {
+                updateReadState(bean, position);
+            }
         }
     }
 

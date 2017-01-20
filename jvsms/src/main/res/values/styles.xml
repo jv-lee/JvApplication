@@ -209,7 +209,7 @@
         <item name="EdgeSize">20dip</item>
         <item name="ShadowLeft">@mipmap/shadow_left</item>
         <item name="ShadowRight">@mipmap/shadow_right</item>
-        <item name="ShadowBottom">@drawable/shadow_bottom</item>
+        <item name="ShadowBottom">@mipmap/shadow_bottom</item>
     </style>
 
 

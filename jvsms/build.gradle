@@ -25,7 +25,7 @@ dependencies {
     //添加emoj表情库
     compile 'com.github.jv-lee:EmojLibrary:v1.0'
 
-    //可选，用于生成application类 tinker热更新依赖库
+    // tinker热更新依赖库
     compile("com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}") { changing = true }
     provided("com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
     compile "com.android.support:multidex:1.0.1"

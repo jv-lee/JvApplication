@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Environment;
 import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -22,6 +23,7 @@ import com.jv.sms.R;
 import com.jv.sms.app.JvApplication;
 import com.jv.sms.utils.BarUtils;
 import com.jv.sms.utils.SmsUtils;
+import com.tencent.tinker.lib.tinker.TinkerInstaller;
 
 import java.util.List;
 
@@ -45,6 +47,10 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //加载热更新补丁
+        TinkerInstaller.onReceiveUpgradePatch(getApplicationContext(),
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
 
         //判断当前应用是否为系统默认应用
         if (SmsUtils.hasDefaultsSmsApplication(JvApplication.getInstance())) {

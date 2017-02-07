@@ -2,18 +2,21 @@ package com.jv.sms.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 
 import com.jv.sms.R;
 import com.jv.sms.bean.SmsBean;
 import com.jv.sms.utils.SPHelper;
+import com.tencent.tinker.anno.DefaultLifeCycle;
+import com.tencent.tinker.loader.app.DefaultApplicationLike;
+import com.tencent.tinker.loader.shareutil.ShareConstants;
 
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/12/5.
  */
-
-public class JvApplication extends Application {
+public class JvApplication extends JvApplications {
 
     private static Context mContext;
 

@@ -18,9 +18,7 @@ import android.widget.LinearLayout;
 import java.lang.reflect.Method;
 
 /**
- * <pre>
- *     desc  : 状态栏相关工具类
- * </pre>
+ * desc  : 状态栏相关工具类
  */
 public class BarUtils {
     private BarUtils() {

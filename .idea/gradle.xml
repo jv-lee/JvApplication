@@ -8,8 +8,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/bannerlib" />
             <option value="$PROJECT_DIR$/jvdaily" />
             <option value="$PROJECT_DIR$/jvsms" />
+            <option value="$PROJECT_DIR$/recyclerlib" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

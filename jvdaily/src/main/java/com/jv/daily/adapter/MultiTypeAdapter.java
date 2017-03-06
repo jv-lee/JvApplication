@@ -1,5 +1,6 @@
 package com.jv.daily.adapter;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,12 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeAdapter.Item
 
         //获取 xml文件中 绑定名字
         int getVariableId();
+    }
+
+    public Context context;
+
+    public MultiTypeAdapter(Context context) {
+        this.context = context;
     }
 
     private List<ItemInterface> items = new ArrayList<>();
@@ -53,7 +60,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeAdapter.Item
 
     //获取当前item 下标位置
     public int findPosition(ItemInterface item) {
-        return items.indexOf(item);
+        return items.indexOf(item)+1;
     }
 
     public void setItem(ItemInterface item) {

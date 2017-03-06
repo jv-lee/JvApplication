@@ -1,7 +1,11 @@
 package com.jv.daily.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -12,12 +16,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jv.daily.R;
+import com.jv.daily.mvp.module.NewsBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes;
 
 public class BannerView extends RelativeLayout {
     private ViewPager mViewPager;
@@ -25,7 +35,10 @@ public class BannerView extends RelativeLayout {
     private Context mContext;
     private ImageView[] mIndicator;
     private Handler mHandler = new Handler();
-    final List<String> mList = new ArrayList<>();
+    private TextView tvTitle;
+
+    List<NewsBean.TopStoriesBean> mList = new ArrayList<>();
+
     private OnBannerItemClickListener mOnBannerItemClickListener;
     private Runnable mRunnable = new Runnable() {
         @Override
@@ -36,33 +49,65 @@ public class BannerView extends RelativeLayout {
     };
     private int mItemCount;
 
-    public interface OnBannerItemClickListener {
-        void onClick(int position);
-    }
-
     public BannerView(Context context) {
-        this(context, null);
+        super(context);
     }
 
     public BannerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
         init();
+        initWidget(context, attrs);
     }
+
+    public BannerView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.mContext = context;
+        init();
+        initWidget(context, attrs);
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public BannerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        this.mContext = context;
+        init();
+        initWidget(context, attrs);
+
+    }
+
+    public interface OnBannerItemClickListener {
+        void onClick(int position);
+    }
+
 
     private void init() {
         View.inflate(mContext, R.layout.widget_bannerview, this);
         // 取到布局中的控件
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mLinearLayout = (LinearLayout) findViewById(R.id.ll_points);
+        tvTitle = (TextView) findViewById(R.id.tv_title);
+    }
+
+    private void initWidget(Context context, AttributeSet attrs) {
+        Log.i("Banner", "initWidget()");
+        //获取当前控件定义的属性
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.BannerView);
+    }
+
+
+    @Override
+    public void setContentDescription(CharSequence contentDescription) {
+        List<NewsBean.TopStoriesBean> beans = new Gson().fromJson(contentDescription.toString(), new TypeToken<List<NewsBean.TopStoriesBean>>() {
+        }.getType());
+        setList(beans);
     }
 
     /**
      * 给banner中的viewpager设置数据
-     *
-     * @param list
      */
-    public void setList(List<String> list) {
+    public void setList(List<NewsBean.TopStoriesBean> list) {
         if (mList.size() == 0) {
             mList.addAll(list);
             mItemCount = mList.size();
@@ -87,6 +132,7 @@ public class BannerView extends RelativeLayout {
         // 初始化底部点指示器
         initIndicator(mList, mContext);
         mViewPager.setCurrentItem(500 * mItemCount);
+        mViewPager.setOffscreenPageLimit(0);
 
         // 给viewpager设置滑动监听
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -119,10 +165,11 @@ public class BannerView extends RelativeLayout {
         return super.dispatchTouchEvent(ev);
     }
 
-    private void initIndicator(List<String> list, Context context) {
+    //指示器下标
+    private void initIndicator(List<NewsBean.TopStoriesBean> list, Context context) {
         mIndicator = new ImageView[mItemCount];
         for (int i = 0; i < mIndicator.length; i++) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(12, 12);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(18, 18);
             params.setMargins(6, 0, 6, 0);
             ImageView imageView = new ImageView(context);
             mIndicator[i] = imageView;
@@ -150,6 +197,10 @@ public class BannerView extends RelativeLayout {
         }
     }
 
+    public List<NewsBean.TopStoriesBean> getList() {
+        return mList;
+    }
+
     private void startRecycle() {
         mHandler.postDelayed(mRunnable, 5000);
     }
@@ -170,10 +221,10 @@ public class BannerView extends RelativeLayout {
 
 
     private class BannerPagerAdapter extends PagerAdapter {
-        private List<String> imagesUrl;
+        private List<NewsBean.TopStoriesBean> imagesUrl;
         private Context context;
 
-        public BannerPagerAdapter(List<String> imagesUrl, Context context) {
+        public BannerPagerAdapter(List<NewsBean.TopStoriesBean> imagesUrl, Context context) {
             this.imagesUrl = imagesUrl;
             this.context = context;
         }
@@ -190,16 +241,20 @@ public class BannerView extends RelativeLayout {
 
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
+            final int index = position % mList.size();
+            NewsBean.TopStoriesBean bean = mList.get(index);
+
             ImageView imageView = new ImageView(context);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             // 联网取图片，根据自己的情况修改
-            Glide.with(mContext).load(mList.get(position % mList.size())).into(imageView);
-            Log.i("num", position % mList.size() + "");
+            Glide.with(context).load(bean.getImage()).into(imageView);
+            tvTitle.setText(bean.getTitle());
+
             container.addView(imageView);
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnBannerItemClickListener.onClick(position % mList.size());
+                    mOnBannerItemClickListener.onClick(index);
                 }
             });
             return imageView;

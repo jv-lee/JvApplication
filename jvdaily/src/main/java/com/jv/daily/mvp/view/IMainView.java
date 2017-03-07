@@ -1,6 +1,7 @@
 package com.jv.daily.mvp.view;
 
 import com.jv.daily.adapter.MultiTypeAdapter;
+import com.jv.daily.entity.TopStoriesBean;
 import com.jv.daily.mvp.module.NewsBean;
 import com.jv.daily.widget.BannerView;
 
@@ -11,7 +12,7 @@ import java.util.List;
  */
 
 public interface IMainView {
-    void insertBannerView(List<NewsBean.TopStoriesBean> list, List<String> images, List<String> titles);
+    void insertBannerView(List<TopStoriesBean> list, List<String> images, List<String> titles);
 
     void errorBannerView();
 

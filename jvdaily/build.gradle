@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 25
@@ -23,6 +24,10 @@ android {
     dataBinding {
         enabled true
     }
+    greendao {
+        targetGenDir 'src/main/java/'
+    }
+
 }
 
 dependencies {
@@ -47,6 +52,8 @@ dependencies {
     //    compile 'com.jcodecraeer:xrecyclerview:+'
     //换肤库
     compile 'com.solid.skin:skinlibrary:+'
+    //greenDao ORM框架
+    compile 'org.greenrobot:greendao:3.0.1'
     compile project(':bannerlib')
     compile project(':recyclerlib')
 }

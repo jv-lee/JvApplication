@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
@@ -16,6 +17,7 @@ import com.jv.daily.R;
 import com.jv.daily.adapter.MultiTypeAdapter;
 import com.jv.daily.app.MyApplication;
 import com.jv.daily.databinding.ActivityMainBinding;
+import com.jv.daily.entity.TopStoriesBean;
 import com.jv.daily.mvp.module.NewsBean;
 import com.jv.daily.mvp.presenter.MainPresenter;
 import com.jv.daily.mvp.view.IMainView;
@@ -30,6 +32,8 @@ import static com.jv.bannerlib.BannerConfig.RIGHT;
 
 
 public class MainActivity extends SkinBaseActivity implements IMainView, XRecyclerView.LoadingListener {
+
+    private final String TAG = MainActivity.class.getSimpleName();
 
     private ActivityMainBinding binding;
     private MainPresenter mPresenter;
@@ -73,7 +77,7 @@ public class MainActivity extends SkinBaseActivity implements IMainView, XRecycl
      * @param list
      */
     @Override
-    public void insertBannerView(final List<NewsBean.TopStoriesBean> list, List<String> images, final List<String> titles) {
+    public void insertBannerView(final List<TopStoriesBean> list, List<String> images, final List<String> titles) {
         banner.setIndicatorGravity(RIGHT)
                 .setImages(images)
                 .setBannerTitles(titles)
@@ -121,34 +125,14 @@ public class MainActivity extends SkinBaseActivity implements IMainView, XRecycl
 
     @Override
     public void onRefresh() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                    mPresenter.refreshNews();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
+        Log.i(TAG, "onRefresh");
+        mPresenter.refreshNews();
     }
 
     @Override
     public void onLoadMore() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                    mPresenter.loadNews();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
+        Log.i(TAG, "onLoadMore");
+        mPresenter.loadNews();
     }
 
 

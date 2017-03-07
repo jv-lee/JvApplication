@@ -11,6 +11,7 @@ import com.jv.daily.activity.ContentActivity;
 import com.jv.daily.activity.MainActivity;
 import com.jv.daily.adapter.MultiTypeAdapter;
 import com.jv.daily.app.MyApplication;
+import com.jv.daily.entity.StoriesBean;
 import com.jv.daily.mvp.module.NewsBean;
 
 import java.io.Serializable;
@@ -25,9 +26,9 @@ public class NewsItem extends BaseItem {
         return R.layout.item_news;
     }
 
-    private final NewsBean.StoriesBean bean;
+    private final StoriesBean bean;
 
-    public NewsItem(final MultiTypeAdapter adapter, final NewsBean.StoriesBean bean) {
+    public NewsItem(final MultiTypeAdapter adapter, final StoriesBean bean) {
         this.bean = bean;
 
         setOnClickListener(new View.OnClickListener() {
@@ -71,7 +72,7 @@ public class NewsItem extends BaseItem {
     }
 
     public String getUrl() {
-        return bean.getImages().get(0);
+        return bean.getImage();
     }
 
     public String getContent() {

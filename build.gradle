@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         //接入butterknife 插件库配置
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         //tinker热更新插件库配置

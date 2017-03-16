@@ -1,13 +1,10 @@
 package com.jv.sms.mvp.presenter;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import com.jv.sms.app.JvApplication;
 import com.jv.sms.bean.ContactsBean;
 import com.jv.sms.bean.LinkmanBean;
 import com.jv.sms.bean.SmsBean;
-import com.jv.sms.fragment.NewSmsFragment;
 import com.jv.sms.mvp.model.INewSmsModel;
 import com.jv.sms.mvp.model.NewSmsModel;
 import com.jv.sms.mvp.view.INewSmsView;
@@ -15,7 +12,6 @@ import com.jv.sms.mvp.view.INewSmsView;
 import java.util.List;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;

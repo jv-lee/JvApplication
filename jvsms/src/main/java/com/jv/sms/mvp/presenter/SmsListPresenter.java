@@ -10,10 +10,8 @@ import com.jv.sms.bean.SmsBean;
 import com.jv.sms.mvp.model.ISmsListModel;
 import com.jv.sms.mvp.model.SmsListModel;
 import com.jv.sms.mvp.view.ISmsListView;
-import com.jv.sms.mvp.view.ISmsView;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;

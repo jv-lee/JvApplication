@@ -10,43 +10,29 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
-
     //添加rxjava依赖库
     compile 'io.reactivex:rxjava:+'
     compile 'io.reactivex:rxandroid:+'
-
     //添加butterknife view注入
     compile 'com.jakewharton:butterknife:8.1.0'
     apt 'com.jakewharton:butterknife-compiler:8.1.0'
-
     //添加侧滑删除依赖库
     compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.2.5'
-
     //添加emoj表情库
     compile 'com.github.jv-lee:EmojLibrary:v1.0'
-
     // tinker热更新依赖库
     compile("com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}") { changing = true }
     provided("com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
-    compile "com.android.support:multidex:1.0.1"
-
+    compile 'com.android.support:multidex:1.0.1'
 }
 
 android {
     signingConfigs {
-        release {
-            try {
-                storeFile file("./keystore/release.keystore")
-                storePassword "testres"
-                keyAlias "testres"
-                keyPassword "testres"
-            } catch (ex) {
-                throw new InvalidUserDataException(ex.toString())
-            }
-        }
-
-        debug {
-            storeFile file("./keystore/debug.keystore")
+        config {
+            keyAlias 'zhumeng'
+            keyPassword 'zhumeng'
+            storeFile file('C:/Users/Administrator/Documents/签名文件/apk/apk.keystore')
+            storePassword 'zhumeng'
         }
     }
     compileSdkVersion 25
@@ -63,13 +49,13 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             debuggable true
             minifyEnabled false
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.config
         }
     }
     sourceSets {

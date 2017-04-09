@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.jv.daily.utils.SPUtil;
 
-import solid.ren.skinlibrary.SkinConfig;
 import solid.ren.skinlibrary.base.SkinBaseApplication;
 
 /**
@@ -15,6 +14,7 @@ public class MyApplication extends SkinBaseApplication {
 
     private static Context mContext;
     public static boolean hasFist = false;
+
     @Override
     public void onCreate() {
         super.onCreate();

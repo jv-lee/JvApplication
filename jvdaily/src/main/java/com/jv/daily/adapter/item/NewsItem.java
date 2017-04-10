@@ -1,20 +1,13 @@
 package com.jv.daily.adapter.item;
 
-import android.app.Application;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.jv.daily.R;
 import com.jv.daily.activity.ContentActivity;
-import com.jv.daily.activity.MainActivity;
 import com.jv.daily.adapter.MultiTypeAdapter;
-import com.jv.daily.app.MyApplication;
-import com.jv.daily.entity.StoriesBean;
-import com.jv.daily.mvp.module.NewsBean;
-
-import java.io.Serializable;
+import com.jv.daily.bean.StoriesBean;
 
 /**
  * Created by Administrator on 2017/2/27.

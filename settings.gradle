@@ -1,1 +1,1 @@
-include ':jvsms', ':jvdaily', ':bannerlib', ':recyclerlib'
+include ':jvsms', ':jvdaily', ':bannerlib', ':recyclerlib', ':jvdaily2'

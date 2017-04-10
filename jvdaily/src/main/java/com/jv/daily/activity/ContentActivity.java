@@ -2,6 +2,7 @@ package com.jv.daily.activity;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -20,9 +21,8 @@ import com.jv.daily.net.RetrofitSubscriber;
 import com.jv.daily.net.RetrofitUtils;
 import com.jv.daily.utils.ShareUtil;
 
-import solid.ren.skinlibrary.base.SkinBaseActivity;
 
-public class ContentActivity extends SkinBaseActivity {
+public class ContentActivity extends AppCompatActivity {
 
     private ActivityContentBinding binding;
     private RetrofitSubscriber<NewsContentBean> contentApi;

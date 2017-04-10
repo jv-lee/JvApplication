@@ -7,9 +7,9 @@ import com.jv.daily.adapter.MultiTypeAdapter;
 import com.jv.daily.adapter.item.NewsDateItem;
 import com.jv.daily.adapter.item.NewsItem;
 import com.jv.daily.constant.Constant;
-import com.jv.daily.entity.DBManager;
-import com.jv.daily.entity.StoriesBean;
-import com.jv.daily.entity.TopStoriesBean;
+import com.jv.daily.bean.DBManager;
+import com.jv.daily.bean.StoriesBean;
+import com.jv.daily.bean.TopStoriesBean;
 import com.jv.daily.mvp.module.NewsBean;
 import com.jv.daily.mvp.view.IMainView;
 import com.jv.daily.net.RetrofitSubscriber;
@@ -21,8 +21,6 @@ import com.jv.daily.utils.TimeUtil;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import rx.functions.Action1;
 
 import static com.jv.daily.app.MyApplication.hasFist;
 

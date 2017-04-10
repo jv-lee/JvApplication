@@ -1,16 +1,16 @@
 package com.jv.daily.app;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.jv.daily.utils.SPUtil;
 
-import solid.ren.skinlibrary.base.SkinBaseApplication;
 
 /**
  * Created by Administrator on 2017/2/24.
  */
 
-public class MyApplication extends SkinBaseApplication {
+public class MyApplication extends Application {
 
     private static Context mContext;
     public static boolean hasFist = false;

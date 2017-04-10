@@ -1,29 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-
-    lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
-        abortOnError false
-    }
-
-    signingConfigs {
-        config {
-            keyAlias 'key'
-            keyPassword '123456'
-            storeFile file('C:/Users/Administrator/Desktop/jvdaily.jks')
-            storePassword '123456'
-        }
-    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+
     defaultConfig {
         applicationId "com.jv.daily"
         minSdkVersion 19
-        targetSdkVersion 21
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
 
@@ -34,20 +20,16 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
-    }
-    dataBinding {
-        enabled true
-    }
-    greendao {
-        targetGenDir 'src/main/java/'
     }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    //noinspection GradleCompatible
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.android.support:appcompat-v7:25.1.1'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:design:25.1.1'
@@ -63,13 +45,19 @@ dependencies {
     compile 'com.google.code.gson:gson:2.6.2'
     //谷歌图片 加载库
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    //广告轮播 及 第三方开源刷新 RecyclerView
-    //    compile 'com.youth.banner:banner:1.4.9'
-    //    compile 'com.jcodecraeer:xrecyclerview:+'
-    //换肤库
-//    compile 'com.solid.skin:skinlibrary:+'
     //greenDao ORM框架
     compile 'org.greenrobot:greendao:3.0.1'
+    /**
+     * butterknife 依赖
+     */
+    compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    /**
+     * 依赖注入库
+     */
+    compile 'com.google.dagger:dagger:2.6'
+    apt 'com.google.dagger:dagger-compiler:2.6'
+
     compile project(':bannerlib')
     compile project(':recyclerlib')
 }

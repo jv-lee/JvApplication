@@ -6,7 +6,7 @@ import rx.Subscriber;
 
 /**
  * Created by Administrator on 2017/2/24.
- * 提供网络请求 订阅类 实现Progress进度框接口
+ * 提供网络请求 订阅类
  */
 
 public class RetrofitSubscriber<T> extends Subscriber<T> implements CancelNetWorkListener {

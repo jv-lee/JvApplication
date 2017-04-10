@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,8 +18,7 @@ import com.jv.daily.R;
 import com.jv.daily.adapter.MultiTypeAdapter;
 import com.jv.daily.app.MyApplication;
 import com.jv.daily.databinding.ActivityMainBinding;
-import com.jv.daily.entity.TopStoriesBean;
-import com.jv.daily.mvp.module.NewsBean;
+import com.jv.daily.bean.TopStoriesBean;
 import com.jv.daily.mvp.presenter.MainPresenter;
 import com.jv.daily.mvp.view.IMainView;
 import com.jv.daily.utils.GlideImageLoader;
@@ -26,12 +26,11 @@ import com.jv.recyclerlib.XRecyclerView;
 
 import java.util.List;
 
-import solid.ren.skinlibrary.base.SkinBaseActivity;
 
 import static com.jv.bannerlib.BannerConfig.RIGHT;
 
 
-public class MainActivity extends SkinBaseActivity implements IMainView, XRecyclerView.LoadingListener {
+public class MainActivity extends AppCompatActivity implements IMainView, XRecyclerView.LoadingListener {
 
     private final String TAG = MainActivity.class.getSimpleName();
 

@@ -1,4 +1,4 @@
-package com.jv.daily.entity;
+package com.jv.daily.bean;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;

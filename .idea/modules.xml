@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/JvApplication.iml" filepath="$PROJECT_DIR$/JvApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/bannerlib/bannerlib.iml" filepath="$PROJECT_DIR$/bannerlib/bannerlib.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvdaily/jvdaily.iml" filepath="$PROJECT_DIR$/jvdaily/jvdaily.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jvdaily2/jvdaily2.iml" filepath="$PROJECT_DIR$/jvdaily2/jvdaily2.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvsms/jvsms.iml" filepath="$PROJECT_DIR$/jvsms/jvsms.iml" />
       <module fileurl="file://$PROJECT_DIR$/recyclerlib/recyclerlib.iml" filepath="$PROJECT_DIR$/recyclerlib/recyclerlib.iml" />
     </modules>

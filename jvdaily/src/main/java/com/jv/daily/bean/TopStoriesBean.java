@@ -1,4 +1,4 @@
-package com.jv.daily.entity;
+package com.jv.daily.bean;
 
 
 import org.greenrobot.greendao.annotation.Entity;

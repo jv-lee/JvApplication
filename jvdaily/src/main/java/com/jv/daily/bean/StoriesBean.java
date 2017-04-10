@@ -1,7 +1,4 @@
-package com.jv.daily.entity;
-
-import com.jv.daily.adapter.MultiTypeAdapter;
-import com.jv.daily.adapter.item.NewsItem;
+package com.jv.daily.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;

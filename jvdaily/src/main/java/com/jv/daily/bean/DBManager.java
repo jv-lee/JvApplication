@@ -1,18 +1,9 @@
-package com.jv.daily.entity;
+package com.jv.daily.bean;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.jv.daily.entity.DaoMaster;
-import com.jv.daily.entity.StoriesBean;
-import com.jv.daily.entity.StoriesBeanDao;
-import com.jv.daily.entity.TopStoriesBean;
-import com.jv.daily.entity.TopStoriesBeanDao;
-import com.jv.daily.mvp.module.NewsBean;
-
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * Created by Administrator on 2017/3/6.

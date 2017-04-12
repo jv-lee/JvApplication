@@ -66,7 +66,6 @@ public class MainPresenter {
         hasFist = true; //非首次进入则设置为 已进入
 
         //本地数据获取
-
         topStoriesBeans = DBManager.getInstance(context).queryTopStories(time);
         storiesBeans = DBManager.getInstance(context).queryStories(time);
 
@@ -142,6 +141,8 @@ public class MainPresenter {
 
         });
         RetrofitUtils.getInstance().getNewsLatest(newsRefreshApi);
+
+
     }
 
     public void loadNews() {
@@ -197,6 +198,7 @@ public class MainPresenter {
 
             }
         });
+
         RetrofitUtils.getInstance().getNewsBeforeByDate(newsLoadApi, time);
     }
 

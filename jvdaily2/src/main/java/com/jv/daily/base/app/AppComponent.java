@@ -5,6 +5,7 @@ import android.app.Application;
 import com.google.gson.Gson;
 import com.jv.daily.base.module.AppModule;
 import com.jv.daily.base.module.ServiceModule;
+import com.jv.daily.manager.ServiceManager;
 
 import javax.inject.Singleton;
 
@@ -18,6 +19,8 @@ import dagger.Component;
 public interface AppComponent {
 
     Application application();
+
+    ServiceManager serviceManager();
 
     Gson gson();
 

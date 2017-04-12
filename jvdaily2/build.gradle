@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
@@ -45,8 +44,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.6.2'
     //谷歌图片 加载库
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    //greenDao ORM框架
-    compile 'org.greenrobot:greendao:3.0.1'
     /**
      * butterknife 依赖
      */
@@ -57,6 +54,9 @@ dependencies {
      */
     compile 'com.google.dagger:dagger:2.6'
     apt 'com.google.dagger:dagger-compiler:2.6'
+
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:+'
+    compile 'com.github.anzaizai:EasyRefreshLayout:1.1.6'
 
     compile project(':bannerlib')
     compile project(':recyclerlib')

@@ -3,6 +3,7 @@ package com.jv.daily.base.module;
 import android.app.Application;
 
 import com.google.gson.Gson;
+import com.jv.daily.base.app.App;
 
 import javax.inject.Singleton;
 
@@ -17,7 +18,7 @@ public class AppModule {
 
     private Application mApplication;
 
-    public AppModule(Application application) {
+    public AppModule(App application) {
         this.mApplication = application;
     }
 

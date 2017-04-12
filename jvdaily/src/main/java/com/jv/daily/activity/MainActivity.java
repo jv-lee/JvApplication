@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements IMainView, XRecyc
 
         rvContainer.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
+        
     }
 
     @Override

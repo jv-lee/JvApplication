@@ -20,7 +20,6 @@ import com.jv.daily.ui.main.adapter.NewsAdapter;
 import com.jv.daily.ui.main.inject.DaggerMainComponent;
 import com.jv.daily.ui.main.inject.MainModule;
 import com.jv.daily.utils.GlideImageLoader;
-import com.jv.recyclerlib.XRecyclerView;
 
 import java.util.List;
 

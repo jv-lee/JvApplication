@@ -3,7 +3,11 @@ package com.jv.daily.base.app;
 import android.app.Application;
 
 import com.jv.daily.base.module.AppModule;
+import com.jv.daily.base.module.DBModule;
 import com.jv.daily.base.module.ServiceModule;
+import com.jv.daily.utils.SPUtil;
+
+import io.realm.Realm;
 
 
 /**
@@ -21,7 +25,10 @@ public class App extends Application {
                 .builder()
                 .appModule(new AppModule(this))
                 .serviceModule(new ServiceModule())
+                .dBModule(new DBModule())
                 .build();
+        SPUtil.getInstance(this);
+        Realm.init(this);
     }
 
     public AppComponent getAppComponent() {

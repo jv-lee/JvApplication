@@ -6,7 +6,7 @@ package com.jv.daily.bean;
  * Created by Administrator on 2017/3/7.
  */
 
-public class TopStoriesBean {
+public class TopStoriesBean  {
 
     /**
      * image : http://pic4.zhimg.com/150a174eb20e365aef43cff9e1ca7913.jpg
@@ -21,15 +21,14 @@ public class TopStoriesBean {
     private long id;
     private String ga_prefix;
     private String title;
+    private String date;
 
-    private long newsBeanId;
-
-    public long getNewsBeanId() {
-        return newsBeanId;
+    public String getDate() {
+        return date;
     }
 
-    public void setNewsBeanId(int newsBeanId) {
-        this.newsBeanId = newsBeanId;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getImage() {

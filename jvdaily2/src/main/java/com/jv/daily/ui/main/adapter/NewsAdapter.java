@@ -1,5 +1,6 @@
 package com.jv.daily.ui.main.adapter;
 
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -25,10 +26,11 @@ public class NewsAdapter extends BaseQuickAdapter<StoriesBean, BaseViewHolder> {
     protected void convert(BaseViewHolder helper, StoriesBean item) {
         helper.setText(R.id.tv_news_text, item.getTitle());
         if (item.isMultipic()) {
+            Log.d("Adapter", item.isMultipic() + " -");
             helper.setTextColor(R.id.tv_news_text, R.color.colorTextDark);
         } else {
             helper.setTextColor(R.id.tv_news_text, R.color.colorTheme);
         }
-        GlideUtil.glideUrl(mContext,item.getImages().get(0),helper.getView(R.id.iv_news_pic));
+        GlideUtil.glideUrl(mContext, item.getImages().get(0), helper.getView(R.id.iv_news_pic));
     }
 }

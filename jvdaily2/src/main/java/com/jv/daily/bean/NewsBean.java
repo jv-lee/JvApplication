@@ -1,14 +1,13 @@
 package com.jv.daily.bean;
 
 
-
-
 import java.util.List;
+
 
 /**
  * Created by Administrator on 2017/2/24.
  */
-public class NewsBean {
+public class NewsBean  {
 
     /**
      * date : 20170224

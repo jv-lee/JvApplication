@@ -3,6 +3,7 @@ package com.jv.daily.bean;
 
 import java.util.List;
 
+
 /**
  * Created by Administrator on 2017/3/7.
  */
@@ -23,7 +24,15 @@ public class StoriesBean {
     private int type;
     private long id;
     private List<String> images;
+    private String date;
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getTitle() {
         return title;

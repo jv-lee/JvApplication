@@ -36,6 +36,14 @@ public interface MainContract {
     }
 
     interface Model extends IModle {
+        boolean inertTopDataToDb(List<TopStoriesBean> list, String date);
+
+        boolean insertDataToDb(List<StoriesBean> list, String date);
+
+        NewsBean initDataToDb(String date);
+
+        int findDataCount(String date);
+
         Observable<NewsBean> initData();
 
         Observable<NewsBean> loadNews(String date);

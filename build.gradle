@@ -16,8 +16,11 @@ buildscript {
         //greenDao 插件
         classpath 'org.greenrobot:greendao-gradle-plugin:3.0.0'
 
-        //依赖库
+        //degger2 依赖
         classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
+
+        //orm 依赖
+        classpath "io.realm:realm-gradle-plugin:3.0.0"
     }
 }
 
@@ -25,8 +28,10 @@ allprojects {
     repositories {
         jcenter()
         //接入jitpack 代码中央仓库
-        maven { url "https://jitpack.io"
-            "https://s3.amazonaws.com/repo.commonsware.com"}
+        maven {
+            url "https://jitpack.io"
+            "https://s3.amazonaws.com/repo.commonsware.com"
+        }
     }
 }
 

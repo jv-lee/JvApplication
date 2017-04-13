@@ -4,8 +4,13 @@ import com.google.gson.Gson;
 import com.jv.daily.base.mvp.BaseModle;
 import com.jv.daily.base.scope.ActivityScope;
 import com.jv.daily.bean.NewsBean;
-import com.jv.daily.manager.ServiceManager;
+import com.jv.daily.bean.StoriesBean;
+import com.jv.daily.bean.TopStoriesBean;
+import com.jv.daily.db.dao.NewsDao;
+import com.jv.daily.service.NewsService;
 
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -18,21 +23,50 @@ import rx.Observable;
 public class MainModel extends BaseModle implements MainContract.Model {
 
     @Inject
-    ServiceManager mServiceManager;
-    @Inject
     Gson gson;
+    @Inject
+    NewsDao dao;
+    @Inject
+    NewsService newsService;
+
 
     @Inject
     public MainModel() {
     }
 
     @Override
+    public boolean inertTopDataToDb(List<TopStoriesBean> list, String date) {
+        return dao.saveTopStories(list, date);
+    }
+
+    @Override
+    public boolean insertDataToDb(List<StoriesBean> list, String date) {
+        return dao.saveStories(list, date);
+    }
+
+    @Override
+    public NewsBean initDataToDb(String date) {
+        List<TopStoriesBean> topList = dao.findTopStoriesAll(date);
+        List<StoriesBean> storiesList = dao.findStoriesAll(date);
+        NewsBean newsBean = new NewsBean();
+        newsBean.setDate(date);
+        newsBean.setStories(storiesList);
+        newsBean.setTop_stories(topList);
+        return newsBean;
+    }
+
+    @Override
+    public int findDataCount(String date) {
+        return dao.findTopStoriesCount(date);
+    }
+
+    @Override
     public Observable<NewsBean> initData() {
-        return mServiceManager.mNewsService.getNewsLatest();
+        return newsService.getNewsLatest();
     }
 
     @Override
     public Observable<NewsBean> loadNews(String date) {
-        return mServiceManager.mNewsService.getNewsBeforeByDate(date);
+        return newsService.getNewsBeforeByDate(date);
     }
 }

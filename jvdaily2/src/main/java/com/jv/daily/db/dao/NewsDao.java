@@ -25,13 +25,14 @@ public class NewsDao {
 
     public NewsDao(DBHelper dbHelper) {
         db = dbHelper.getReadableDatabase();
+
     }
 
     public boolean saveTopStories(List<TopStoriesBean> list, String date) {
         try {
             if (list != null && date != null) {
                 for (TopStoriesBean bean : list) {
-                    db.execSQL("insert into top_stories values(?,?,?,?,?,?)", new Object[]{bean.getId(), bean.getType(), bean.getGa_prefix(), bean.getImage(), date});
+                    db.execSQL("insert into top_stories values(?,?,?,?,?,?)", new Object[]{bean.getId(), bean.getTitle(), bean.getType(), bean.getGa_prefix(), bean.getImage(), date});
                 }
             } else {
                 Log.d("dbError", " list && date -> null");
@@ -47,7 +48,7 @@ public class NewsDao {
         try {
             if (list != null && date != null) {
                 for (StoriesBean bean : list) {
-                    db.execSQL("insert into top_stories values(?,?,?,?,?,?,?)", new Object[]{bean.getId(), bean.getType(), bean.getGa_prefix(), bean.isMultipic() == true ? 0 : 1, bean.getImages().get(0), date});
+                    db.execSQL("insert into stories values(?,?,?,?,?,?,?)", new Object[]{bean.getId(), bean.getTitle(), bean.getType(), bean.getGa_prefix(), bean.isMultipic() == true ? 0 : 1, bean.getImages().get(0), date});
                 }
             } else {
                 Log.d("dbError", " list && date -> null");
@@ -61,7 +62,7 @@ public class NewsDao {
 
 
     public List<StoriesBean> findStoriesAll(String date) {
-        Cursor cursor = db.rawQuery("select * from stories where date = ?", new String[]{date});
+        Cursor cursor = db.rawQuery("select * from stories where newsDate = ?", new String[]{date});
 
         List<StoriesBean> list = new ArrayList<>();
 
@@ -77,6 +78,8 @@ public class NewsDao {
                 List<String> images = new ArrayList<>();
                 images.add(cursor.getString(cursor.getColumnIndex("image")));
                 storiesBean.setImages(images);
+                storiesBean.setDate(cursor.getString(cursor.getColumnIndex("newsDate")));
+                list.add(storiesBean);
             }
 
         }
@@ -86,7 +89,7 @@ public class NewsDao {
     }
 
     public List<TopStoriesBean> findTopStoriesAll(String date) {
-        Cursor cursor = db.rawQuery("select * from top_stories where date = ?", new String[]{date});
+        Cursor cursor = db.rawQuery("select * from top_stories where newsDate = ?", new String[]{date});
 
         List<TopStoriesBean> list = new ArrayList<>();
 
@@ -99,6 +102,8 @@ public class NewsDao {
                 storiesBean.setGa_prefix(cursor.getString(cursor.getColumnIndex("ga_prefix")));
                 storiesBean.setType(cursor.getInt(cursor.getColumnIndex("type")));
                 storiesBean.setImage(cursor.getString(cursor.getColumnIndex("image")));
+                storiesBean.setDate(cursor.getString(cursor.getColumnIndex("newsDate")));
+                list.add(storiesBean);
             }
 
         }
@@ -109,17 +114,43 @@ public class NewsDao {
 
     public int findTopStoriesCount(String date) {
         int count = 0;
+        Cursor cursor = null;
         try {
-            Cursor cursor = db.rawQuery("select count(*) from top_stories where date = ?", new String[]{date});
+            cursor = db.rawQuery("select * from top_stories",null);
             if (cursor != null) {
                 while (cursor.moveToNext()) {
-                    count = cursor.getInt(cursor.getInt(0));
+                    count = cursor.getCount();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return count;
+        cursor.close();
+        return 0;
+    }
+
+    public List<TopStoriesBean> findAll(String date) {
+        Cursor cursor = db.rawQuery("select * from top_stories", null);
+
+        List<TopStoriesBean> list = new ArrayList<>();
+
+        if (cursor != null) {
+
+            while (cursor.moveToNext()) {
+                TopStoriesBean storiesBean = new TopStoriesBean();
+                storiesBean.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                storiesBean.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+                storiesBean.setGa_prefix(cursor.getString(cursor.getColumnIndex("ga_prefix")));
+                storiesBean.setType(cursor.getInt(cursor.getColumnIndex("type")));
+                storiesBean.setImage(cursor.getString(cursor.getColumnIndex("image")));
+                storiesBean.setDate(cursor.getString(cursor.getColumnIndex("date")));
+                list.add(storiesBean);
+            }
+
+        }
+        cursor.close();
+
+        return list;
     }
 
 }

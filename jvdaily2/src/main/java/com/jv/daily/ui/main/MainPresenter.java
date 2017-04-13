@@ -1,7 +1,6 @@
 package com.jv.daily.ui.main;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.jv.daily.base.mvp.BasePresenter;
 import com.jv.daily.base.scope.ActivityScope;
@@ -64,6 +63,7 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
 
         //查询本地是否有今日新闻
         String date = TimeUtil.milliseconds2StringSimple(System.currentTimeMillis());
+
 
         if (mModle.findDataCount(date) > 0) {
 

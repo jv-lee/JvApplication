@@ -7,7 +7,6 @@ import com.jv.daily.base.module.DBModule;
 import com.jv.daily.base.module.ServiceModule;
 import com.jv.daily.utils.SPUtil;
 
-import io.realm.Realm;
 
 
 /**
@@ -28,8 +27,8 @@ public class App extends Application {
                 .dBModule(new DBModule())
                 .build();
         SPUtil.getInstance(this);
-        Realm.init(this);
     }
+
 
     public AppComponent getAppComponent() {
         return mAppComponent;

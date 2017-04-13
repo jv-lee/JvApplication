@@ -12,7 +12,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
         //将参数写死  打开数据库, 不开启工厂 , 版本为1
-        this(context, "news", null, 1);
+        this(context, "daily", null, 1);
     }
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -22,22 +22,22 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("create table stories(" +
-                "id INTEGER primary key," +
-                "title TEXT," +
-                "type INTEGER," +
-                "ga_prefix TEXT," +
-                "multipic INTEGER," +
-                "image TEXT，" +
-                "date TEXT)");
+        db.execSQL("create table stories ( " +
+                "id integer primary key, " +
+                "title text, " +
+                "type integer, " +
+                "ga_prefix text, " +
+                "multipic integer, " +
+                "image text，" +
+                "newsDate text ) ");
 
-        db.execSQL("create table top_stories(" +
-                "id INTEGER primary key," +
-                "title TEXT," +
-                "type INTEGER," +
-                "ga_prefix TEXT," +
-                "image TEXT，" +
-                "date TEXT)");
+        db.execSQL("create table top_stories ( " +
+                "id integer primary key, " +
+                "title text, " +
+                "type integer, " +
+                "ga_prefix text, " +
+                "image text，" +
+                "newsDate text ) ");
 
 
     }

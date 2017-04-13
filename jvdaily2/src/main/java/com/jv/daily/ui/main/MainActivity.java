@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -90,6 +91,7 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
             refreshView.setRefreshing(false);
 
         } else if (code == 1) {
+            Log.d("android", message);
             Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
         }
     }

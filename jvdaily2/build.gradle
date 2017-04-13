@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
@@ -9,7 +8,7 @@ android {
     defaultConfig {
         applicationId "com.jv.daily"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
 

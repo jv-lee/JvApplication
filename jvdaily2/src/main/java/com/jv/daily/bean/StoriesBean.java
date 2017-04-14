@@ -1,13 +1,15 @@
 package com.jv.daily.bean;
 
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+
 import java.util.List;
 
 
 /**
  * Created by Administrator on 2017/3/7.
  */
-public class StoriesBean {
+public class StoriesBean implements MultiItemEntity {
 
     /**
      * title : 为什么「我们的穿山甲是人工饲养的」根本站不住脚？
@@ -25,6 +27,24 @@ public class StoriesBean {
     private long id;
     private List<String> images;
     private String date;
+
+    private int itemType = CONTENT;
+
+    public static final int TITLE = 1;
+    public static final int CONTENT = 2;
+
+    public StoriesBean() {
+    }
+
+    public StoriesBean(int itemType, String date) {
+        this.date = date;
+        this.itemType = itemType;
+    }
+
+    @Override
+    public int getItemType() {
+        return itemType;
+    }
 
     public String getDate() {
         return date;
@@ -81,4 +101,5 @@ public class StoriesBean {
     public void setImages(List<String> images) {
         this.images = images;
     }
+
 }

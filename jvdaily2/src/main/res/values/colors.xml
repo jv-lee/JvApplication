@@ -5,6 +5,6 @@
     <color name="colorAccent">#2073B5</color>
     <color name="colorTheme">#AAAAAA</color>
     <color name="colorTextDark">#000</color>
-    <color name="colorBackground">#fff</color>
+    <color name="colorBackground">#F3F3F3</color>
     <color name="colorItemBg">#fff</color>
 </resources>

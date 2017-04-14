@@ -7,9 +7,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.jv.bannerlib.Banner;
 import com.jv.bannerlib.BannerConfig;
 import com.jv.daily.R;
@@ -23,6 +26,7 @@ import com.jv.daily.ui.main.inject.DaggerMainComponent;
 import com.jv.daily.ui.main.inject.MainModule;
 import com.jv.daily.utils.GlideImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,6 +60,11 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         //设置数据容器配置
         refreshView.setOnRefreshListener(this);
         rvContent.setLayoutManager(new LinearLayoutManager(this));
+        newsAdapter = new NewsAdapter(new ArrayList<StoriesBean>());
+        newsAdapter.setOnLoadMoreListener(this);
+        newsAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
+        rvContent.setAdapter(newsAdapter);
+        ininRvListener(rvContent);
         refreshView.post(new Runnable() {
             @Override
             public void run() {
@@ -98,14 +107,8 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
 
     @Override
     public void initContent(List<StoriesBean> list) {
-        if (newsAdapter == null) {
-            newsAdapter = new NewsAdapter(list);
-            newsAdapter.setOnLoadMoreListener(this);
-            newsAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
-            rvContent.setAdapter(newsAdapter);
-        } else {
-            newsAdapter.notifyDataSetChanged();
-        }
+        newsAdapter.getData().addAll(list);
+        newsAdapter.notifyDataSetChanged();
     }
 
 
@@ -122,6 +125,7 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
 
     @Override
     public void loadNews(List<StoriesBean> list) {
+        newsAdapter.getData().addAll(list);
         newsAdapter.notifyDataSetChanged();
     }
 
@@ -134,6 +138,8 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
                 break;
             case Constant.REFRESH_FAIL:
                 Log.d("android", message);
+                refreshView.setRefreshing(false);
+//                newsAdapter.setEmptyView(R.layout.item_news_empty);
                 Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
                 break;
             case Constant.LOAD_COMPLETE:
@@ -148,5 +154,26 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         }
     }
 
+    private void ininRvListener(RecyclerView rvContent) {
+        rvContent.addOnItemTouchListener(new OnItemClickListener() {
+            @Override
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Toast.makeText(MainActivity.this, "click item position ->" + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+        rvContent.addOnItemTouchListener(new OnItemChildClickListener() {
+            @Override
+            public void onSimpleItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                switch (view.getId()) {
+                    case R.id.iv_news_pic:
+                        Toast.makeText(MainActivity.this, "click pic position -> " + position, Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.tv_news_text:
+                        Toast.makeText(MainActivity.this, "click text position -> " + position, Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
+    }
 
 }

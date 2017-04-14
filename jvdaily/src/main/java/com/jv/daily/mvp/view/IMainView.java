@@ -1,7 +1,7 @@
 package com.jv.daily.mvp.view;
 
 import com.jv.daily.adapter.MultiTypeAdapter;
-import com.jv.daily.bean.TopStoriesBean;
+import com.jv.daily.entity.TopStoriesBean;
 
 import java.util.List;
 

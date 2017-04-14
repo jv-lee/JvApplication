@@ -1,15 +1,12 @@
 package com.jv.daily.ui.main.adapter;
 
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.jv.daily.R;
-import com.jv.daily.bean.StoriesBean;
+import com.jv.daily.entity.StoriesBean;
 import com.jv.daily.utils.GlideUtil;
 
 import java.util.List;

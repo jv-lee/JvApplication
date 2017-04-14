@@ -7,7 +7,7 @@ import android.view.View;
 import com.jv.daily.R;
 import com.jv.daily.activity.ContentActivity;
 import com.jv.daily.adapter.MultiTypeAdapter;
-import com.jv.daily.bean.StoriesBean;
+import com.jv.daily.entity.StoriesBean;
 
 /**
  * Created by Administrator on 2017/2/27.

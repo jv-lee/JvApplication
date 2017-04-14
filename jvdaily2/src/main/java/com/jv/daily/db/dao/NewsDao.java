@@ -1,14 +1,13 @@
 package com.jv.daily.db.dao;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 
-import com.jv.daily.bean.StoriesBean;
-import com.jv.daily.bean.TopStoriesBean;
+import com.jv.daily.entity.StoriesBean;
+import com.jv.daily.entity.TopStoriesBean;
 import com.jv.daily.db.DBHelper;
 
 import java.util.ArrayList;

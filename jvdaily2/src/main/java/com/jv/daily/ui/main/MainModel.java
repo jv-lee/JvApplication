@@ -3,9 +3,9 @@ package com.jv.daily.ui.main;
 import com.google.gson.Gson;
 import com.jv.daily.base.mvp.BaseModle;
 import com.jv.daily.base.scope.ActivityScope;
-import com.jv.daily.bean.NewsBean;
-import com.jv.daily.bean.StoriesBean;
-import com.jv.daily.bean.TopStoriesBean;
+import com.jv.daily.entity.NewsBean;
+import com.jv.daily.entity.StoriesBean;
+import com.jv.daily.entity.TopStoriesBean;
 import com.jv.daily.db.dao.NewsDao;
 import com.jv.daily.service.NewsService;
 

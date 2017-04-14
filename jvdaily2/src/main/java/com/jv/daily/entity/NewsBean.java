@@ -1,4 +1,4 @@
-package com.jv.daily.bean;
+package com.jv.daily.entity;
 
 
 import java.util.List;

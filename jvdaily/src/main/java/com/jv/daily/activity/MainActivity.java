@@ -18,7 +18,7 @@ import com.jv.daily.R;
 import com.jv.daily.adapter.MultiTypeAdapter;
 import com.jv.daily.app.MyApplication;
 import com.jv.daily.databinding.ActivityMainBinding;
-import com.jv.daily.bean.TopStoriesBean;
+import com.jv.daily.entity.TopStoriesBean;
 import com.jv.daily.mvp.presenter.MainPresenter;
 import com.jv.daily.mvp.view.IMainView;
 import com.jv.daily.utils.GlideImageLoader;

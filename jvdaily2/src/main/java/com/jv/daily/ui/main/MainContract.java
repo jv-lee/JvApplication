@@ -3,14 +3,13 @@ package com.jv.daily.ui.main;
 import com.jv.daily.base.mvp.IModle;
 import com.jv.daily.base.mvp.IPresenter;
 import com.jv.daily.base.mvp.IView;
-import com.jv.daily.bean.NewsBean;
-import com.jv.daily.bean.StoriesBean;
-import com.jv.daily.bean.TopStoriesBean;
+import com.jv.daily.entity.NewsBean;
+import com.jv.daily.entity.StoriesBean;
+import com.jv.daily.entity.TopStoriesBean;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 
 /**
  * Created by Administrator on 2017/4/10.

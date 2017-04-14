@@ -1,8 +1,8 @@
 package com.jv.daily.service;
 
 
-import com.jv.daily.bean.NewsBean;
-import com.jv.daily.bean.NewsContentBean;
+import com.jv.daily.entity.NewsBean;
+import com.jv.daily.entity.NewsContentBean;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;

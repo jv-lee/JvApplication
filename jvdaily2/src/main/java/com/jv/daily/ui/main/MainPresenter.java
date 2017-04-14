@@ -4,9 +4,9 @@ import android.util.Log;
 
 import com.jv.daily.base.mvp.BasePresenter;
 import com.jv.daily.base.scope.ActivityScope;
-import com.jv.daily.bean.NewsBean;
-import com.jv.daily.bean.StoriesBean;
-import com.jv.daily.bean.TopStoriesBean;
+import com.jv.daily.entity.NewsBean;
+import com.jv.daily.entity.StoriesBean;
+import com.jv.daily.entity.TopStoriesBean;
 import com.jv.daily.constant.Constant;
 import com.jv.daily.ui.main.MainContract.Presenter;
 import com.jv.daily.utils.ConstUtil;
@@ -16,7 +16,6 @@ import com.jv.daily.utils.TimeUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

@@ -17,6 +17,7 @@ import com.jv.daily.base.app.AppComponent;
 import com.jv.daily.base.mvp.BaseActivity;
 import com.jv.daily.bean.StoriesBean;
 import com.jv.daily.bean.TopStoriesBean;
+import com.jv.daily.constant.Constant;
 import com.jv.daily.ui.main.adapter.NewsAdapter;
 import com.jv.daily.ui.main.inject.DaggerMainComponent;
 import com.jv.daily.ui.main.inject.MainModule;
@@ -54,14 +55,15 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         setSupportActionBar(toolbar);
         //设置数据容器配置
         refreshView.setOnRefreshListener(this);
+        rvContent.setLayoutManager(new LinearLayoutManager(this));
         refreshView.post(new Runnable() {
             @Override
             public void run() {
                 refreshView.setRefreshing(true);
+                mPresenter.refreshNews();
             }
         });
-        rvContent.setLayoutManager(new LinearLayoutManager(this));
-        mPresenter.refreshNews();
+
     }
 
     @Override
@@ -74,7 +76,6 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
                 .inject(this);
     }
 
-
     /**
      * 通过下拉刷新 或 首次进入初始化
      * 通过 Presenter调用刷新数据接口
@@ -83,17 +84,6 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
     @Override
     public void onRefresh() {
         mPresenter.refreshNews();
-    }
-
-    @Override
-    public void refreshEvent(int code, String message) {
-        if (code == 0) {
-            refreshView.setRefreshing(false);
-
-        } else if (code == 1) {
-            Log.d("android", message);
-            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -126,13 +116,36 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
      */
     @Override
     public void onLoadMoreRequested() {
+        Log.w(TAG, "onLoadMoreRequested");
         mPresenter.loadNews();
     }
 
     @Override
     public void loadNews(List<StoriesBean> list) {
         newsAdapter.notifyDataSetChanged();
-        newsAdapter.loadMoreComplete();
+    }
+
+    @Override
+    public void refreshEvent(String code, String message) {
+        switch (code) {
+            case Constant.REFRESH_COMPLETE:
+                Log.d(TAG, "refreshEvent() - > setRefreshing(true)");
+                refreshView.setRefreshing(false);
+                break;
+            case Constant.REFRESH_FAIL:
+                Log.d("android", message);
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                break;
+            case Constant.LOAD_COMPLETE:
+                newsAdapter.loadMoreComplete();
+                break;
+            case Constant.LOAD_FAIL:
+                newsAdapter.loadMoreFail();
+                break;
+            case Constant.LOAD_EDN:
+                newsAdapter.loadMoreEnd();
+                break;
+        }
     }
 
 

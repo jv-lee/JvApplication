@@ -23,7 +23,7 @@ public interface MainContract {
 
         void initContent(List<StoriesBean> list);
 
-        void refreshEvent(int code, String message);
+        void refreshEvent(String code, String message);
 
         void loadNews(List<StoriesBean> list);
 
@@ -40,11 +40,15 @@ public interface MainContract {
 
         boolean insertDataToDb(List<StoriesBean> list, String date);
 
-        NewsBean initDataToDb(String date);
+        NewsBean refreshDataToDb(String date);
 
-        int findDataCount(String date);
+        List<StoriesBean> loadDataToDb(String date);
 
-        Observable<NewsBean> initData();
+        int findRefreshDataCount(String date);
+
+        int findLoadDataCount(String date);
+
+        Observable<NewsBean> refreshData();
 
         Observable<NewsBean> loadNews(String date);
     }

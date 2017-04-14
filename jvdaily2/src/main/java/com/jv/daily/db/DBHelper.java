@@ -29,7 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "ga_prefix text, " +
                 "multipic integer, " +
                 "image text," +
-                "dattt text) ");
+                "date text) ");
 
         db.execSQL("create table top_stories ( " +
                 "id integer primary key, " +
@@ -37,7 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "type integer, " +
                 "ga_prefix text, " +
                 "image text," +
-                "dattt text) ");
+                "date text) ");
 
 
     }

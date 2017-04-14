@@ -45,7 +45,7 @@ public class MainModel extends BaseModle implements MainContract.Model {
     }
 
     @Override
-    public NewsBean initDataToDb(String date) {
+    public NewsBean refreshDataToDb(String date) {
         List<TopStoriesBean> topList = dao.findTopStoriesAll(date);
         List<StoriesBean> storiesList = dao.findStoriesAll(date);
         NewsBean newsBean = new NewsBean();
@@ -56,12 +56,22 @@ public class MainModel extends BaseModle implements MainContract.Model {
     }
 
     @Override
-    public int findDataCount(String date) {
+    public List<StoriesBean> loadDataToDb(String date) {
+        return dao.findStoriesAll(date);
+    }
+
+    @Override
+    public int findRefreshDataCount(String date) {
         return dao.findTopStoriesCount(date);
     }
 
     @Override
-    public Observable<NewsBean> initData() {
+    public int findLoadDataCount(String date) {
+        return dao.findTopStoriesCount(date);
+    }
+
+    @Override
+    public Observable<NewsBean> refreshData() {
         return newsService.getNewsLatest();
     }
 

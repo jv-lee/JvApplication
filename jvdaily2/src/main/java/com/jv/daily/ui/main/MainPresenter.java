@@ -153,17 +153,17 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
 
     @Override
     public void loadNews() {
-        //首次进入 加载昨天的更多新闻 - 非首次 直接加载存储时间新闻
+        //首次进入 加载昨天的更多新闻 - 非首次 直接加载存储时间新闻 api原因 按当天时间获取昨天时间新闻
         if (hasFirstLoad) {
-            LoadDate = TimeUtil.milliseconds2StringSimple(System.currentTimeMillis() - ConstUtil.DAY);
+            LoadDate = TimeUtil.milliseconds2StringSimple(System.currentTimeMillis());
             hasFirstLoad = false;
         } else {
-            LoadDate = (String) SPUtil.get(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(System.currentTimeMillis() - ConstUtil.DAY));
+            LoadDate = (String) SPUtil.get(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(System.currentTimeMillis()));
         }
         Log.d(TAG, "load date - >" + LoadDate);
 
         //判断当前数据库是否有当前日期数据存储
-        if (mModle.findLoadDataCount(LoadDate) < 0) {
+        if (mModle.findLoadDataCount(LoadDate) > 0) {
             Log.w(TAG, "into local load data");
             Observable.just(LoadDate)
                     .map(new Func1<String, List<StoriesBean>>() {
@@ -176,6 +176,8 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                     .subscribe(new Subscriber<List<StoriesBean>>() {
                         @Override
                         public void onCompleted() {
+                            //加载成功后把下次刷新时间保存 减少为下一天
+                            SPUtil.save(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) - ConstUtil.DAY));
                             mView.refreshEvent(Constant.LOAD_COMPLETE, "onCompleted()");
                         }
 

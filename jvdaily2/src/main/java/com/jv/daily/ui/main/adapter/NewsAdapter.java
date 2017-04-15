@@ -41,7 +41,6 @@ public class NewsAdapter extends BaseMultiItemQuickAdapter<StoriesBean, BaseView
                 TextView textView = helper.getView(R.id.tv_news_text);
 
                 if (item.isMultipic()) {
-                    Log.d("Adapter", item.isMultipic() + " -");
                     textView.setTextColor(mContext.getResources().getColor(R.color.colorTheme));
                 } else {
                     textView.setTextColor(mContext.getResources().getColor(R.color.colorTextDark));

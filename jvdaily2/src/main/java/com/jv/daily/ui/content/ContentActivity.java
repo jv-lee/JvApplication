@@ -10,6 +10,9 @@ import android.widget.ProgressBar;
 import com.jv.daily.R;
 import com.jv.daily.base.app.AppComponent;
 import com.jv.daily.base.mvp.BaseActivity;
+import com.jv.daily.entity.NewsContentBean;
+import com.jv.daily.ui.content.inject.ContentModule;
+import com.jv.daily.ui.content.inject.DaggerContentComponent;
 
 import butterknife.BindView;
 
@@ -17,7 +20,7 @@ import butterknife.BindView;
  * Created by 64118 on 2017/4/12.
  */
 
-public class ContentActivity extends BaseActivity {
+public class ContentActivity extends BaseActivity<ContentContract.Presenter> implements ContentContract.View {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -38,11 +41,16 @@ public class ContentActivity extends BaseActivity {
     protected void bindData() {
         initToolbar();
         initWebView();
+        mPresenter.loadWeb(getIntent().getStringExtra("id"));
     }
 
     @Override
     protected void setupActivityComponent(AppComponent appComponent) {
-
+        DaggerContentComponent.builder()
+                .appComponent(appComponent)
+                .contentModule(new ContentModule(this))
+                .build()
+                .inject(this);
     }
 
     /**
@@ -86,4 +94,8 @@ public class ContentActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void loadWeb(NewsContentBean bean) {
+
+    }
 }

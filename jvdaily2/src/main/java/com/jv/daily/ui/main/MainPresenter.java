@@ -8,7 +8,6 @@ import com.jv.daily.entity.NewsBean;
 import com.jv.daily.entity.StoriesBean;
 import com.jv.daily.entity.TopStoriesBean;
 import com.jv.daily.constant.Constant;
-import com.jv.daily.ui.main.MainContract.Presenter;
 import com.jv.daily.utils.ConstUtil;
 import com.jv.daily.utils.NetworkUtils;
 import com.jv.daily.utils.SPUtil;
@@ -32,7 +31,7 @@ import rx.schedulers.Schedulers;
  * Created by Administrator on 2017/4/11.
  */
 @ActivityScope
-public class MainPresenter extends BasePresenter<MainContract.Model, MainContract.View> implements Presenter {
+public class MainPresenter extends BasePresenter<MainContract.Model, MainContract.View> implements MainContract.Presenter {
 
     List<String> images = new ArrayList<>();
     List<String> titles = new ArrayList<>();
@@ -66,14 +65,14 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
         String date = TimeUtil.milliseconds2StringSimple(System.currentTimeMillis());
         Log.d(TAG, "refresh today time -> " + date);
 
-        if (mModle.findRefreshDataCount(date) > 0) {
+        if (mModel.findRefreshDataCount(date) > 0) {
 
             Log.w(TAG, "into local refresh data .");
 
             Observable.just(date).map(new Func1<String, NewsBean>() {
                 @Override
                 public NewsBean call(String s) {
-                    return mModle.refreshDataToDb(s);
+                    return mModel.refreshDataToDb(s);
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -110,7 +109,7 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                 return;
             }
 
-            mModle.refreshData().map(new Func1<NewsBean, NewsBean>() {
+            mModel.refreshData().map(new Func1<NewsBean, NewsBean>() {
                 @Override
                 public NewsBean call(NewsBean newsBean) {
                     Log.d(TAG, "network date -> " + newsBean.getDate());
@@ -119,8 +118,8 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                         if (!images.contains(top.getImage())) images.add(top.getImage());
                         if (!titles.contains(top.getTitle())) titles.add(top.getTitle());
                     }
-                    boolean b1 = mModle.insertDataToDb(newsBean.getStories(), newsBean.getDate());
-                    boolean b2 = mModle.inertTopDataToDb(newsBean.getTop_stories(), newsBean.getDate());
+                    boolean b1 = mModel.insertDataToDb(newsBean.getStories(), newsBean.getDate());
+                    boolean b2 = mModel.inertTopDataToDb(newsBean.getTop_stories(), newsBean.getDate());
 
                     Log.d(TAG, "insertDataToDb -> " + b1 + "\n insertTopDataToDb -> " + b2);
 
@@ -163,13 +162,13 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
         Log.d(TAG, "load date - >" + LoadDate);
 
         //判断当前数据库是否有当前日期数据存储
-        if (mModle.findLoadDataCount(LoadDate) > 0) {
+        if (mModel.findLoadDataCount(LoadDate) > 0) {
             Log.w(TAG, "into local load data");
             Observable.just(LoadDate)
                     .map(new Func1<String, List<StoriesBean>>() {
                         @Override
                         public List<StoriesBean> call(String s) {
-                            return mModle.loadDataToDb(s);
+                            return mModel.loadDataToDb(s);
                         }
                     }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -203,12 +202,12 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
             }
 
 //            Log.w(TAG, TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) + ConstUtil.DAY));
-            mModle.loadNews(TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) + ConstUtil.DAY))
+            mModel.loadNews(TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) + ConstUtil.DAY))
                     .map(new Func1<NewsBean, List<StoriesBean>>() {
                         @Override
                         public List<StoriesBean> call(NewsBean newsBean) {
                             //网络获取数据后做磁盘存储
-                            boolean bo1 = mModle.insertDataToDb(newsBean.getStories(), newsBean.getDate());
+                            boolean bo1 = mModel.insertDataToDb(newsBean.getStories(), newsBean.getDate());
                             Log.w(TAG, "insert stories - date " + newsBean.getDate() + " is ->" + bo1);
                             //设置头部数据
                             String dateStr = TimeUtil.milliseconds2String(TimeUtil.string2MillisecondsSimple(newsBean.getDate()), new SimpleDateFormat("MM月dd日"));

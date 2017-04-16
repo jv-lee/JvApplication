@@ -1,6 +1,6 @@
 package com.jv.daily.ui.main;
 
-import com.jv.daily.base.mvp.IModle;
+import com.jv.daily.base.mvp.IModel;
 import com.jv.daily.base.mvp.IPresenter;
 import com.jv.daily.base.mvp.IView;
 import com.jv.daily.entity.NewsBean;
@@ -34,7 +34,7 @@ public interface MainContract {
         void loadNews();
     }
 
-    interface Model extends IModle {
+    interface Model extends IModel {
         boolean inertTopDataToDb(List<TopStoriesBean> list, String date);
 
         boolean insertDataToDb(List<StoriesBean> list, String date);

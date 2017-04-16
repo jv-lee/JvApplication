@@ -1,7 +1,7 @@
 package com.jv.daily.ui.main;
 
 import com.google.gson.Gson;
-import com.jv.daily.base.mvp.BaseModle;
+import com.jv.daily.base.mvp.BaseModel;
 import com.jv.daily.base.scope.ActivityScope;
 import com.jv.daily.entity.NewsBean;
 import com.jv.daily.entity.StoriesBean;
@@ -20,7 +20,7 @@ import rx.Observable;
  * Created by Administrator on 2017/4/11.
  */
 @ActivityScope
-public class MainModel extends BaseModle implements MainContract.Model {
+public class MainModel extends BaseModel implements MainContract.Model {
 
     @Inject
     Gson gson;

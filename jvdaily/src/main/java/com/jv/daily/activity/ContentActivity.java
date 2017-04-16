@@ -115,10 +115,7 @@ public class ContentActivity extends AppCompatActivity {
                     pbWeb.setVisibility(View.VISIBLE);
                     pbWeb.setProgress(newProgress);//设置加载进度
                 }
-
             }
-
-
         });
     }
 

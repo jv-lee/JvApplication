@@ -67,7 +67,7 @@ public class MainModel extends BaseModle implements MainContract.Model {
 
     @Override
     public int findLoadDataCount(String date) {
-        return dao.findTopStoriesCount(date);
+        return dao.findStoriesCount(date);
     }
 
     @Override

@@ -155,10 +155,10 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
     public void loadNews() {
         //首次进入 加载昨天的更多新闻 - 非首次 直接加载存储时间新闻 api原因 按当天时间获取昨天时间新闻
         if (hasFirstLoad) {
-            LoadDate = TimeUtil.milliseconds2StringSimple(System.currentTimeMillis());
+            LoadDate = TimeUtil.milliseconds2StringSimple(System.currentTimeMillis() - ConstUtil.DAY);
             hasFirstLoad = false;
         } else {
-            LoadDate = (String) SPUtil.get(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(System.currentTimeMillis()));
+            LoadDate = TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple((String) SPUtil.get(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(System.currentTimeMillis()))) - ConstUtil.DAY);
         }
         Log.d(TAG, "load date - >" + LoadDate);
 
@@ -176,8 +176,8 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                     .subscribe(new Subscriber<List<StoriesBean>>() {
                         @Override
                         public void onCompleted() {
-                            //加载成功后把下次刷新时间保存 减少为下一天
-                            SPUtil.save(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) - ConstUtil.DAY));
+                            //加载成功后把下次刷新时间保存
+                            SPUtil.save(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate)));
                             mView.refreshEvent(Constant.LOAD_COMPLETE, "onCompleted()");
                         }
 
@@ -202,12 +202,14 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                 return;
             }
 
-            mModle.loadNews(LoadDate)
+//            Log.w(TAG, TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) + ConstUtil.DAY));
+            mModle.loadNews(TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) + ConstUtil.DAY))
                     .map(new Func1<NewsBean, List<StoriesBean>>() {
                         @Override
                         public List<StoriesBean> call(NewsBean newsBean) {
                             //网络获取数据后做磁盘存储
-                            mModle.insertDataToDb(newsBean.getStories(), newsBean.getDate());
+                            boolean bo1 = mModle.insertDataToDb(newsBean.getStories(), newsBean.getDate());
+                            Log.w(TAG, "insert stories - date " + newsBean.getDate() + " is ->" + bo1);
                             //设置头部数据
                             String dateStr = TimeUtil.milliseconds2String(TimeUtil.string2MillisecondsSimple(newsBean.getDate()), new SimpleDateFormat("MM月dd日"));
                             newsBean.getStories().add(0, new StoriesBean(StoriesBean.TITLE, dateStr));
@@ -219,7 +221,7 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                     .subscribe(new Subscriber<List<StoriesBean>>() {
                         @Override
                         public void onCompleted() {
-                            SPUtil.save(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) - ConstUtil.DAY));
+                            SPUtil.save(Constant.SELECT_DATE, LoadDate);
                             mView.refreshEvent(Constant.LOAD_COMPLETE, "loadCompleted()");
                         }
 

@@ -146,6 +146,7 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
                 newsAdapter.loadMoreComplete();
                 break;
             case Constant.LOAD_FAIL:
+                Log.e(TAG, message);
                 newsAdapter.loadMoreFail();
                 break;
             case Constant.LOAD_EDN:

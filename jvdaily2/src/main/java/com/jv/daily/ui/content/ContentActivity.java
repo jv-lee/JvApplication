@@ -31,6 +31,7 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
 
     String title;
     String url;
+    boolean hasLoadUrl = false;
 
     @Override
     protected int bindRootView() {
@@ -83,9 +84,8 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
                 super.onProgressChanged(view, newProgress);
 
                 if (newProgress == 100) {
-                    pbWeb.setVisibility(View.VISIBLE);
                     pbWeb.setProgress(100);
-                    //progressBar.setProgress(newProgress);
+                    pbWeb.setVisibility(View.GONE);
                 } else {
                     pbWeb.setVisibility(View.VISIBLE);
                     pbWeb.setProgress(newProgress);//设置加载进度
@@ -96,6 +96,10 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
 
     @Override
     public void loadWeb(NewsContentBean bean) {
-
+        hasLoadUrl = true;
+        title = bean.getTitle();
+        url = bean.getShare_url();
+//        wvContent.loadUrl(url);
+        wvContent.loadDataWithBaseURL(null, bean.getBody(), "text/html", "utf-8", null);
     }
 }

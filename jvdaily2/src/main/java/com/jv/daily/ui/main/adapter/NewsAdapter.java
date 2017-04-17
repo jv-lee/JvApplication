@@ -36,7 +36,6 @@ public class NewsAdapter extends BaseMultiItemQuickAdapter<StoriesBean, BaseView
                 break;
             case StoriesBean.CONTENT:
                 helper.setText(R.id.tv_news_text, item.getTitle())
-                        .addOnClickListener(R.id.tv_news_text)
                         .addOnClickListener(R.id.iv_news_pic);
                 TextView textView = helper.getView(R.id.tv_news_text);
 

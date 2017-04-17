@@ -1,5 +1,6 @@
 package com.jv.daily.utils;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import static com.jv.daily.utils.ConstUtil.DAY;
 import static com.jv.daily.utils.ConstUtil.HOUR;
@@ -199,6 +201,26 @@ public class TimeUtil {
     }
 
     /**
+     * 获取当前时间戳 不受系统时间影响
+     *
+     * @return
+     */
+    public static long getCurrentTimeMillis() {
+        SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dff.setTimeZone(TimeZone.getTimeZone("GMT+08"));
+        Date date;
+        long time = 0;
+        try {
+            date = dff.parse(dff.format(new Date()));
+            time = date.getTime();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return time;
+    }
+
+    /**
      * 将时间戳转为时间字符串
      * <p>格式为用户自定义</p>
      *
@@ -212,6 +234,7 @@ public class TimeUtil {
 
     /**
      * 定制 yyyyMMdd 格式 转换
+     *
      * @param milliseconds
      * @return
      */
@@ -221,6 +244,7 @@ public class TimeUtil {
 
     /**
      * 定制 yyyyMMdd 格式 转换
+     *
      * @param time
      * @return
      */

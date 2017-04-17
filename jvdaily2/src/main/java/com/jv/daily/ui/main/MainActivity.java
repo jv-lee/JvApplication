@@ -1,6 +1,7 @@
 package com.jv.daily.ui.main;
 
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,19 +16,24 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.jv.bannerlib.Banner;
 import com.jv.bannerlib.BannerConfig;
+import com.jv.bannerlib.listener.OnBannerListener;
 import com.jv.daily.R;
 import com.jv.daily.base.app.AppComponent;
 import com.jv.daily.base.mvp.BaseActivity;
 import com.jv.daily.entity.StoriesBean;
 import com.jv.daily.entity.TopStoriesBean;
 import com.jv.daily.constant.Constant;
+import com.jv.daily.ui.content.ContentActivity;
 import com.jv.daily.ui.main.adapter.NewsAdapter;
 import com.jv.daily.ui.main.inject.DaggerMainComponent;
 import com.jv.daily.ui.main.inject.MainModule;
 import com.jv.daily.utils.GlideImageLoader;
+import com.jv.daily.utils.IntentUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -64,7 +70,7 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         newsAdapter.setOnLoadMoreListener(this);
         newsAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
         rvContent.setAdapter(newsAdapter);
-        ininRvListener(rvContent);
+        initRvListener(rvContent);
         refreshView.post(new Runnable() {
             @Override
             public void run() {
@@ -96,13 +102,19 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
     }
 
     @Override
-    public void initBanner(List<TopStoriesBean> list, List<String> images, List<String> titles) {
+    public void initBanner(final List<TopStoriesBean> list, List<String> images, List<String> titles) {
         banner.setIndicatorGravity(RIGHT)
                 .setImages(images)
                 .setBannerTitles(titles)
                 .setImageLoader(new GlideImageLoader())
                 .setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE)
                 .start();
+        banner.setOnBannerListener(new OnBannerListener() {
+            @Override
+            public void OnBannerClick(int position) {
+                IntentUtil.startActivity(MainActivity.this, ContentActivity.class, new String[][]{{"id", String.valueOf(list.get(position).getId())}});
+            }
+        });
     }
 
     @Override
@@ -155,11 +167,13 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         }
     }
 
-    private void ininRvListener(RecyclerView rvContent) {
+    private void initRvListener(final RecyclerView rvContent) {
         rvContent.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Toast.makeText(MainActivity.this, "click item position ->" + position, Toast.LENGTH_SHORT).show();
+                long id = ((NewsAdapter) adapter).getItem(position).getId();
+                if (id != 0)
+                    IntentUtil.startActivity(MainActivity.this, ContentActivity.class, new String[][]{{"id", String.valueOf(id)}});
             }
         });
         rvContent.addOnItemTouchListener(new OnItemChildClickListener() {
@@ -168,9 +182,6 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
                 switch (view.getId()) {
                     case R.id.iv_news_pic:
                         Toast.makeText(MainActivity.this, "click pic position -> " + position, Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.tv_news_text:
-                        Toast.makeText(MainActivity.this, "click text position -> " + position, Toast.LENGTH_SHORT).show();
                         break;
                 }
             }

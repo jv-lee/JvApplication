@@ -13,8 +13,10 @@ import com.jv.daily.utils.NetworkUtils;
 import com.jv.daily.utils.SPUtil;
 import com.jv.daily.utils.TimeUtil;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -50,8 +52,6 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
     @Override
     public void refreshNews() {
 
-        final long time = System.currentTimeMillis();
-
         /**
          * 刷新接口为当天新闻 不重复刷新
          */
@@ -62,7 +62,7 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
         hasFirstRefresh = false;
 
         //查询本地是否有今日新闻
-        String date = TimeUtil.milliseconds2StringSimple(System.currentTimeMillis());
+        String date = TimeUtil.milliseconds2StringSimple(TimeUtil.getCurrentTimeMillis());
         Log.d(TAG, "refresh today time -> " + date);
 
         if (mModel.findRefreshDataCount(date) > 0) {
@@ -154,10 +154,10 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
     public void loadNews() {
         //首次进入 加载昨天的更多新闻 - 非首次 直接加载存储时间新闻 api原因 按当天时间获取昨天时间新闻
         if (hasFirstLoad) {
-            LoadDate = TimeUtil.milliseconds2StringSimple(System.currentTimeMillis() - ConstUtil.DAY);
+            LoadDate = TimeUtil.milliseconds2StringSimple(TimeUtil.getCurrentTimeMillis() - ConstUtil.DAY);
             hasFirstLoad = false;
         } else {
-            LoadDate = TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple((String) SPUtil.get(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(System.currentTimeMillis()))) - ConstUtil.DAY);
+            LoadDate = TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple((String) SPUtil.get(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(TimeUtil.getCurrentTimeMillis()))) - ConstUtil.DAY);
         }
         Log.d(TAG, "load date - >" + LoadDate);
 

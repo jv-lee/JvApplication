@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jv.daily.base.app.App;
+import com.jv.daily.base.app.AppComponent;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -16,7 +19,7 @@ import butterknife.Unbinder;
  * Created by Administrator on 2017/4/10.
  */
 
-public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
+public abstract class BaseFragment<P extends IPresenter> extends Fragment {
     protected final String TAG = this.getClass().getSimpleName();
     protected BaseActivity mActivity;
     protected View mRootView;
@@ -37,7 +40,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mActivity = (BaseActivity) getActivity();
-        componentInject();
+        componentInject(((App) getActivity().getApplication()).getAppComponent());
         bindData();
     }
 
@@ -58,7 +61,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
         this.unBinder = null;
     }
 
-    protected abstract void componentInject();
+    protected abstract void componentInject(AppComponent appComponent);
 
     protected abstract View bindRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 

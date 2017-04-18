@@ -9,6 +9,7 @@ import com.jv.daily.R;
 import com.jv.daily.entity.StoriesBean;
 import com.jv.daily.utils.GlideUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +27,17 @@ public class NewsAdapter extends BaseMultiItemQuickAdapter<StoriesBean, BaseView
     @Override
     public List<StoriesBean> getData() {
         return super.getData();
+    }
+
+    public List<String> getIdList() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < getData().size(); i++) {
+            long id = getData().get(i).getId();
+            if (id != 0) {
+                list.add(String.valueOf(id));
+            }
+        }
+        return list;
     }
 
     @Override

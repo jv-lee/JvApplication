@@ -1,5 +1,7 @@
 package com.jv.daily.ui.content;
 
+import android.util.Log;
+
 import com.jv.daily.base.module.ServiceModule;
 import com.jv.daily.base.mvp.BasePresenter;
 import com.jv.daily.base.scope.ActivityScope;
@@ -27,6 +29,7 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
     @Override
     public void loadWeb(String id) {
+        Log.w(TAG, "loadWeb");
         mModel.loadWebBean(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -30,6 +30,7 @@ import com.jv.daily.ui.main.inject.MainModule;
 import com.jv.daily.utils.GlideImageLoader;
 import com.jv.daily.utils.IntentUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -172,8 +173,13 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
                 long id = ((NewsAdapter) adapter).getItem(position).getId();
-                if (id != 0)
-                    IntentUtil.startActivity(MainActivity.this, ContentActivity.class, new String[][]{{"id", String.valueOf(id)}});
+                if (id != 0) {
+                    startActivity(new Intent(MainActivity.this, ContentActivity.class)
+                            .putExtra("id", String.valueOf(id))
+                            .putExtra("ids", (Serializable) ((NewsAdapter) adapter).getIdList()));
+                }
+
+
             }
         });
         rvContent.addOnItemTouchListener(new OnItemChildClickListener() {

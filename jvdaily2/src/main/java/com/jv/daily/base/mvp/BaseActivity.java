@@ -35,8 +35,13 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
         setContentView(bindRootView());
         unBinder = ButterKnife.bind(this);
 
+        setFragment();
+
         setupActivityComponent(mApplication.getAppComponent());
         bindData();
+    }
+
+    protected void setFragment() {
     }
 
     protected abstract int bindRootView();

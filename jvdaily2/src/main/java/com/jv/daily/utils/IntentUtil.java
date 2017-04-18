@@ -2,6 +2,7 @@ package com.jv.daily.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class IntentUtil {
             Iterator it = args.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry entry = (Map.Entry) it.next();
-                intent.putExtra((String) entry.getKey(), (String) entry.getValue());
+                intent.putExtra((String) entry.getKey(), (Bundle) entry.getValue());
             }
         }
         context.startActivity(intent);

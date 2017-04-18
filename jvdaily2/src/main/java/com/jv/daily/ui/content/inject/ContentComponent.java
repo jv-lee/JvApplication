@@ -3,6 +3,7 @@ package com.jv.daily.ui.content.inject;
 import com.jv.daily.base.app.AppComponent;
 import com.jv.daily.base.scope.ActivityScope;
 import com.jv.daily.ui.content.ContentActivity;
+import com.jv.daily.ui.content.ContentFragment;
 
 import dagger.Component;
 
@@ -15,4 +16,6 @@ import dagger.Component;
 public interface ContentComponent {
 
     void inject(ContentActivity activity);
+
+    void inject(ContentFragment fragment);
 }

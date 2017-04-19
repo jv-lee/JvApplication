@@ -1,16 +1,19 @@
 package com.jv.daily.ui.content;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.jv.daily.R;
 import com.jv.daily.base.app.AppComponent;
@@ -18,6 +21,7 @@ import com.jv.daily.base.mvp.BaseFragment;
 import com.jv.daily.entity.NewsContentBean;
 import com.jv.daily.ui.content.inject.ContentModule;
 import com.jv.daily.ui.content.inject.DaggerContentComponent;
+import com.jv.daily.utils.ShareUtil;
 
 import butterknife.BindView;
 
@@ -52,8 +56,8 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
 
     @Override
     protected void bindData() {
+        setHasOptionsMenu(true);
         initWebView();
-        Log.w(TAG, "bindData");
         mPresenter.loadWeb(getArguments().getString("id"));
     }
 
@@ -107,5 +111,26 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
         newsContentBean = bean;
         wvContent.loadUrl(newsContentBean.getShare_url());
 //        wvContent.loadDataWithBaseURL(null, bean.getBody(), "text/html", "utf-8", null);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.content_menu, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.share:
+                if (hasLoadUrl) {
+                    ShareUtil.shareText(mActivity, "新闻：" + newsContentBean.getTitle() + "\n URL：" + newsContentBean.getShare_url());
+                } else {
+                    Toast.makeText(mActivity, "新闻页面未加载完成", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

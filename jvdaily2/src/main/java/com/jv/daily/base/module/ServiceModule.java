@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class ServiceModule {
 
-    public static final String BASE_URL = "http://news-at.zhihu.com/api/4/";
+    public static final String BASE_URL = "http://news-at.zhihu.com/api/";
     private static final long DEFAULT_TIMEOUT = 1; //连接时间为最小
     private static final long READ_TIMEOUT = 15;
     private static final long WRITE_TIMEOUT = 15;

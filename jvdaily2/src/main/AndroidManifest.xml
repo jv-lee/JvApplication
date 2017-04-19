@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.welcome.WelcomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

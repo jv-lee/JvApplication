@@ -1,20 +1,13 @@
 package com.jv.daily.ui.content;
 
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 
 import com.jv.daily.R;
 import com.jv.daily.base.app.AppComponent;
 import com.jv.daily.base.mvp.BaseActivity;
 import com.jv.daily.ui.content.adapter.ContentPagerAdapter;
-import com.jv.daily.ui.content.inject.ContentModule;
-import com.jv.daily.ui.content.inject.DaggerContentComponent;
 
 import java.util.List;
 
@@ -46,9 +39,9 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> {
     @Override
     protected void setupActivityComponent(AppComponent appComponent) {
         //使用viewpager 所以在适配器中 依赖注入每一个fragment
-        ContentPagerAdapter pagerApdater = new ContentPagerAdapter(getSupportFragmentManager(), (List<String>) getIntent().getSerializableExtra("ids"), getIntent().getStringExtra("id"), appComponent);
-        vpWebContainer.setAdapter(pagerApdater);
-        vpWebContainer.setCurrentItem(pagerApdater.getThisPosition());
+        ContentPagerAdapter pagerAdapter = new ContentPagerAdapter(getSupportFragmentManager(), (List<String>) getIntent().getSerializableExtra("ids"), getIntent().getStringExtra("id"), appComponent);
+        vpWebContainer.setAdapter(pagerAdapter);
+        vpWebContainer.setCurrentItem(pagerAdapter.getThisPosition());
     }
 
     /**

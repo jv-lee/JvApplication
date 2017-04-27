@@ -31,7 +31,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void initAllView(Bundle savedInstanceState);
 
-    public abstract boolean onKeyDown(int keyCode, KeyEvent event);
+    protected abstract boolean onKeyDown(int keyCode, KeyEvent event);
 
     protected abstract void rxEvent();
 

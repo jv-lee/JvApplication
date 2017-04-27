@@ -1,37 +1,22 @@
-package com.jv.sms.activity;
+package com.jv.sms.ui.welcome;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.os.Environment;
-import android.provider.Telephony;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jv.sms.R;
-import com.jv.sms.app.JvApplication;
+import com.jv.sms.base.BaseActivity;
+import com.jv.sms.ui.MainActivity;
 import com.jv.sms.utils.BarUtils;
+import com.jv.sms.utils.IntentUtil;
 import com.jv.sms.utils.SmsUtils;
-import com.tencent.tinker.lib.tinker.TinkerInstaller;
-
-import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends BaseActivity {
 
     private View mDecorView;
     @BindView(R.id.tv_out)
@@ -45,34 +30,30 @@ public class WelcomeActivity extends AppCompatActivity {
     private final int REQUEST_CODE = 0x02222;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected int bindRootView() {
+        return R.layout.activity_welcome;
+    }
 
-        //加载热更新补丁
-        TinkerInstaller.onReceiveUpgradePatch(getApplicationContext(),
-                Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
+    @Override
+    protected void bindData() {
+        //        //加载热更新补丁
+//        TinkerInstaller.onReceiveUpgradePatch(getApplicationContext(),
+//                Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
 
         //判断当前应用是否为系统默认应用
-        if (SmsUtils.hasDefaultsSmsApplication(JvApplication.getInstance())) {
-            startSmsActivity();
+        if (SmsUtils.hasDefaultsSmsApplication(mContext)) {
+            IntentUtil.startActivityOrFinish(this, MainActivity.class);
         }
 
-        //set视图 注入View
-        setContentView(R.layout.activity_welcome);
-
-        ButterKnife.bind(this);
-
-        //获取全屏试图容器
-        mDecorView = getWindow().getDecorView();
-
+        mDecorView = getWindow().getDecorView();//获取全屏试图容器
         BarUtils.hideBar(mDecorView); //隐藏状态栏 和控制栏
 
+        //判断当前没有控制栏 适配window高度
         int navigationHeight = BarUtils.getNavigationBarHeight(this);
         if (navigationHeight != 0) {
             llNavigationLayout.setWeightSum(0);
             llNavigationLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, navigationHeight));
         }
-
     }
 
     //获取焦点时隐藏
@@ -91,12 +72,6 @@ public class WelcomeActivity extends AppCompatActivity {
      */
     @OnClick(R.id.tv_next)
     public void nextClick(View view) {
-//        String packageName = getPackageName();
-//        if (!Telephony.Sms.getDefaultSmsPackage(WelcomeActivity.this).equals(packageName)) {
-//            Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-//            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName);
-//            startActivityForResult(intent, REQUEST_CODE);
-//        }
         SmsUtils.hasDefaultSmsApplicationStartSettings(this, REQUEST_CODE);
     }
 
@@ -107,7 +82,7 @@ public class WelcomeActivity extends AppCompatActivity {
      */
     @OnClick(R.id.tv_out)
     public void outClick(View view) {
-        startSmsActivity();
+        IntentUtil.startActivityOrFinish(this, MainActivity.class);
     }
 
     /**
@@ -120,22 +95,9 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            startSmsActivity();
+            IntentUtil.startActivityOrFinish(this, MainActivity.class);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    /**
-     * 跳转到主页函数
-     */
-
-    public void startSmsActivity() {
-        startActivity(new Intent(this, SmsActivity.class));
-        finish();
-    }
 }

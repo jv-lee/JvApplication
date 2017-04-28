@@ -57,4 +57,8 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.6'
 
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:+'
+    //添加侧滑删除依赖库
+    compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.2.5'
+    //添加emoj表情库
+    compile 'com.github.jv-lee:EmojLibrary:v1.0'
 }

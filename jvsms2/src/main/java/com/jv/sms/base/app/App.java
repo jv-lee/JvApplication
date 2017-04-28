@@ -2,9 +2,13 @@ package com.jv.sms.base.app;
 
 import android.app.Application;
 
+import com.jv.sms.R;
 import com.jv.sms.base.module.AppModule;
 import com.jv.sms.base.module.DbModule;
 import com.jv.sms.base.module.RxModule;
+import com.jv.sms.entity.SmsBean;
+
+import java.util.List;
 
 
 /**

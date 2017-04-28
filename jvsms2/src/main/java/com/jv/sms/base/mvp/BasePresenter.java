@@ -1,5 +1,6 @@
 package com.jv.sms.base.mvp;
 
+import android.app.Application;
 import android.content.Context;
 
 import javax.inject.Inject;
@@ -11,6 +12,8 @@ import javax.inject.Inject;
 public class BasePresenter<M extends IModel, V extends IView> {
     protected final String TAG = this.getClass().getSimpleName();
 
+    @Inject
+    protected Application mApplication;
     @Inject
     protected M mModel;
     @Inject

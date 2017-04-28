@@ -2,6 +2,7 @@ package com.jv.sms.ui.welcome;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StyleRes;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.jv.sms.R;
 import com.jv.sms.base.BaseActivity;
 import com.jv.sms.ui.MainActivity;
+import com.jv.sms.ui.sms.SmsActivity;
 import com.jv.sms.utils.BarUtils;
 import com.jv.sms.utils.IntentUtil;
 import com.jv.sms.utils.SmsUtils;
@@ -82,7 +84,7 @@ public class WelcomeActivity extends BaseActivity {
      */
     @OnClick(R.id.tv_out)
     public void outClick(View view) {
-        IntentUtil.startActivityOrFinish(this, MainActivity.class);
+        IntentUtil.startActivityOrFinish(this, SmsActivity.class);
     }
 
     /**
@@ -95,7 +97,7 @@ public class WelcomeActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            IntentUtil.startActivityOrFinish(this, MainActivity.class);
+            IntentUtil.startActivityOrFinish(this, SmsActivity.class);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

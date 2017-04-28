@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 
 import com.jv.sms.base.app.App;
 import com.jv.sms.base.app.AppComponent;
+import com.jv.sms.rx.EventBase;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import rx.Observable;
 
 /**
  * Created by Administrator on 2017/4/10.
@@ -24,9 +26,19 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment {
     protected BaseActivity mActivity;
     protected View mRootView;
 
+    protected Observable<EventBase> mObservable;
+
     @Inject
     protected P mPresenter;
     private Unbinder unBinder;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        onCreate();
+        mObservable = getRxBus();
+        setHasOptionsMenu(true); // 在fragment中操作Menu
+    }
 
     @Nullable
     @Override
@@ -40,8 +52,8 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mActivity = (BaseActivity) getActivity();
-        componentInject(((App) getActivity().getApplication()).getAppComponent());
         bindData();
+        rxEvent();
     }
 
     @Override
@@ -61,10 +73,14 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment {
         this.unBinder = null;
     }
 
-    protected abstract void componentInject(AppComponent appComponent);
+    protected abstract void onCreate();
 
     protected abstract View bindRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
     protected abstract void bindData();
+
+    public abstract Observable<EventBase> getRxBus();
+
+    protected abstract void rxEvent();
 
 }

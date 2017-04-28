@@ -42,11 +42,11 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
 
     @Override
     protected void componentInject(AppComponent appComponent) {
-        DaggerContentComponent.builder()
-                .appComponent(appComponent)
-                .contentModule(new ContentModule(this))
-                .build()
-                .inject((ContentActivity) mActivity);
+//        DaggerContentComponent.builder()
+//                .appComponent(appComponent)
+//                .contentModule(new ContentModule(this))
+//                .build()
+//                .inject((ContentActivity) mActivity);
     }
 
     @Override

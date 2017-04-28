@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true">
+
+    <LinearLayout
+        android:id="@+id/ll_item_smsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selected_sms_item"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="15dp">
+
+        <FrameLayout
+            android:id="@+id/fl_item_smsIconLayout"
+            android:layout_width="@dimen/sms_icon"
+            android:layout_height="@dimen/sms_icon"
+            android:layout_gravity="start"
+            android:background="@drawable/shape_icon_bg">
+
+            <TextView
+                android:id="@+id/tv_item_word"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/colorSmsIconText"
+                android:textSize="26sp" />
+
+            <ImageView
+                android:id="@+id/iv_item_icon"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_item_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10086"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_item_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="您的为好4180卡12月消费勒多说钱你知道嘛？不知道也没关系"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tv_item_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:55" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:background="#ff4a57"
+        android:text="@string/delete"
+        android:textColor="@android:color/white" />
+
+</com.mcxtzhang.swipemenulib.SwipeMenuLayout>
+
+

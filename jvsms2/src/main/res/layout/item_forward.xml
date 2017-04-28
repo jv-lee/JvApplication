@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selected_sms_item"
+    android:orientation="horizontal"
+    android:paddingBottom="10dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="10dp">
+
+    <FrameLayout
+        android:id="@+id/fl_item_layout"
+        android:layout_width="@dimen/sms_icon"
+        android:layout_height="@dimen/sms_icon"
+        android:background="@drawable/shape_icon_bg">
+
+        <TextView
+            android:id="@+id/tv_item_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/colorSmsIconText"
+            android:textSize="26sp" />
+
+        <ImageView
+            android:id="@+id/iv_item_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/tv_item_phoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_item_phoneNumber" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

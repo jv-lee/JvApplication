@@ -13,8 +13,8 @@ import com.jv.sms.base.mvp.BaseModel;
 import com.jv.sms.base.scope.ActivityScope;
 import com.jv.sms.constant.Constant;
 import com.jv.sms.entity.SmsBean;
-import com.jv.sms.utils.SmsUtils;
-import com.jv.sms.utils.TimeUtils;
+import com.jv.sms.utils.SmsUtil;
+import com.jv.sms.utils.TimeUtil;
 
 import java.util.LinkedList;
 
@@ -63,14 +63,14 @@ public class ContentModel extends BaseModel implements ContentContract.Model {
             //获取短信对象 添加至集合
             if (cur.moveToFirst()) {
                 do {
-                    smsList.add(SmsUtils.simpleSmsBean(cur, mApplication));
+                    smsList.add(SmsUtil.simpleSmsBean(cur, mApplication));
                 } while (cur.moveToNext());
             }
             //设置时间显示格式 从最小时间开始设置
             for (int i = (smsList.size() - 1); i >= 0; i--) {
-                smsList.get(i).setShowDate(TimeUtils.isShowTime(smsList.get(i).getDate()));
+                smsList.get(i).setShowDate(TimeUtil.isShowTime(smsList.get(i).getDate()));
             }
-            TimeUtils.clearTimeList();
+            TimeUtil.clearTimeList();
 
             return smsList;
         } catch (SQLiteException ex) {
@@ -82,20 +82,20 @@ public class ContentModel extends BaseModel implements ContentContract.Model {
     @Override
     public SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content, long time) {
 
-        SmsUtils.addSmsToDB(mApplication, phoneNumber, content, time, Constant.SMS_STATUS_IS_READ, Constant.SMS_STATUS_SEND, -1);
+        SmsUtil.addSmsToDB(mApplication, phoneNumber, content, time, Constant.SMS_STATUS_IS_READ, Constant.SMS_STATUS_SEND, -1);
 
-        SmsBean smsBean = SmsUtils.findSmsByDate(mApplication, time);
-        smsBean.setShowDate(TimeUtils.isShowTime(smsBean.getDate()));
-        TimeUtils.clearTimeList();
+        SmsBean smsBean = SmsUtil.findSmsByDate(mApplication, time);
+        smsBean.setShowDate(TimeUtil.isShowTime(smsBean.getDate()));
+        TimeUtil.clearTimeList();
 
         //发送短信
-        SmsUtils.sendSms(sentPI, phoneNumber, content);
+        SmsUtil.sendSms(sentPI, phoneNumber, content);
         return smsBean;
     }
 
     public SmsBean updateSmsStatus(SmsBean smsBean) {
         //将发送短信保存至数据库
-        SmsUtils.updateSmsToDB(mApplication, smsBean.getId());
+        SmsUtil.updateSmsToDB(mApplication, smsBean.getId());
         smsBean.setStatus(Constant.SMS_STATUS_ERROR);
         return smsBean;
     }

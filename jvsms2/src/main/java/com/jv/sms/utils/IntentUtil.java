@@ -10,6 +10,10 @@ import android.content.Intent;
 
 public class IntentUtil {
 
+    public static void startActivity(Activity context, Class<?> c) {
+        context.startActivity(new Intent(context, c));
+    }
+
     public static void startActivityOrFinish(Activity context, Class<?> c) {
         context.startActivity(new Intent(context, c));
         context.finish();

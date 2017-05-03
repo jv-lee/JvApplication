@@ -13,10 +13,9 @@ import android.widget.Toast;
 import com.jv.sms.base.mvp.BaseModel;
 import com.jv.sms.base.scope.ActivityScope;
 import com.jv.sms.constant.Constant;
-import com.jv.sms.db.dao.ISmsDao;
 import com.jv.sms.db.dao.SmsDaoImpl;
 import com.jv.sms.entity.SmsBean;
-import com.jv.sms.utils.SmsUtils;
+import com.jv.sms.utils.SmsUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class SmsModel extends BaseModel implements SmsContract.Model {
     public LinkedList<SmsBean> findSmsAll(final Context context) {
         //create return Container ，get all session id
         smsBeanList = new LinkedList<>();
-        threads = SmsUtils.getThreadsId(context);
+        threads = SmsUtil.getThreadsId(context);
 
         final ContentResolver cr = context.getContentResolver();
         final String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "thread_id", "read", "status"};
@@ -56,7 +55,7 @@ public class SmsModel extends BaseModel implements SmsContract.Model {
                 Cursor cur = cr.query(uri, projection, "thread_id=?", new String[]{threads.get(i)}, "date desc limit 1");
 
                 if (cur.moveToFirst()) {
-                    smsBeanList.add(SmsUtils.simpleSmsBean(cur, mApplication));
+                    smsBeanList.add(SmsUtil.simpleSmsBean(cur, mApplication));
                 }
                 cur.close();
                 cur = null;
@@ -88,7 +87,7 @@ public class SmsModel extends BaseModel implements SmsContract.Model {
 
         Cursor cur = cr.query(uri, projection, null, null, "date desc limit 1");
         if (cur.moveToFirst()) {
-            return SmsUtils.simpleSmsBean(cur, mApplication);
+            return SmsUtil.simpleSmsBean(cur, mApplication);
         }
         Toast.makeText(mApplication, "Null", Toast.LENGTH_SHORT).show();
         return new SmsBean("12", "你好", "10077", "这是一条短信", "2016-12-12", SmsBean.Type.SEND, "2855", SmsBean.ReadType.IS_READ, -1);

@@ -20,7 +20,7 @@ import com.jv.sms.constant.Constant;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.entity.SmsListUiFlagBean;
 import com.jv.sms.ui.content.ContentContract;
-import com.jv.sms.utils.TextUtils;
+import com.jv.sms.utils.TextUtil;
 
 import java.util.LinkedList;
 import java.util.regex.Pattern;
@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-import static com.jv.sms.utils.TimeUtils.getChineseTimeString;
+import static com.jv.sms.utils.TimeUtil.getChineseTimeString;
 
 
 /**
@@ -378,7 +378,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void windowCopy() {
         int position = smsListUiFlagBean.getSelectMessageUiPosition();
         String content = mList.get(position).getSmsBody();
-        TextUtils.copy(mContext, content);
+        TextUtil.copy(mContext, content);
         Toast.makeText(mContext, "已复制短信内容", Toast.LENGTH_SHORT).show();
         clearSelectMessageThis(position);
     }

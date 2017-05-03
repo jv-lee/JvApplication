@@ -1,5 +1,6 @@
 package com.jv.sms.ui.content;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -14,15 +15,15 @@ import com.jv.sms.interfaces.ToolbarSetListener;
 import com.jv.sms.rx.EventBase;
 import com.jv.sms.ui.content.inject.ContentModule;
 import com.jv.sms.ui.content.inject.DaggerContentComponent;
-import com.jv.sms.utils.KeyboardUtils;
+import com.jv.sms.utils.KeyboardUtil;
 import com.rockerhieu.emojicon.EmojiconGridFragment;
 import com.rockerhieu.emojicon.EmojiconsFragment;
 import com.rockerhieu.emojicon.emoji.Emojicon;
 
 
-
 import butterknife.BindView;
 import rx.Observable;
+import swipebacklayout.SwipeBackLayout;
 
 /**
  * Created by Administrator on 2017/4/28.
@@ -38,6 +39,7 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
     ProgressBar pbLoadBar;
 
     ContentFragment contentFragment;
+    Fragment mFragment;
 
     @Override
     protected void setThemes() {
@@ -57,14 +59,14 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
 
     @Override
     protected void setupActivityComponent(AppComponent appComponent) {
-        contentFragment = new ContentFragment(this);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container, contentFragment);
+        mFragment = new ContentFragment(this);
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container2, mFragment).commit();
         DaggerContentComponent
                 .builder()
                 .appComponent(appComponent)
-                .contentModule(new ContentModule(contentFragment))
+                .contentModule(new ContentModule((ContentContract.View) mFragment))
                 .build()
-                .inject(contentFragment);
+                .inject((ContentFragment) mFragment);
     }
 
     @Override
@@ -83,7 +85,8 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                KeyboardUtils.hideSoftInput(ContentActivity.this);
+                mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
+                KeyboardUtil.hideSoftInput(ContentActivity.this);
                 finish();
             }
         });
@@ -91,7 +94,7 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sms_list_menu, menu);
+        getMenuInflater().inflate(R.menu.sms_menu, menu);
         return true;
     }
 
@@ -120,7 +123,7 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (contentFragment != null && contentFragment instanceof ContentFragment) {
             if (!contentFragment.onKeyDown(keyCode, event)) {
-//                finish(); swipeBack 自动调用finish
+                finish(); //swipeBack 自动调用finish
             } else {
                 return false;
             }
@@ -130,15 +133,15 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
 
     @Override
     public void onEmojiconClicked(Emojicon emojicon) {
-        if (contentFragment != null && contentFragment instanceof ContentFragment) {
-            EmojiconsFragment.input(contentFragment.etSmsContent, emojicon);
+        if (mFragment != null && mFragment instanceof ContentFragment) {
+            EmojiconsFragment.input(((ContentFragment) mFragment).etSmsContent, emojicon);
         }
     }
 
     @Override
     public void onEmojiconBackspaceClicked(View v) {
-        if (contentFragment != null && contentFragment instanceof ContentFragment) {
-            EmojiconsFragment.backspace(contentFragment.etSmsContent);
+        if (mFragment != null && mFragment instanceof ContentFragment) {
+            EmojiconsFragment.backspace(((ContentFragment) mFragment).etSmsContent);
         }
 
     }

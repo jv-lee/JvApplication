@@ -2,20 +2,18 @@ package com.jv.sms.base.app;
 
 import android.app.Application;
 
-import com.jv.sms.R;
+import com.jv.sms.app.JvApplications;
 import com.jv.sms.base.module.AppModule;
 import com.jv.sms.base.module.DbModule;
 import com.jv.sms.base.module.RxModule;
-import com.jv.sms.entity.SmsBean;
-
-import java.util.List;
+import com.jv.sms.utils.SPUtil;
 
 
 /**
  * Created by Administrator on 2017/4/27.
  */
 
-public class App extends Application {
+public class App extends JvApplications {
 
     private AppComponent mAppComponent;
 
@@ -28,6 +26,7 @@ public class App extends Application {
                 .dbModule(new DbModule())
                 .rxModule(new RxModule())
                 .build();
+        SPUtil.getInstance(this);
     }
 
     public AppComponent getAppComponent() {

@@ -1,25 +1,26 @@
 package com.jv.sms.ui.sms;
 
-import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.jv.sms.R;
 import com.jv.sms.base.app.AppComponent;
 import com.jv.sms.base.mvp.BaseActivity;
 import com.jv.sms.interfaces.DataLoadLayoutListener;
 import com.jv.sms.rx.EventBase;
+import com.jv.sms.ui.newsms.NewSmsActivity;
 import com.jv.sms.ui.sms.inject.DaggerSmsComponent;
 import com.jv.sms.ui.sms.inject.SmsModule;
+import com.jv.sms.utils.IntentUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import swipebacklayout.SwipeBackLayout;
 
 /**
  * Created by Administrator on 2017/4/28.
@@ -45,6 +46,7 @@ public class SmsActivity extends BaseActivity<SmsContract.Presenter> implements 
 
     @Override
     protected void bindData() {
+        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.STATE_IDLE);
         setSupportActionBar(toolbar);
     }
 
@@ -97,8 +99,7 @@ public class SmsActivity extends BaseActivity<SmsContract.Presenter> implements 
 
     @OnClick(R.id.fab)
     public void fabOnclick(View view) {
-//        startActivity(new Intent(this, NewSmsActivity.class));
-        Toast.makeText(mContext, "fab", Toast.LENGTH_SHORT).show();
+        IntentUtil.startActivity(this, NewSmsActivity.class);
     }
 
     @Override

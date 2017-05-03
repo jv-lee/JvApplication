@@ -45,7 +45,7 @@
                 android:id="@+id/iv_sendSms_statusIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_failed_status_red"
+                android:src="@drawable/ic_error"
                 android:visibility="gone" />
 
         </FrameLayout>

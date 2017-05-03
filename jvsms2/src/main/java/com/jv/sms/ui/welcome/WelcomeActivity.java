@@ -1,19 +1,18 @@
 package com.jv.sms.ui.welcome;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.StyleRes;
+import android.os.Environment;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jv.sms.R;
 import com.jv.sms.base.BaseActivity;
-import com.jv.sms.ui.MainActivity;
 import com.jv.sms.ui.sms.SmsActivity;
-import com.jv.sms.utils.BarUtils;
+import com.jv.sms.utils.BarUtil;
 import com.jv.sms.utils.IntentUtil;
-import com.jv.sms.utils.SmsUtils;
+import com.jv.sms.utils.SmsUtil;
+import com.tencent.tinker.lib.tinker.TinkerInstaller;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -38,20 +37,20 @@ public class WelcomeActivity extends BaseActivity {
 
     @Override
     protected void bindData() {
-        //        //加载热更新补丁
-//        TinkerInstaller.onReceiveUpgradePatch(getApplicationContext(),
-//                Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
+        //加载热更新补丁
+        TinkerInstaller.onReceiveUpgradePatch(getApplicationContext(),
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
 
         //判断当前应用是否为系统默认应用
-        if (SmsUtils.hasDefaultsSmsApplication(mContext)) {
-            IntentUtil.startActivityOrFinish(this, MainActivity.class);
+        if (SmsUtil.hasDefaultsSmsApplication(mContext)) {
+            IntentUtil.startActivityOrFinish(this, SmsActivity.class);
         }
 
         mDecorView = getWindow().getDecorView();//获取全屏试图容器
-        BarUtils.hideBar(mDecorView); //隐藏状态栏 和控制栏
+        BarUtil.hideBar(mDecorView); //隐藏状态栏 和控制栏
 
         //判断当前没有控制栏 适配window高度
-        int navigationHeight = BarUtils.getNavigationBarHeight(this);
+        int navigationHeight = BarUtil.getNavigationBarHeight(this);
         if (navigationHeight != 0) {
             llNavigationLayout.setWeightSum(0);
             llNavigationLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, navigationHeight));
@@ -63,7 +62,7 @@ public class WelcomeActivity extends BaseActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            BarUtils.hideBar(mDecorView);
+            BarUtil.hideBar(mDecorView);
         }
     }
 
@@ -74,7 +73,7 @@ public class WelcomeActivity extends BaseActivity {
      */
     @OnClick(R.id.tv_next)
     public void nextClick(View view) {
-        SmsUtils.hasDefaultSmsApplicationStartSettings(this, REQUEST_CODE);
+        SmsUtil.hasDefaultSmsApplicationStartSettings(this, REQUEST_CODE);
     }
 
     /**

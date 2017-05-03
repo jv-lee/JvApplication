@@ -11,8 +11,10 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,25 +39,25 @@ import com.jv.sms.constant.Constant;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.interfaces.ToolbarSetListener;
 import com.jv.sms.rx.EventBase;
-import com.jv.sms.rx.RxBus;
 import com.jv.sms.ui.content.adapter.ContentAdapter;
 import com.jv.sms.ui.content.adapter.ForwardDialogAdapter;
 import com.jv.sms.ui.newsms.NewSmsActivity;
-import com.jv.sms.utils.ClickUtils;
-import com.jv.sms.utils.ShareUtils;
-import com.jv.sms.utils.SizeUtils;
-import com.jv.sms.utils.SmsUtils;
-import com.jv.sms.utils.SystemUtils;
-import com.jv.sms.utils.TelUtils;
-import com.jv.sms.utils.TimeUtils;
+import com.jv.sms.utils.ClickUtil;
+import com.jv.sms.utils.ShareUtil;
+import com.jv.sms.utils.SizeUtil;
+import com.jv.sms.utils.SmsUtil;
+import com.jv.sms.utils.SystemUtil;
+import com.jv.sms.utils.TelUtil;
+import com.jv.sms.utils.TimeUtil;
 import com.rockerhieu.emojicon.EmojiconEditText;
 import com.rockerhieu.emojicon.EmojiconsFragment;
 
 import java.util.LinkedList;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -68,7 +71,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
 
 
     @BindView(R.id.et_smsContent)
-    EmojiconEditText etSmsContent;
+    public EmojiconEditText etSmsContent;
     @BindView(R.id.ll_content_layout)
     LinearLayout llContentLayout;
     @BindView(R.id.rv_container)
@@ -81,9 +84,6 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     ImageView ivSendSms;
     @BindView(R.id.fl_emojFragment_container)
     FrameLayout flEjmoContainer;
-
-    @Inject
-    RxBus rxBus;
 
     //弹窗View
     private PopupWindow mPopupWindow;
@@ -132,34 +132,6 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     }
 
     @Override
-    protected View bindRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_content, null, false);
-    }
-
-    @Override
-    protected void bindData() {
-    }
-
-    @Override
-    public Observable<EventBase> getRxBus() {
-        return rxBus.register(this);
-    }
-
-    //RxBus事件监听函数
-    @Override
-    protected void rxEvent() {
-        mObservable.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<EventBase>() {
-                    @Override
-                    public void call(EventBase eventBase) { //收到新增短信通知 判断会话号码 做逻辑操作
-                        if (eventBase.getOption().equals(bean.getPhoneNumber())) {
-                            mAdapter.insertSmsListUi((SmsBean) eventBase.getObj());
-                        }
-                    }
-                });
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         toolbarSetListener.setToolbarTitle(bean.getName());
@@ -173,7 +145,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     public void onDestroy() {
         super.onDestroy();
 
-        TimeUtils.clearTimeList();//清空列表时间差管理集合
+        TimeUtil.clearTimeList();//清空列表时间差管理集合
         getActivity().unregisterReceiver(sendMessage);//注销广播
         Constant.THIS_SMS_FRAGMENT_FLAG = "";//将当前全局号码初始化
 
@@ -184,17 +156,16 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
         } else {
             rxBus.post(new EventBase(Constant.RX_CODE_UPDATE_MESSAGE, mSmsBeans.get(0)));
         }
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_call: // 菜单点击拨打当前联系人电话
-                TelUtils.sendTel1(mActivity, bean.getPhoneNumber());
+                TelUtil.sendTel1(mActivity, bean.getPhoneNumber());
                 break;
             case R.id.menu_item_delete: // 菜单点击删除当前联系人会话
-                if (SmsUtils.setDefaultSms(rvContainer, mActivity)) {
+                if (SmsUtil.setDefaultSms(rvContainer, mActivity)) {
                     if (deleteDialog == null) {
                         deleteDialog = new AlertDialog.Builder(mActivity).setTitle(mActivity.getString(R.string.prompt))
                                 .setMessage(mActivity.getString(R.string.has_delete_session))
@@ -217,6 +188,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == event.KEYCODE_BACK) { //按下BACK 键先清除当前选中状态
             if (flEjmoContainer.isShown()) {
@@ -226,6 +198,103 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
             return mAdapter.clearSelectMessageState();
         }
         return false;
+    }
+
+    @Override
+    protected View bindRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_content, null, false);
+    }
+
+    @Override
+    protected void bindData(Bundle savedInstanceState) {
+        initPopupView(); //初始化长按弹窗
+        ivAddSms.setColorFilter(ContextCompat.getColor(mActivity, Constant.icon_theme_darkColors[bean.getColorPosition()])); //设置添加按钮颜色
+
+        //初始化消息显示列表
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(true);//设置倒叙显示消息列表
+        rvContainer.setLayoutManager(linearLayoutManager);
+        rvContainer.setItemAnimator(new DefaultItemAnimator());
+        rvContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mActivity, "点击了 rv", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //加载数据
+        mPresenter.findSmsBeansAll(bean.getThread_id());
+        //初始化Emoj表情
+        createEjmoLayout(savedInstanceState);
+    }
+
+    @Override
+    public Observable<EventBase> getRxBus() {
+        return rxBus.register(this);
+    }
+
+    //RxBus事件监听函数
+    @Override
+    protected void rxEvent() {
+        mObservable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<EventBase>() {
+                    @Override
+                    public void call(EventBase eventBase) { //收到新增短信通知 判断会话号码 做逻辑操作
+                        if (eventBase.getOption().equals(bean.getPhoneNumber())) {
+                            mAdapter.insertSmsListUi((SmsBean) eventBase.getObj());
+                        }
+                    }
+                });
+    }
+
+
+    @OnClick({R.id.iv_addSms, R.id.iv_sendSms})
+    public void ivOnClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_sendSms: //发送短信
+                if (SmsUtil.setDefaultSms(rvContainer, mActivity) && mAdapter.sendFlag) { //判断当前应用是否获取默认 短信应用权限
+                    mAdapter.sendFlag = false;
+                    sendSms(mActivity, etSmsContent.getText().toString(), bean.getPhoneNumber());
+                } else {
+                    Toast.makeText(mActivity, mActivity.getString(R.string.click_max), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.iv_addSms:
+                Toast.makeText(mActivity, mActivity.getString(R.string.function_not), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.et_smsContent:
+                hideEmotionView(true);
+                break;
+        }
+    }
+
+    @OnCheckedChanged(R.id.cb_emojIcon)
+    public void onChecked(CompoundButton button, boolean isChecked) {
+        if (isChecked && !flEjmoContainer.isShown()) {
+            showEmotionView();
+        } else {
+            hideEmotionView(true);
+        }
+    }
+
+    /**
+     * 动态改变发送按钮颜色
+     *
+     * @param s
+     * @param start
+     * @param before
+     * @param count
+     */
+    @OnTextChanged(R.id.et_smsContent)
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (s.length() > 0) {
+            if (!etFlag) return;
+            etFlag = false;
+            ivSendSms.setColorFilter(ContextCompat.getColor(mActivity, Constant.icon_theme_darkColors[bean.getColorPosition()]));
+        } else {
+            etFlag = true;
+            ivSendSms.setColorFilter(ContextCompat.getColor(mActivity, R.color.colorSmsEditTextIcon));
+        }
     }
 
     /**
@@ -321,12 +390,12 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     /**
      * 发送短信
      */
-    public void sendSms(String content, String phoneNumber) {
+    public void sendSms(Context context, String content, String phoneNumber) {
         if (content.length() > 0) {
             Intent sendIntent = new Intent(SENT_SMS_ACTION);
             PendingIntent sendPi = PendingIntent.getBroadcast(getActivity(), 0, sendIntent, 0);
             mPresenter.sendSms(sendPi, phoneNumber, content, System.currentTimeMillis());
-            ClickUtils.sendMusic();
+            ClickUtil.sendMusic(context);
         }
     }
 
@@ -357,7 +426,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
 
     @Override
     public void getSendSms(String content, String phoneNumber) {
-        sendSms(content, phoneNumber);
+        sendSms(mActivity, content, phoneNumber);
     }
 
     /************************************************
@@ -386,7 +455,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
         mPopupWindow.setOutsideTouchable(false);
         // TODO：更新popupwindow的状态
         mPopupWindow.update();
-        mPopupWindow.showAtLocation(rvContainer, Gravity.TOP, 0, SizeUtils.getSubTitleHeight(getActivity()));
+        mPopupWindow.showAtLocation(rvContainer, Gravity.TOP, 0, SizeUtil.getSubTitleHeight(getActivity()));
     }
 
     @Override
@@ -396,7 +465,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
                 mAdapter.clearSelectMessageState();
                 break;
             case R.id.iv_window_attachment:
-                ShareUtils.shareText(mActivity, mSmsBeans.get(mAdapter.smsListUiFlagBean.getSelectMessageUiPosition()).getSmsBody());
+                ShareUtil.shareText(mActivity, mSmsBeans.get(mAdapter.smsListUiFlagBean.getSelectMessageUiPosition()).getSmsBody());
                 mAdapter.clearSelectMessageState();
                 break;
             case R.id.iv_window_forward:
@@ -410,7 +479,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
                 mAdapter.windowInfo();
                 break;
             case R.id.iv_window_delete:
-                if (SmsUtils.setDefaultSms(rvContainer, mActivity)) {
+                if (SmsUtil.setDefaultSms(rvContainer, mActivity)) {
                     mAdapter.windowDelete();
                 }
                 break;
@@ -471,7 +540,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
                 localLayoutParams.weight = 0.0F;
                 flEjmoContainer.setVisibility(View.GONE);
                 getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-                SystemUtils.showKeyBoard(etSmsContent);
+                SystemUtil.showKeyBoard(mActivity, etSmsContent);
                 etSmsContent.postDelayed(new Runnable() {
 
                     @Override
@@ -490,15 +559,15 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
 
     private void showEmotionView() {
         cbEmojiIcon.setChecked(true);
-        emotionHeight = SystemUtils.getKeyboardHeight(getActivity());
+        emotionHeight = SystemUtil.getKeyboardHeight(getActivity());
 
-        SystemUtils.hideSoftInput(etSmsContent);
+        SystemUtil.hideSoftInput(mActivity, etSmsContent);
         flEjmoContainer.getLayoutParams().height = emotionHeight;
         flEjmoContainer.setVisibility(View.VISIBLE);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         //在5.0有navigationbar的手机，高度高了一个statusBar
-        int lockHeight = SystemUtils.getAppContentHeight(getActivity());
+        int lockHeight = SystemUtil.getAppContentHeight(getActivity());
         lockContainerHeight(lockHeight);
     }
 

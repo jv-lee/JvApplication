@@ -3,6 +3,7 @@ package com.jv.sms.base.mvp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import com.jv.sms.base.app.App;
 import com.jv.sms.base.app.AppComponent;
 import com.jv.sms.rx.EventBase;
+import com.jv.sms.rx.RxBus;
 
 import javax.inject.Inject;
 
@@ -30,6 +32,8 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment {
 
     @Inject
     protected P mPresenter;
+    @Inject
+    protected RxBus rxBus;
     private Unbinder unBinder;
 
     @Override
@@ -52,7 +56,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mActivity = (BaseActivity) getActivity();
-        bindData();
+        bindData(savedInstanceState);
         rxEvent();
     }
 
@@ -71,13 +75,18 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment {
         this.mActivity = null;
         this.mRootView = null;
         this.unBinder = null;
+        if (getRxBus() != null) {
+            rxBus.unregister(this);
+        }
     }
 
     protected abstract void onCreate();
 
+    protected abstract boolean onKeyDown(int keyCode, KeyEvent event);
+
     protected abstract View bindRootView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
-    protected abstract void bindData();
+    protected abstract void bindData(Bundle savedInstanceState);
 
     public abstract Observable<EventBase> getRxBus();
 

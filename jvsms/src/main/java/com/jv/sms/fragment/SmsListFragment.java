@@ -79,7 +79,7 @@ public class SmsListFragment extends BaseFragment implements ISmsListView, View.
         SmsListDataAdapter.OnSmsListAdapterListener {
 
     @BindView(R.id.et_smsContent)
-    EmojiconEditText etSmsContent;
+    public EmojiconEditText etSmsContent;
     @BindView(R.id.ll_content_layout)
     LinearLayout llContentLayout;
     @BindView(R.id.rv_container)

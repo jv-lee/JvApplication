@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_item"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="@drawable/selected_sms_item"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="15dp">
+
+    <FrameLayout
+        android:id="@+id/fl_item_layout"
+        android:layout_width="@dimen/sms_icon"
+        android:layout_height="@dimen/sms_icon"
+        android:background="@drawable/shape_icon_bg">
+
+        <TextView
+            android:id="@+id/tv_item_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/colorSmsIconText"
+            android:textSize="26sp" />
+
+        <ImageView
+            android:id="@+id/iv_item_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_item_name"
+            android:textColor="@color/colorNewNameText" />
+
+        <TextView
+            android:id="@+id/tv_item_phoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_item_phoneNumber"
+            android:textColor="@color/colorNewSmsText" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:text="@string/phone"
+        android:textColor="@color/colorNewSmsText" />
+
+
+</LinearLayout>

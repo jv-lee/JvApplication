@@ -27,11 +27,10 @@ import com.jv.sms.R;
 import com.jv.sms.constant.Constant;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.entity.SmsUiFlagBean;
-import com.jv.sms.ui.MainActivity;
 import com.jv.sms.ui.content.ContentActivity;
 import com.jv.sms.ui.sms.SmsContract;
-import com.jv.sms.utils.SmsUtils;
-import com.jv.sms.utils.TimeUtils;
+import com.jv.sms.utils.SmsUtil;
+import com.jv.sms.utils.TimeUtil;
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.LinkedList;
@@ -121,7 +120,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         private void bindItemDate(SmsBean bean) {
 
             //设置短信时间
-            tvDate.setText(TimeUtils.getChineseTimeString2(bean.getDate()));
+            tvDate.setText(TimeUtil.getChineseTimeString2(bean.getDate()));
 
             //设置当前消息是否已读样式
             if (bean.getReadType().equals(SmsBean.ReadType.NOT_READ)) {
@@ -212,7 +211,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
          * @param layoutPosition
          */
         private void swipeDelete(int layoutPosition) {
-            if (!SmsUtils.setDefaultSms(mListener.getRvContainer(), mContext)) return;
+            if (!SmsUtil.setDefaultSms(mListener.getRvContainer(), mContext)) return;
             mListener.getPresenter().removeSmsByThreadId(getItemBean(layoutPosition).getThread_id(), layoutPosition);
         }
 
@@ -316,7 +315,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
         intent.putExtra("bean", bean);
         Constant.themeId = bean.getColorPosition();
         mContext.startActivity(intent);
-        if (SmsUtils.setDefaultSms(mListener.getRvContainer(), mContext)) {
+        if (SmsUtil.setDefaultSms(mListener.getRvContainer(), mContext)) {
             if (!mList.get(position).getReadType().equals(SmsBean.ReadType.IS_READ)) {
                 updateReadState(bean, position);
             }

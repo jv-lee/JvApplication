@@ -1,7 +1,6 @@
 package com.jv.sms.ui.sms;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -22,23 +21,20 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.jv.sms.R;
-import com.jv.sms.base.app.AppComponent;
 import com.jv.sms.base.mvp.BaseFragment;
 import com.jv.sms.constant.Constant;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.interfaces.DataLoadLayoutListener;
 import com.jv.sms.rx.EventBase;
-import com.jv.sms.rx.RxBus;
 import com.jv.sms.ui.settings.SettingsActivity;
 import com.jv.sms.ui.sms.adapter.SmsDataAdapter;
-import com.jv.sms.utils.NotificationUtils;
-import com.jv.sms.utils.SizeUtils;
-import com.jv.sms.utils.SmsUtils;
+import com.jv.sms.utils.IntentUtil;
+import com.jv.sms.utils.NotificationUtil;
+import com.jv.sms.utils.SizeUtil;
+import com.jv.sms.utils.SmsUtil;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import rx.Observable;
@@ -51,9 +47,6 @@ import rx.functions.Action1;
 @SuppressLint("ValidFragment")
 public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements SmsContract.View, SmsDataAdapter.OnSmsDataListener, View.OnClickListener
         , SearchView.OnQueryTextListener, SearchView.OnCloseListener {
-
-    @Inject
-    RxBus rxBus;
 
     @BindView(R.id.rv_container)
     RecyclerView rvContainer;//数据填充容器 view
@@ -85,7 +78,7 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
     }
 
     @Override
-    protected void bindData() {
+    protected void bindData(Bundle savedInstanceState) {
         dataListener.showDataBar(); //显示数据加载bar
 
         initPopupView(); //初始化长按弹窗
@@ -203,7 +196,7 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
     @Override
     public void onResume() {
         super.onResume();
-        NotificationUtils.clearNum();
+        NotificationUtil.clearNum();
     }
 
     /**
@@ -243,7 +236,7 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_settings:
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                IntentUtil.startActivity(mActivity, SettingsActivity.class);
                 break;
             case R.id.menu_item_hideContacts:
                 Toast.makeText(mActivity, mActivity.getString(R.string.function_not), Toast.LENGTH_SHORT).show();
@@ -262,8 +255,8 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == event.KEYCODE_BACK) {
             //判断当前是否选中 返回处理事件
-//            if (mAdapter == null) return false;
-//            return mAdapter.clearSelectMessageState();
+            if (mAdapter == null) return false;
+            return mAdapter.clearSelectMessageState();
         }
         return true;
     }
@@ -313,7 +306,7 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
         mPopupWindow.setOutsideTouchable(false);
         // TODO：更新popupWindow的状态
         mPopupWindow.update();
-        mPopupWindow.showAtLocation(rvContainer, Gravity.TOP, 0, SizeUtils.getSubTitleHeight(getActivity()));
+        mPopupWindow.showAtLocation(rvContainer, Gravity.TOP, 0, SizeUtil.getSubTitleHeight(getActivity()));
     }
 
     @Override
@@ -323,7 +316,7 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
                 mAdapter.closeWindowBtn();
                 break;
             case R.id.iv_window_delete:
-                if (SmsUtils.setDefaultSms(rvContainer, getActivity())) {
+                if (SmsUtil.setDefaultSms(rvContainer, getActivity())) {
                     mAdapter.deleteWindowBtn();
                 }
                 break;

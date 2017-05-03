@@ -15,14 +15,17 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observable;
+import swipebacklayout.SwipeBackActivity;
+import swipebacklayout.SwipeBackLayout;
 
 /**
  * Created by Administrator on 2017/4/10.
  */
 
-public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivity {
+public abstract class BaseActivity<P extends IPresenter> extends SwipeBackActivity {
     protected final String TAG = this.getClass().getSimpleName();
-    private Unbinder unBinder;
+    protected Unbinder unBinder;
+    protected SwipeBackLayout mSwipeBackLayout;
 
 
     @Inject
@@ -42,12 +45,18 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
         mObservable = getRxBus();
         unBinder = ButterKnife.bind(this);
 
+        mSwipeBackLayout = getSwipeBackLayout();
+        //设置可以滑动的区域，推荐用屏幕像素的一半来指定
+        mSwipeBackLayout.setEdgeSize(200);
+        //设定滑动关闭的方向，SwipeBackLayout.EDGE_ALL表示向下、左、右滑动均可。EDGE_LEFT，EDGE_RIGHT，EDGE_BOTTOM
+        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_BOTTOM);
+
         setupActivityComponent(mApplication.getAppComponent());
         bindData();
         rxEvent();
     }
 
-    protected void setThemes(){
+    protected void setThemes() {
 
     }
 

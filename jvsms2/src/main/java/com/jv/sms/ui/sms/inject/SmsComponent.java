@@ -14,7 +14,5 @@ import dagger.Component;
 @Component(modules = SmsModule.class, dependencies = AppComponent.class)
 public interface SmsComponent {
 
-    void inject(SmsActivity activity);
-
     void inject(SmsFragment fragment);
 }

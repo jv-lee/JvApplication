@@ -19,7 +19,7 @@ import swipebacklayout.SwipeBackLayout;
  * Created by Administrator on 2017/4/28.
  */
 
-public class NewSmsActivity extends BaseActivity<NewSmsContract.Presenter> {
+public class NewSmsActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;

@@ -14,7 +14,5 @@ import dagger.Component;
 @Component(modules = ContentModule.class, dependencies = AppComponent.class)
 public interface ContentComponent {
 
-    void inject(ContentActivity activity);
-
     void inject(ContentFragment fragment);
 }

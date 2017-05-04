@@ -26,7 +26,7 @@ import swipebacklayout.SwipeBackLayout;
  * Created by Administrator on 2017/4/28.
  */
 
-public class SmsActivity extends BaseActivity<SmsContract.Presenter> implements DataLoadLayoutListener {
+public class SmsActivity extends BaseActivity implements DataLoadLayoutListener {
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;

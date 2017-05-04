@@ -114,7 +114,13 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         banner.setOnBannerListener(new OnBannerListener() {
             @Override
             public void OnBannerClick(int position) {
-                IntentUtil.startActivity(MainActivity.this, ContentActivity.class, new String[][]{{"id", String.valueOf(list.get(position).getId())}});
+                List<String> ids = new ArrayList<String>();
+                for (int i = 0; i < list.size(); i++) {
+                    ids.add(String.valueOf(list.get(i).getId()));
+                }
+                startActivity(new Intent(MainActivity.this, ContentActivity.class)
+                        .putExtra("id", String.valueOf(list.get(position).getId()))
+                        .putExtra("ids", (Serializable) ids));
             }
         });
     }

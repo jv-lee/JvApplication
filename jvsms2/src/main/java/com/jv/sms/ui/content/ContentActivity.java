@@ -1,6 +1,5 @@
 package com.jv.sms.ui.content;
 
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -29,7 +28,7 @@ import swipebacklayout.SwipeBackLayout;
  * Created by Administrator on 2017/4/28.
  */
 
-public class ContentActivity extends BaseActivity<ContentContract.Presenter> implements ToolbarSetListener,
+public class ContentActivity extends BaseActivity implements ToolbarSetListener,
         EmojiconGridFragment.OnEmojiconClickedListener,
         EmojiconsFragment.OnEmojiconBackspaceClickedListener {
 
@@ -39,7 +38,6 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
     ProgressBar pbLoadBar;
 
     ContentFragment contentFragment;
-    Fragment mFragment;
 
     @Override
     protected void setThemes() {
@@ -59,14 +57,14 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
 
     @Override
     protected void setupActivityComponent(AppComponent appComponent) {
-        mFragment = new ContentFragment(this);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container2, mFragment).commit();
+        contentFragment = new ContentFragment(this);
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container2, contentFragment).commit();
         DaggerContentComponent
                 .builder()
                 .appComponent(appComponent)
-                .contentModule(new ContentModule((ContentContract.View) mFragment))
+                .contentModule(new ContentModule(contentFragment))
                 .build()
-                .inject((ContentFragment) mFragment);
+                .inject(contentFragment);
     }
 
     @Override
@@ -133,15 +131,15 @@ public class ContentActivity extends BaseActivity<ContentContract.Presenter> imp
 
     @Override
     public void onEmojiconClicked(Emojicon emojicon) {
-        if (mFragment != null && mFragment instanceof ContentFragment) {
-            EmojiconsFragment.input(((ContentFragment) mFragment).etSmsContent, emojicon);
+        if (contentFragment != null && contentFragment instanceof ContentFragment) {
+            EmojiconsFragment.input(contentFragment.etSmsContent, emojicon);
         }
     }
 
     @Override
     public void onEmojiconBackspaceClicked(View v) {
-        if (mFragment != null && mFragment instanceof ContentFragment) {
-            EmojiconsFragment.backspace(((ContentFragment) mFragment).etSmsContent);
+        if (contentFragment != null && contentFragment instanceof ContentFragment) {
+            EmojiconsFragment.backspace(contentFragment.etSmsContent);
         }
 
     }

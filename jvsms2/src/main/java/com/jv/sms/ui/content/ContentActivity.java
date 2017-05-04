@@ -1,5 +1,6 @@
 package com.jv.sms.ui.content;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -37,7 +38,7 @@ public class ContentActivity extends BaseActivity implements ToolbarSetListener,
     @BindView(R.id.pb_loadBar)
     ProgressBar pbLoadBar;
 
-    ContentFragment contentFragment;
+    Fragment mFragment;
 
     @Override
     protected void setThemes() {
@@ -57,14 +58,14 @@ public class ContentActivity extends BaseActivity implements ToolbarSetListener,
 
     @Override
     protected void setupActivityComponent(AppComponent appComponent) {
-        contentFragment = new ContentFragment(this);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container2, contentFragment).commit();
+        mFragment = new ContentFragment(this);
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_fragment_container2, mFragment).commit();
         DaggerContentComponent
                 .builder()
                 .appComponent(appComponent)
-                .contentModule(new ContentModule(contentFragment))
+                .contentModule(new ContentModule((ContentContract.View) mFragment))
                 .build()
-                .inject(contentFragment);
+                .inject((ContentFragment) mFragment);
     }
 
     @Override
@@ -119,9 +120,9 @@ public class ContentActivity extends BaseActivity implements ToolbarSetListener,
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (contentFragment != null && contentFragment instanceof ContentFragment) {
-            if (!contentFragment.onKeyDown(keyCode, event)) {
-                finish(); //swipeBack 自动调用finish
+        if (mFragment != null && mFragment instanceof ContentFragment) {
+            if (!((ContentFragment) mFragment).onKeyDown(keyCode, event)) {
+//                finish(); //swipeBack 自动调用finish
             } else {
                 return false;
             }
@@ -131,15 +132,15 @@ public class ContentActivity extends BaseActivity implements ToolbarSetListener,
 
     @Override
     public void onEmojiconClicked(Emojicon emojicon) {
-        if (contentFragment != null && contentFragment instanceof ContentFragment) {
-            EmojiconsFragment.input(contentFragment.etSmsContent, emojicon);
+        if (mFragment != null && mFragment instanceof ContentFragment) {
+            EmojiconsFragment.input(((ContentFragment) mFragment).etSmsContent, emojicon);
         }
     }
 
     @Override
     public void onEmojiconBackspaceClicked(View v) {
-        if (contentFragment != null && contentFragment instanceof ContentFragment) {
-            EmojiconsFragment.backspace(contentFragment.etSmsContent);
+        if (mFragment != null && mFragment instanceof ContentFragment) {
+            EmojiconsFragment.backspace(((ContentFragment) mFragment).etSmsContent);
         }
 
     }

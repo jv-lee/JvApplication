@@ -29,13 +29,10 @@ import com.jv.daily.ui.main.adapter.NewsAdapter;
 import com.jv.daily.ui.main.inject.DaggerMainComponent;
 import com.jv.daily.ui.main.inject.MainModule;
 import com.jv.daily.utils.GlideImageLoader;
-import com.jv.daily.utils.IntentUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 

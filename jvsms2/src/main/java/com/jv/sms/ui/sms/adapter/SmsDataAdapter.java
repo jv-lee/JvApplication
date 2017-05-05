@@ -27,6 +27,7 @@ import com.jv.sms.R;
 import com.jv.sms.constant.Constant;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.entity.SmsUiFlagBean;
+import com.jv.sms.interfaces.NoDoubleClickListener;
 import com.jv.sms.ui.content.ContentActivity;
 import com.jv.sms.ui.sms.SmsContract;
 import com.jv.sms.utils.RegexUtil;
@@ -195,16 +196,19 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                 }
             }
 
+            //特殊处理防止二次点击
+            llSmsLayout.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                protected void onNoDoubleClick(View v) {
+                    layoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
+                }
+            });
 
         }
 
-        @OnClick({R.id.ll_item_smsLayout, R.id.fl_item_smsIconLayout, R.id.btn_delete})
+        @OnClick({R.id.fl_item_smsIconLayout, R.id.btn_delete})
         public void onSmsLayoutClick(View view) {
             switch (view.getId()) {
-                case R.id.ll_item_smsLayout:
-                    //项点击事件
-                    layoutClick(mList.get(getLayoutPosition()), getLayoutPosition());
-                    break;
                 case R.id.fl_item_smsIconLayout:
                     //头像点击事件
                     iconClick(mList.get(getLayoutPosition()));

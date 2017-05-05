@@ -73,25 +73,25 @@ public class SettingsModel extends BaseModel implements SettingsContract.Model {
         SettingBean settingBean = null;
         switch (i) {
             case 0: //当前默认短信应用
-                settingBean = new SettingBean(mApplication.getResources().getStringArray(R.array.settings)[i], SmsUtil.getDefaultSmsApplicationName(mApplication), false, false);
+                settingBean = new SettingBean(Constant.settingsStr[i], SmsUtil.getDefaultSmsApplicationName(mApplication), false, false);
                 break;
             case 1: //是否接受通知
-                settingBean = new SettingBean(mApplication.getResources().getStringArray(R.array.settings)[i], "", true, (boolean) SPUtil.get(Constant.SETTINGS_NOTIFICATION, true));
+                settingBean = new SettingBean(Constant.settingsStr[i], "", true, (boolean) SPUtil.get(Constant.SETTINGS_NOTIFICATION, true));
                 break;
             case 2: //通知提示音
-                settingBean = new SettingBean(mApplication.getResources().getStringArray(R.array.settings)[i], "默认铃声", false, false);
+                settingBean = new SettingBean(Constant.settingsStr[i], "默认铃声", false, false);
                 break;
             case 3: //听到信息发送提示音
-                settingBean = new SettingBean(mApplication.getResources().getStringArray(R.array.settings)[i], "", true, (boolean) SPUtil.get(Constant.SETTINGS_VOICE, true));
+                settingBean = new SettingBean(Constant.settingsStr[i], "", true, (boolean) SPUtil.get(Constant.SETTINGS_VOICE, true));
                 break;
             case 4: //震动
-                settingBean = new SettingBean(mApplication.getResources().getStringArray(R.array.settings)[i], "", true, (boolean) SPUtil.get(Constant.SETTINGS_SHOCK, true));
+                settingBean = new SettingBean(Constant.settingsStr[i], "", true, (boolean) SPUtil.get(Constant.SETTINGS_SHOCK, true));
                 break;
             case 5: //当前所在的国家地址
-                settingBean = new SettingBean(mApplication.getResources().getStringArray(R.array.settings)[i], "自动检测 (中国)", false, false);
+                settingBean = new SettingBean(Constant.settingsStr[i], "自动检测 (中国)", false, false);
                 break;
             case 6: //当前手机号
-                settingBean = new SettingBean(mApplication.getResources().getStringArray(R.array.settings)[i], SmsUtil.getThisPhoneNumber(mApplication), false, false);
+                settingBean = new SettingBean(Constant.settingsStr[i], SmsUtil.getThisPhoneNumber(mApplication), false, false);
                 break;
         }
         return settingBean;

@@ -29,6 +29,7 @@ import com.jv.sms.entity.SmsBean;
 import com.jv.sms.entity.SmsUiFlagBean;
 import com.jv.sms.ui.content.ContentActivity;
 import com.jv.sms.ui.sms.SmsContract;
+import com.jv.sms.utils.RegexUtil;
 import com.jv.sms.utils.SmsUtil;
 import com.jv.sms.utils.TimeUtil;
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
@@ -171,7 +172,12 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                     int start = bean.getSmsBody().indexOf(bean.selectStr);
                     int end = start + bean.selectStr.length();
                     style = new SpannableStringBuilder(bean.getSmsBody());
-                    style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    if (RegexUtil.isEnglish(bean.selectStr)) {
+                        style.setSpan(new BackgroundColorSpan(Color.YELLOW), start + 1, end + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else {
+                        style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
                     tvInfo.setText(style);
                 }
 
@@ -180,7 +186,11 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                     int start = bean.getName().indexOf(bean.selectStr);
                     int end = start + bean.selectStr.length();
                     style = new SpannableStringBuilder(bean.getName());
-                    style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    if (RegexUtil.isEnglish(bean.selectStr)) {
+                        style.setSpan(new BackgroundColorSpan(Color.YELLOW), start + 1, end + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else {
+                        style.setSpan(new BackgroundColorSpan(Color.YELLOW), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
                     tvNumber.setText(style);
                 }
             }

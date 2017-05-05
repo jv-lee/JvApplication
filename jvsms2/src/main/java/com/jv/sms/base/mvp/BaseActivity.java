@@ -1,5 +1,6 @@
 package com.jv.sms.base.mvp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,6 +35,7 @@ public abstract class BaseActivity<P extends IPresenter> extends SwipeBackActivi
     protected App mApplication;
     protected Observable<EventBase> mObservable;
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setThemes();

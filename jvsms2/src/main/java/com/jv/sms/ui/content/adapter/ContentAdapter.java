@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public boolean sendFlag = true;
 
     public ContentAdapter(Context context, LinkedList<SmsBean> list, OnSmsListAdapterListener listener) {
+        Log.d("ContentFragment", "ContentAdapter()");
         mContext = context;
         mList = list;
         mListener = listener;
@@ -328,7 +330,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         smsListUiFlagBean.updateSize(1);
         if (!sendFlag) smsListUiFlagBean.hasSendProgressbar.set(0, false);
         notifyItemInserted(0);
-        mListener.getRvContainer().scrollToPosition(0);
+        if (mListener == null) {
+            Log.d("ContentAdapter()", "mListener == null");
+        } else if (mListener.getRvContainer() == null) {
+            Log.d("ContentAdapter()", "mListener.getRvContainer == null");
+        } else {
+            mListener.getRvContainer().scrollToPosition(0);
+        }
+
     }
 
     public void initHasSendProgressbar() {

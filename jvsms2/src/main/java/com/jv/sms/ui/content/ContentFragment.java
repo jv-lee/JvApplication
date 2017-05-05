@@ -19,6 +19,7 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -116,6 +117,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
 
 
     public ContentFragment(ToolbarSetListener toolbarSetListener) {
+        Log.d(TAG, "ContentFragment()");
         this.toolbarSetListener = toolbarSetListener;
     }
 

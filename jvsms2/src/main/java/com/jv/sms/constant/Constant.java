@@ -53,4 +53,6 @@ public class Constant {
 
     public static SmsBean smsBean; //当前发送中短信
 
+    public static String[] settingsStr = {"默认短信应用", "接受通知", "通知提示音", "听到短信发送提示音", "震动", "您当前所在国家", "手机号码"};
+
 }

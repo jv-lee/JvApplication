@@ -56,6 +56,7 @@ public class WelcomeActivity extends Activity {
                     @Override
                     public void onError(Throwable e) {
                         Glide.with(WelcomeActivity.this).load(R.drawable.welcome_icon).into(ivBg);
+                        onCompleted();
                     }
 
                     @Override

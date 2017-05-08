@@ -55,8 +55,15 @@ dependencies {
     compile 'com.google.dagger:dagger:2.6'
     apt 'com.google.dagger:dagger-compiler:2.6'
 
+    /**
+     * Rv 适配器
+     */
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:+'
 
+    /**
+     * 自动适配布局
+     */
+//    compile 'com.zhy:autolayout:+'
+
     compile project(':bannerlib')
-    compile project(':recyclerlib')
 }

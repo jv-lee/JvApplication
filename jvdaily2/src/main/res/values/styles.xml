@@ -8,7 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:progressBarStyle">@style/ProgressBarStyle</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -19,10 +18,5 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-
-    <style name="ProgressBarStyle" parent="@android:style/Widget.ProgressBar">
-        <item name="android:indeterminateDrawable">@drawable/progressbar</item>
-    </style>
 
 </resources>

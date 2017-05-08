@@ -15,8 +15,8 @@ public class RxModule {
 
     @Singleton
     @Provides
-    RxBus provideRxBus(){
-        return new RxBus();
+    RxBus provideRxBus() {
+        return RxBus.getInstance();
     }
 
 }

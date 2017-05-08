@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.jv.sms.base.app.App;
 import com.jv.sms.base.app.AppComponent;
 import com.jv.sms.rx.EventBase;
+import com.jv.sms.rx.RxBus;
 
 import javax.inject.Inject;
 
@@ -35,6 +36,8 @@ public abstract class BaseActivity<P extends IPresenter> extends SwipeBackActivi
     protected App mApplication;
     protected Observable<EventBase> mObservable;
 
+    protected RxBus rxBus;
+
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +45,8 @@ public abstract class BaseActivity<P extends IPresenter> extends SwipeBackActivi
         super.onCreate(savedInstanceState);
         mApplication = (App) getApplication();
         mContext = this;
+        rxBus = RxBus.getInstance();
+        rxBus.register(this);
 
         setContentView(bindRootView());
         mObservable = getRxBus();
@@ -56,6 +61,16 @@ public abstract class BaseActivity<P extends IPresenter> extends SwipeBackActivi
         setupActivityComponent(mApplication.getAppComponent());
         bindData();
         rxEvent();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        rxBus.register(this);
+        unBinder.unbind();
+        mObservable = null;
+        mApplication = null;
+        mContext = null;
     }
 
     protected void setThemes() {

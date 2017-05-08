@@ -117,7 +117,9 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
                                     smsBean.setDate(((SmsBean) eventBase.getObj()).getDate());
                                     smsBean.setSmsBody(((SmsBean) eventBase.getObj()).getSmsBody());
                                     mAdapter.receiverSmsUpdate(i, smsBean);
-                                    rvContainer.scrollToPosition(0);
+                                    if (rvContainer != null) {
+                                        rvContainer.scrollToPosition(0);
+                                    }
                                 }
                             }
                             if (hasSms) {

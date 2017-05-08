@@ -13,6 +13,8 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.jv.sms.base.app.DaggerAppComponent;
+import com.jv.sms.base.module.RxModule;
 import com.jv.sms.constant.Constant;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.rx.EventBase;
@@ -35,15 +37,10 @@ import javax.inject.Inject;
 public class SmsReceiver extends BroadcastReceiver {
 
     private static final String SMS_DELIVER = "android.provider.Telephony.SMS_DELIVER";
-    @Inject
-    RxBus rxBus;
-
 
     @TargetApi(Build.VERSION_CODES.N)
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        Toast.makeText(context, "接受到了短信", Toast.LENGTH_SHORT).show();
 
         if (SMS_DELIVER.equals(intent.getAction())) {
             Bundle bundle = intent.getExtras();
@@ -85,12 +82,12 @@ public class SmsReceiver extends BroadcastReceiver {
                             "date = ?", new String[]{times.get(i) + ""}, null);
 
                     if (cursor.moveToFirst()) {
-                        smsBean = SmsUtil.simpleSmsBean(cursor,context);
+                        smsBean = SmsUtil.simpleSmsBean(cursor, context);
                     }
 
                     Log.i("SmsReceiver", smsBean.getSmsBody());
                     //通过RxBus发送新短信通知
-                    rxBus.post(new EventBase(smsBean.getPhoneNumber(), smsBean));
+                    RxBus.getInstance().post(new EventBase(smsBean.getPhoneNumber(), smsBean));
 
                 }
                 SPUtil.getInstance(context);

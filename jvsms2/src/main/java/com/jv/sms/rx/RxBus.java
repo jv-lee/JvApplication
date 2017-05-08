@@ -15,10 +15,22 @@ import rx.subjects.Subject;
 
 public class RxBus {
 
+    private static volatile RxBus mInstance;
 
     private Vector<Subject> mSubjects = new Vector<>();
 
-    public RxBus() {
+    private RxBus() {
+    }
+
+    public static RxBus getInstance() {
+        if (mInstance == null) {
+            synchronized (RxBus.class) {
+                if (mInstance == null) {
+                    mInstance = new RxBus();
+                }
+            }
+        }
+        return mInstance;
     }
 
     public synchronized <T> Observable<T> register(@NonNull Object object) {

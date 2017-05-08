@@ -32,7 +32,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment {
 
     @Inject
     protected P mPresenter;
-    @Inject
     protected RxBus rxBus;
     private Unbinder unBinder;
 
@@ -40,6 +39,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         onCreate();
+        rxBus = RxBus.getInstance();
         mObservable = getRxBus();
         setHasOptionsMenu(true); // 在fragment中操作Menu
     }
@@ -75,7 +75,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment {
         this.mActivity = null;
         this.mRootView = null;
         this.unBinder = null;
-        if (getRxBus() != null) {
+        if (rxBus != null) {
             rxBus.unregister(this);
         }
     }

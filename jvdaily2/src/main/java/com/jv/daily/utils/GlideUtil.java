@@ -18,7 +18,7 @@ public class GlideUtil {
 
         Glide.with(context)
                 .load(url)
-                .error(R.mipmap.ic_launcher)
+                .error(R.drawable.ic_launcher)
                 .placeholder(R.drawable.account_avatar)
                 .crossFade()
                 .into((ImageView) view);

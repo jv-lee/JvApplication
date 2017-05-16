@@ -11,10 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.jv.sms.base.app.DaggerAppComponent;
-import com.jv.sms.base.module.RxModule;
 import com.jv.sms.constant.Constant;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.rx.EventBase;
@@ -27,7 +24,6 @@ import com.jv.sms.utils.TimeUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 
 
 /**

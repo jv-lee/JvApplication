@@ -102,6 +102,7 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
 
     @Override
     public void initBanner(final List<TopStoriesBean> list, List<String> images, List<String> titles) {
+
         banner.setIndicatorGravity(RIGHT)
                 .setImages(images)
                 .setBannerTitles(titles)

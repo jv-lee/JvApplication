@@ -36,7 +36,7 @@ import android.widget.Toast;
 
 import com.jv.sms.R;
 import com.jv.sms.base.mvp.BaseFragment;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.interfaces.ToolbarSetListener;
 import com.jv.sms.rx.EventBase;
@@ -127,7 +127,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
         bean = (SmsBean) getActivity().getIntent().getSerializableExtra("bean");
 
         //当前显示的会话Fragment 是哪一个 记录FLAG
-        Constant.THIS_SMS_FRAGMENT_FLAG = bean.getPhoneNumber();
+        Config.THIS_SMS_FRAGMENT_FLAG = bean.getPhoneNumber();
 
         //注册发送短信通知广播
         getActivity().registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
@@ -137,9 +137,9 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     public void onResume() {
         super.onResume();
         toolbarSetListener.setToolbarTitle(bean.getName());
-        if (Constant.text != null && !Constant.text.equals("")) {
-            etSmsContent.setText(Constant.text);
-            Constant.text = "";
+        if (Config.text != null && !Config.text.equals("")) {
+            etSmsContent.setText(Config.text);
+            Config.text = "";
         }
     }
 
@@ -149,14 +149,14 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
 
         TimeUtil.clearTimeList();//清空列表时间差管理集合
         getActivity().unregisterReceiver(sendMessage);//注销广播
-        Constant.THIS_SMS_FRAGMENT_FLAG = "";//将当前全局号码初始化
+        Config.THIS_SMS_FRAGMENT_FLAG = "";//将当前全局号码初始化
 
         //退出时刷新显示
         if (mAdapter == null) return;
         if (mAdapter.getItemCount() == 0) {
-            rxBus.post(new EventBase(Constant.RX_CODE_DELETE_THREAD_ID, bean.getThread_id()));
+            rxBus.post(new EventBase(Config.RX_CODE_DELETE_THREAD_ID, bean.getThread_id()));
         } else {
-            rxBus.post(new EventBase(Constant.RX_CODE_UPDATE_MESSAGE, mSmsBeans.get(0)));
+            rxBus.post(new EventBase(Config.RX_CODE_UPDATE_MESSAGE, mSmsBeans.get(0)));
         }
     }
 
@@ -210,7 +210,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     @Override
     protected void bindData(Bundle savedInstanceState) {
         initPopupView(); //初始化长按弹窗
-        ivAddSms.setColorFilter(ContextCompat.getColor(mActivity, Constant.icon_theme_darkColors[bean.getColorPosition()])); //设置添加按钮颜色
+        ivAddSms.setColorFilter(ContextCompat.getColor(mActivity, Config.icon_theme_darkColors[bean.getColorPosition()])); //设置添加按钮颜色
 
         //初始化消息显示列表
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -292,7 +292,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
         if (s.length() > 0) {
             if (!etFlag) return;
             etFlag = false;
-            ivSendSms.setColorFilter(ContextCompat.getColor(mActivity, Constant.icon_theme_darkColors[bean.getColorPosition()]));
+            ivSendSms.setColorFilter(ContextCompat.getColor(mActivity, Config.icon_theme_darkColors[bean.getColorPosition()]));
         } else {
             etFlag = true;
             ivSendSms.setColorFilter(ContextCompat.getColor(mActivity, R.color.colorSmsEditTextIcon));
@@ -343,7 +343,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
         //设置发送短信内容至显示
         rxBus.post(new EventBase(smsBean.getPhoneNumber(), smsBean));
         etSmsContent.setText("");
-        Constant.smsBean = smsBean; //当前浏览短信实体
+        Config.smsBean = smsBean; //当前浏览短信实体
     }
 
     @Override
@@ -359,7 +359,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     @Override
     public void deleteThreadSuccess() {
         getActivity().finish(); //删除当前会话成功 后关闭当前会话
-        rxBus.post(new EventBase(Constant.RX_CODE_DELETE_THREAD_ID, bean.getThread_id())); //发送通知删除会话列表当前会话
+        rxBus.post(new EventBase(Config.RX_CODE_DELETE_THREAD_ID, bean.getThread_id())); //发送通知删除会话列表当前会话
     }
 
     @Override
@@ -382,9 +382,9 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
         @Override
         public void onReceive(Context context, Intent intent) {
             if (getResultCode() == Activity.RESULT_OK) {
-                mPresenter.sendSmsSuccess(Constant.smsBean);
+                mPresenter.sendSmsSuccess(Config.smsBean);
             } else {
-                mPresenter.sendSmsError(Constant.smsBean);
+                mPresenter.sendSmsError(Config.smsBean);
             }
         }
     };
@@ -508,7 +508,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
                     .setPositiveButton(mActivity.getString(R.string.new_sms), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Constant.text = text;
+                            Config.text = text;
                             startActivity(new Intent(mActivity, NewSmsActivity.class));
                         }
                     }).create();

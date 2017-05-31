@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
 
 import com.jv.sms.R;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.ui.content.ContentActivity;
 import com.jv.sms.ui.sms.SmsActivity;
@@ -38,9 +38,9 @@ public class NotificationUtil {
         //SmsList列表在栈顶时 进入判断
         if (isMainActivityTop(context)) {
             //当前浏览短信号码不等于"" 的情况下 进入
-            if (!Constant.THIS_SMS_FRAGMENT_FLAG.equals("")) {
+            if (!Config.THIS_SMS_FRAGMENT_FLAG.equals("")) {
                 //当前获取短信号码 为当前浏览短信 直接return 不发送通知
-                if (phoneNumber.equals(Constant.THIS_SMS_FRAGMENT_FLAG)) {
+                if (phoneNumber.equals(Config.THIS_SMS_FRAGMENT_FLAG)) {
                     return;
                 }
             }
@@ -79,11 +79,11 @@ public class NotificationUtil {
                 .addAction(R.drawable.ic_call_back, "点击回复", null); //添加点击Action事件
 
         //设置提示音
-        if ((boolean) SPUtil.get(Constant.SETTINGS_VOICE, true)) {
+        if ((boolean) SPUtil.get(Config.SETTINGS_VOICE, true)) {
             nBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.notif));
         }
         //设置震动
-        if ((boolean) SPUtil.get(Constant.SETTINGS_SHOCK, true)) {
+        if ((boolean) SPUtil.get(Config.SETTINGS_SHOCK, true)) {
             nBuilder.setVibrate(new long[]{0, 1000, 0, 0});
         }
         notificationManager.notify(1, nBuilder.build());

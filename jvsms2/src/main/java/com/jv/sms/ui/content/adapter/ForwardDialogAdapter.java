@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jv.sms.R;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.ui.content.ContentActivity;
 
@@ -38,7 +38,7 @@ public class ForwardDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
     public ForwardDialogAdapter(Context context, String text) {
         this.context = context;
         this.text = text;
-        smsBeans = Constant.smsBeans;
+        smsBeans = Config.smsBeans;
     }
 
     @Override
@@ -95,16 +95,16 @@ public class ForwardDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
             //设置背景颜色
             flItemLayout.setBackgroundResource(R.drawable.shape_icon_bg);
             GradientDrawable grad = (GradientDrawable) flItemLayout.getBackground();
-            grad.setColor(ContextCompat.getColor(context, Constant.icon_theme_colors[smsBean.getColorPosition()]));
+            grad.setColor(ContextCompat.getColor(context, Config.icon_theme_colors[smsBean.getColorPosition()]));
 
         }
 
         @OnClick(R.id.ll_item_layout)
         public void onClick(View view) {
-            Constant.text = text;
+            Config.text = text;
             Intent intent = new Intent(context, ContentActivity.class);
             intent.putExtra("bean", smsBeans.get(getLayoutPosition()));
-            Constant.themeId = smsBeans.get(getLayoutPosition()).getColorPosition();
+            Config.themeId = smsBeans.get(getLayoutPosition()).getColorPosition();
             context.startActivity(intent);
         }
 

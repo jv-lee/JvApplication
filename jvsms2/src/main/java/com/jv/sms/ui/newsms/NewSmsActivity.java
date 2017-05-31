@@ -8,12 +8,12 @@ import com.jv.sms.R;
 import com.jv.sms.base.app.AppComponent;
 import com.jv.sms.base.mvp.BaseActivity;
 import com.jv.sms.rx.EventBase;
+import com.jv.sms.swipe.SwipeBackLayout;
 import com.jv.sms.ui.newsms.inject.DaggerNewSmsComponent;
 import com.jv.sms.ui.newsms.inject.NewSmsModule;
 
 import butterknife.BindView;
 import rx.Observable;
-import swipebacklayout.SwipeBackLayout;
 
 /**
  * Created by Administrator on 2017/4/28.
@@ -31,6 +31,7 @@ public class NewSmsActivity extends BaseActivity {
 
     @Override
     protected void bindData() {
+        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_BOTTOM);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
     }
 
@@ -61,7 +62,6 @@ public class NewSmsActivity extends BaseActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
                 finish();
             }
         });

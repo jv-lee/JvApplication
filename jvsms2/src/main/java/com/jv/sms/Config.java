@@ -1,4 +1,4 @@
-package com.jv.sms.constant;
+package com.jv.sms;
 
 import com.jv.sms.R;
 import com.jv.sms.entity.SmsBean;
@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Administrator on 2016/12/12.
  */
 
-public class Constant {
+public class Config {
 
     public static final int SMS_STATUS_NOT_READ = 0x00;
     public static final int SMS_STATUS_IS_READ = 0x01;
@@ -40,11 +40,11 @@ public class Constant {
             R.color.colorPrimaryDark7, R.color.colorPrimaryDark8,
             R.color.colorPrimaryDark9};
 
-    public static int[] themes = {R.style.AppTheme1_NoActionBar, R.style.AppTheme2_NoActionBar,
-            R.style.AppTheme3_NoActionBar, R.style.AppTheme4_NoActionBar,
-            R.style.AppTheme5_NoActionBar, R.style.AppTheme6_NoActionBar,
-            R.style.AppTheme7_NoActionBar, R.style.AppTheme8_NoActionBar,
-            R.style.AppTheme9_NoActionBar};
+    public static int[] themes = {R.style.AppTheme_Color1, R.style.AppTheme_Color2,
+            R.style.AppTheme_Color3, R.style.AppTheme_Color4,
+            R.style.AppTheme_Color5, R.style.AppTheme_Color6,
+            R.style.AppTheme_Color7, R.style.AppTheme_Color8,
+            R.style.AppTheme_Color9};
 
     public static int themeId = 0;
 

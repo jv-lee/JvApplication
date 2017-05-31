@@ -28,8 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity{
         mApplication = (App) getApplication();
         mContext = this;
 
-
-
         setContentView(bindRootView());
         unBinder = ButterKnife.bind(this);
 

@@ -1,210 +1,5 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <!-- activity进入退出动画样式 windowAnimationStyle-->
-    <style name="activityAnimation" parent="@android:style/Animation">
-        <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
-        <item name="android:activityOpenExitAnimation">@anim/slide_left_out</item>
-        <item name="android:activityCloseEnterAnimation">@anim/slide_left_in</item>
-        <item name="android:activityCloseExitAnimation">@anim/slide_right_out</item>
-    </style>
-
-    <style name="SwipeBackLayout">
-        <item name="EdgeSize">20dip</item>
-        <item name="ShadowLeft">@mipmap/shadow_left</item>
-        <item name="ShadowRight">@mipmap/shadow_right</item>
-        <item name="ShadowBottom">@mipmap/shadow_bottom</item>
-    </style>
-
-
-    <!--                                        主题1                                                                 -->
-    <style name="AppTheme1" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary1</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark1</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme1.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <!--                                        主题2                                                                 -->
-    <style name="AppTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary2</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark2</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme2.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <!--                                        主题3                                                                 -->
-    <style name="AppTheme3" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary3</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark3</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme3.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <!--                                        主题4                                                                 -->
-    <style name="AppTheme4" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary4</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark4</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme4.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <!--                                        主题5                                                                 -->
-    <style name="AppTheme5" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary5</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark5</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme5.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <!--                                        主题6                                                                 -->
-    <style name="AppTheme6" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary6</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark6</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme6.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-
-    <!--                                        主题7                                                                 -->
-    <style name="AppTheme7" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary7</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark7</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme7.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-
-    <!--                                        主题8                                                                 -->
-    <style name="AppTheme8" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary8</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark8</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme8.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <!--                                        主题9                                                                 -->
-    <style name="AppTheme9" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary9</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark9</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <!--取消头部ActionBar-->
-    <style name="AppTheme9.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-
     <style name="myToolbarNavigationButtonStyle" parent="@style/Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="android:minWidth">0dp</item>
         <item name="android:paddingTop">@dimen/fab_margin</item>
@@ -230,6 +25,101 @@
         <!-- active thumb & track color (30% transparency) -->
         <item name="colorControlActivated">#e6e600</item>
         <item name="colorSwitchThumbNormal">#cc0000</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="SwipeBackLayout">
+        <item name="edge_size">50dip</item>
+        <item name="shadow_left">@drawable/shadow_left</item>
+        <item name="shadow_right">@drawable/shadow_right</item>
+        <item name="shadow_bottom">@drawable/shadow_bottom</item>
+    </style>
+
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+    <!--                                        主题1                                                                 -->
+    <style name="AppTheme.Color1">
+        <item name="colorPrimary">@color/colorPrimary1</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark1</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--                                        主题2                                                                 -->
+    <style name="AppTheme.Color2">
+        <item name="colorPrimary">@color/colorPrimary2</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark2</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <!--                                        主题3                                                                 -->
+    <style name="AppTheme.Color3">
+        <item name="colorPrimary">@color/colorPrimary3</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark3</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <!--                                        主题4                                                                 -->
+    <style name="AppTheme.Color4">
+        <item name="colorPrimary">@color/colorPrimary4</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark4</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--                                        主题5                                                                 -->
+    <style name="AppTheme.Color5">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary5</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark5</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--                                        主题6                                                                 -->
+    <style name="AppTheme.Color6">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary6</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark6</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <!--                                        主题7                                                                 -->
+    <style name="AppTheme.Color7">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary7</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark7</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--                                        主题8                                                                 -->
+    <style name="AppTheme.Color8">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary8</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark8</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--                                        主题9                                                                 -->
+    <style name="AppTheme.Color9">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary9</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark9</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
 

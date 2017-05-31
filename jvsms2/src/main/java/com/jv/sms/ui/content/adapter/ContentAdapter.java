@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jv.sms.R;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.entity.SmsListUiFlagBean;
 import com.jv.sms.ui.content.ContentContract;
@@ -236,7 +236,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             //设置短信内容 显示状态
             if (smsListUiFlagBean.hasMessageUi.get(getLayoutPosition())) {
                 GradientDrawable grad = (GradientDrawable) tvInfo.getBackground();
-                grad.setColor(ContextCompat.getColor(mContext, Constant.icon_theme_colors[mListener.getThemePosition()]));
+                grad.setColor(ContextCompat.getColor(mContext, Config.icon_theme_colors[mListener.getThemePosition()]));
 
             } else {
                 GradientDrawable grad = (GradientDrawable) tvInfo.getBackground();
@@ -259,7 +259,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             //设置头像背景
             GradientDrawable myGrad = (GradientDrawable) flIcon.getBackground();
-            myGrad.setColor(ContextCompat.getColor(mContext, Constant.icon_theme_colors[mListener.getThemePosition()]));
+            myGrad.setColor(ContextCompat.getColor(mContext, Config.icon_theme_colors[mListener.getThemePosition()]));
 
             //无其他条件设置数据
             tvDate2.setText(getChineseTimeString(bean.getDate()));
@@ -348,7 +348,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void sendSmsError(SmsBean smsBean) {
         smsListUiFlagBean.initHasSendProgressbar();
-        mList.get(0).setStatus(Constant.SMS_STATUS_ERROR);
+        mList.get(0).setStatus(Config.SMS_STATUS_ERROR);
         notifyItemChanged(0);
         sendFlag = true;
     }

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.jv.sms.base.mvp.BaseModel;
 import com.jv.sms.base.scope.ActivityScope;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.db.dao.SmsDaoImpl;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.utils.SmsUtil;
@@ -100,7 +100,7 @@ public class SmsModel extends BaseModel implements SmsContract.Model {
         final Uri uri = Uri.parse("content://sms/");
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("read", Constant.SMS_STATUS_IS_READ);
+        contentValues.put("read", Config.SMS_STATUS_IS_READ);
 
         cr.update(uri, contentValues, "_id = ?", new String[]{smsBean.getId()});
 

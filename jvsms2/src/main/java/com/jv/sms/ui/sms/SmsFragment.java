@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.jv.sms.R;
 import com.jv.sms.base.mvp.BaseFragment;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.interfaces.DataLoadLayoutListener;
 import com.jv.sms.rx.EventBase;
@@ -103,9 +103,9 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
                     @Override
                     public void call(final EventBase eventBase) {
                         //接受到删除通知 执行逻辑
-                        if (((String) eventBase.getOption()).equals(Constant.RX_CODE_DELETE_THREAD_ID)) {
+                        if (((String) eventBase.getOption()).equals(Config.RX_CODE_DELETE_THREAD_ID)) {
                             mAdapter.deleteByThreadId((String) eventBase.getObj());
-                        } else if (((String) eventBase.getOption()).equals(Constant.RX_CODE_UPDATE_MESSAGE)) {
+                        } else if (((String) eventBase.getOption()).equals(Config.RX_CODE_UPDATE_MESSAGE)) {
                             mAdapter.updateShowMessage((SmsBean) eventBase.getObj());
                         } else {
                             //添加短信通知执行逻辑
@@ -132,7 +132,7 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
 
     @Override
     public void setData(LinkedList<SmsBean> beanList) {
-        Constant.smsBeans = beanList; //保存当前临时数据
+        Config.smsBeans = beanList; //保存当前临时数据
         if (mSmsBeans == null) {
             mSmsBeans = beanList == null ? new LinkedList<SmsBean>() : beanList;
             mAdapter = new SmsDataAdapter(getActivity(), mSmsBeans, this);

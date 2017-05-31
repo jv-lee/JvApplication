@@ -20,7 +20,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.jv.sms.entity.SmsBean;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +163,7 @@ public class SmsUtil {
         ContentResolver cr = context.getContentResolver();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("status", Constant.SMS_STATUS_ERROR);
+        contentValues.put("status", Config.SMS_STATUS_ERROR);
 
         cr.update(Uri.parse("content://sms/"), contentValues, "_id = ?", new String[]{id});
     }

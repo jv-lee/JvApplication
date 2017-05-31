@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.jv.sms.R;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.LinkmanBean;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.ui.content.ContentActivity;
@@ -101,7 +101,7 @@ public class AutoLinkmanAdapter extends ArrayAdapter implements Filterable {
             tvItemPhoneNumber.setText(bean.getPhoneNumber());
             flItemLayout.setBackgroundResource(R.drawable.shape_icon_bg);
             GradientDrawable grad = (GradientDrawable) flItemLayout.getBackground();
-            grad.setColor(ContextCompat.getColor(context, Constant.icon_theme_colors[bean.getColorType()]));
+            grad.setColor(ContextCompat.getColor(context, Config.icon_theme_colors[bean.getColorType()]));
         }
     }
 
@@ -166,7 +166,7 @@ public class AutoLinkmanAdapter extends ArrayAdapter implements Filterable {
     public void startSmsList(SmsBean bean) {
         Intent intent = new Intent(context, ContentActivity.class);
         intent.putExtra("bean", bean);
-        Constant.themeId = bean.getColorPosition();
+        Config.themeId = bean.getColorPosition();
         context.startActivity(intent);
         ((Activity) context).finish();
     }

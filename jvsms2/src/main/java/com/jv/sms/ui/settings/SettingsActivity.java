@@ -11,7 +11,7 @@ import android.view.View;
 import com.jv.sms.R;
 import com.jv.sms.base.app.AppComponent;
 import com.jv.sms.base.mvp.BaseActivity;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.SettingBean;
 import com.jv.sms.entity.SmsAppBean;
 import com.jv.sms.rx.EventBase;
@@ -26,7 +26,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import rx.Observable;
-import swipebacklayout.SwipeBackLayout;
+import com.jv.sms.swipe.SwipeBackLayout;
 
 /**
  * Created by Administrator on 2017/4/28.
@@ -54,8 +54,8 @@ public class SettingsActivity extends BaseActivity<SettingsContract.Presenter>
 
     @Override
     protected void bindData() {
+        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_BOTTOM);
         mItemContainer.setLayoutManager(new LinearLayoutManager(this));
-
         mPresenter.findSettingBeans();
     }
 
@@ -85,7 +85,6 @@ public class SettingsActivity extends BaseActivity<SettingsContract.Presenter>
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
                 finish();
             }
         });
@@ -146,7 +145,7 @@ public class SettingsActivity extends BaseActivity<SettingsContract.Presenter>
             case 1:
                 if (!adapter.defaultFlag) return;
                 adapter.switchFlag = settingBean.isHasOp() == true ? false : true;
-                itemClickMethod(settingBean, view, Constant.SETTINGS_NOTIFICATION, position);
+                itemClickMethod(settingBean, view, Config.SETTINGS_NOTIFICATION, position);
                 adapter.notifyItemChanged(3);
                 adapter.notifyItemChanged(4);
                 break;
@@ -155,11 +154,11 @@ public class SettingsActivity extends BaseActivity<SettingsContract.Presenter>
                 break;
             case 3:
                 if (!adapter.switchFlag || !adapter.defaultFlag) return;
-                itemClickMethod(settingBean, view, Constant.SETTINGS_VOICE, position);
+                itemClickMethod(settingBean, view, Config.SETTINGS_VOICE, position);
                 break;
             case 4:
                 if (!adapter.switchFlag || !adapter.defaultFlag) return;
-                itemClickMethod(settingBean, view, Constant.SETTINGS_SHOCK, position);
+                itemClickMethod(settingBean, view, Config.SETTINGS_SHOCK, position);
                 break;
             case 5:
                 break;

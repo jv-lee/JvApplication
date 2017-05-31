@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.jv.sms.R;
 import com.jv.sms.base.mvp.BaseFragment;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.ContactsBean;
 import com.jv.sms.entity.LinkmanBean;
 import com.jv.sms.entity.SmsBean;
@@ -79,7 +79,7 @@ public class NewSmsFragment extends BaseFragment<NewSmsContract.Presenter> imple
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Constant.text = "";
+        Config.text = "";
     }
 
     @Override

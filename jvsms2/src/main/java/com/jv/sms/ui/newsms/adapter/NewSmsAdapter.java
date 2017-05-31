@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jv.sms.R;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.ContactsBean;
 import com.jv.sms.entity.LinkmanBean;
 import com.jv.sms.entity.SmsBean;
@@ -150,7 +150,7 @@ public class NewSmsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             //设置背景颜色
             flItemLayout.setBackgroundResource(R.drawable.shape_icon_bg);
             GradientDrawable grad = (GradientDrawable) flItemLayout.getBackground();
-            grad.setColor(ContextCompat.getColor(mContext, Constant.icon_theme_colors[bean.getColorType()]));
+            grad.setColor(ContextCompat.getColor(mContext, Config.icon_theme_colors[bean.getColorType()]));
 
             ll_item.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -162,7 +162,7 @@ public class NewSmsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     smsBean.setThread_id(bean.getThread_id());
                     Intent intent = new Intent(mContext, ContentActivity.class);
                     intent.putExtra("bean", smsBean);
-                    Constant.themeId = bean.getColorType();
+                    Config.themeId = bean.getColorType();
                     mContext.startActivity(intent);
                     ((Activity) mContext).finish();
                 }

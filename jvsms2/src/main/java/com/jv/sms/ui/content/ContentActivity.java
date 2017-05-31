@@ -10,9 +10,10 @@ import android.widget.ProgressBar;
 import com.jv.sms.R;
 import com.jv.sms.base.app.AppComponent;
 import com.jv.sms.base.mvp.BaseActivity;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.interfaces.ToolbarSetListener;
 import com.jv.sms.rx.EventBase;
+import com.jv.sms.swipe.SwipeBackLayout;
 import com.jv.sms.ui.content.inject.ContentModule;
 import com.jv.sms.ui.content.inject.DaggerContentComponent;
 import com.jv.sms.utils.KeyboardUtil;
@@ -23,7 +24,6 @@ import com.rockerhieu.emojicon.emoji.Emojicon;
 
 import butterknife.BindView;
 import rx.Observable;
-import swipebacklayout.SwipeBackLayout;
 
 /**
  * Created by Administrator on 2017/4/28.
@@ -42,7 +42,7 @@ public class ContentActivity extends BaseActivity implements ToolbarSetListener,
 
     @Override
     protected void setThemes() {
-        setTheme(Constant.themes[Constant.themeId]);
+        setTheme(Config.themes[Config.themeId]);
     }
 
     @Override
@@ -52,6 +52,7 @@ public class ContentActivity extends BaseActivity implements ToolbarSetListener,
 
     @Override
     protected void bindData() {
+        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_BOTTOM);
         setSupportActionBar(toolbar);
         pbLoadBar.setVisibility(View.VISIBLE);
     }
@@ -84,7 +85,6 @@ public class ContentActivity extends BaseActivity implements ToolbarSetListener,
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
                 KeyboardUtil.hideSoftInput(ContentActivity.this);
                 finish();
             }
@@ -122,7 +122,7 @@ public class ContentActivity extends BaseActivity implements ToolbarSetListener,
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mFragment != null && mFragment instanceof ContentFragment) {
             if (!((ContentFragment) mFragment).onKeyDown(keyCode, event)) {
-//                finish(); //swipeBack 自动调用finish
+//                finish();
             } else {
                 return false;
             }

@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jv.sms.R;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.entity.SmsUiFlagBean;
 import com.jv.sms.interfaces.NoDoubleClickListener;
@@ -150,7 +150,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
                 //设置背景颜色
                 flSmsIconLayout.setBackgroundResource(R.drawable.shape_icon_bg);
                 GradientDrawable grad = (GradientDrawable) flSmsIconLayout.getBackground();
-                grad.setColor(ContextCompat.getColor(mContext, Constant.icon_theme_colors[bean.getColorPosition()]));
+                grad.setColor(ContextCompat.getColor(mContext, Config.icon_theme_colors[bean.getColorPosition()]));
 
                 //当前为选中状态设置选中layout
             } else if (!smsUiFlagBean.hasIconUi.get(getLayoutPosition())) {
@@ -327,7 +327,7 @@ public class SmsDataAdapter extends RecyclerView.Adapter<SmsDataAdapter.SmsDataH
     public void startIntent(SmsBean bean, int position) {
         Intent intent = new Intent(mContext, ContentActivity.class);
         intent.putExtra("bean", bean);
-        Constant.themeId = bean.getColorPosition();
+        Config.themeId = bean.getColorPosition();
         mContext.startActivity(intent);
         if (SmsUtil.setDefaultSms(mListener.getRvContainer(), mContext)) {
             if (!mList.get(position).getReadType().equals(SmsBean.ReadType.IS_READ)) {

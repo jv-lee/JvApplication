@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.rx.EventBase;
 import com.jv.sms.rx.RxBus;
@@ -65,7 +65,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     sms.setName(SmsUtil.getPeopleNameFromPerson(sms.getPhoneNumber(), context));
 
                     //添加接受短信至数据库
-                    SmsUtil.addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), time, Constant.SMS_STATUS_NOT_READ, Constant.SMS_STATUS_RECEIVER, -1);
+                    SmsUtil.addSmsToDB(context, sms.getPhoneNumber(), sms.getSmsBody(), time, Config.SMS_STATUS_NOT_READ, Config.SMS_STATUS_RECEIVER, -1);
                 }
 
 
@@ -87,7 +87,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
                 }
                 SPUtil.getInstance(context);
-                if ((boolean) SPUtil.get(Constant.SETTINGS_NOTIFICATION, true)) {
+                if ((boolean) SPUtil.get(Config.SETTINGS_NOTIFICATION, true)) {
                     NotificationUtil.showNotification(context, sms.getName(), sms.getSmsBody());
                 }
             }

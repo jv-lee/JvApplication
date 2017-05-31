@@ -20,7 +20,6 @@ import com.jv.sms.utils.IntentUtil;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
-import swipebacklayout.SwipeBackLayout;
 
 /**
  * Created by Administrator on 2017/4/28.
@@ -46,7 +45,7 @@ public class SmsActivity extends BaseActivity implements DataLoadLayoutListener 
 
     @Override
     protected void bindData() {
-        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.STATE_IDLE);
+        setSwipeBackEnable(false);
         setSupportActionBar(toolbar);
     }
 

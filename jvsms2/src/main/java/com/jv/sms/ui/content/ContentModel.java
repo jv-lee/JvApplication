@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.jv.sms.base.mvp.BaseModel;
 import com.jv.sms.base.scope.ActivityScope;
-import com.jv.sms.constant.Constant;
+import com.jv.sms.Config;
 import com.jv.sms.entity.SmsBean;
 import com.jv.sms.utils.SmsUtil;
 import com.jv.sms.utils.TimeUtil;
@@ -82,7 +82,7 @@ public class ContentModel extends BaseModel implements ContentContract.Model {
     @Override
     public SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content, long time) {
 
-        SmsUtil.addSmsToDB(mApplication, phoneNumber, content, time, Constant.SMS_STATUS_IS_READ, Constant.SMS_STATUS_SEND, -1);
+        SmsUtil.addSmsToDB(mApplication, phoneNumber, content, time, Config.SMS_STATUS_IS_READ, Config.SMS_STATUS_SEND, -1);
 
         SmsBean smsBean = SmsUtil.findSmsByDate(mApplication, time);
         smsBean.setShowDate(TimeUtil.isShowTime(smsBean.getDate()));
@@ -96,7 +96,7 @@ public class ContentModel extends BaseModel implements ContentContract.Model {
     public SmsBean updateSmsStatus(SmsBean smsBean) {
         //将发送短信保存至数据库
         SmsUtil.updateSmsToDB(mApplication, smsBean.getId());
-        smsBean.setStatus(Constant.SMS_STATUS_ERROR);
+        smsBean.setStatus(Config.SMS_STATUS_ERROR);
         return smsBean;
     }
 }

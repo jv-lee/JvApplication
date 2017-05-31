@@ -16,6 +16,7 @@ import com.jv.sms.swipe.SwipeBackActivityBase;
 import com.jv.sms.swipe.SwipeBackActivityHelper;
 import com.jv.sms.swipe.SwipeBackLayout;
 import com.jv.sms.swipe.SwipeBackUtils;
+import com.jv.sms.utils.StatusBarUtils;
 
 import javax.inject.Inject;
 
@@ -53,6 +54,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
         mContext = this;
         rxBus = RxBus.getInstance();
         rxBus.register(this);
+        StatusBarUtils.setStatusBar(this);//设置隐藏状态栏
 
         setContentView(bindRootView());
 

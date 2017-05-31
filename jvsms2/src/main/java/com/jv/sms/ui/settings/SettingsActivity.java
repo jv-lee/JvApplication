@@ -54,7 +54,6 @@ public class SettingsActivity extends BaseActivity<SettingsContract.Presenter>
 
     @Override
     protected void bindData() {
-        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_BOTTOM);
         mItemContainer.setLayoutManager(new LinearLayoutManager(this));
         mPresenter.findSettingBeans();
     }

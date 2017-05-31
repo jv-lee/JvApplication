@@ -31,7 +31,6 @@ public class NewSmsActivity extends BaseActivity {
 
     @Override
     protected void bindData() {
-        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_BOTTOM);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
     }
 

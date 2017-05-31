@@ -52,7 +52,6 @@ public class ContentActivity extends BaseActivity implements ToolbarSetListener,
 
     @Override
     protected void bindData() {
-        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_BOTTOM);
         setSupportActionBar(toolbar);
         pbLoadBar.setVisibility(View.VISIBLE);
     }

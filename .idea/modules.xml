@@ -3,11 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JvApplication.iml" filepath="$PROJECT_DIR$/JvApplication.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bannerlib/bannerlib.iml" filepath="$PROJECT_DIR$/bannerlib/bannerlib.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvdaily/jvdaily.iml" filepath="$PROJECT_DIR$/jvdaily/jvdaily.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvdaily2/jvdaily2.iml" filepath="$PROJECT_DIR$/jvdaily2/jvdaily2.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvsms2/jvsms2.iml" filepath="$PROJECT_DIR$/jvsms2/jvsms2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/recyclerlib/recyclerlib.iml" filepath="$PROJECT_DIR$/recyclerlib/recyclerlib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-banner/lib-banner.iml" filepath="$PROJECT_DIR$/lib-banner/lib-banner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-recycler/lib-recycler.iml" filepath="$PROJECT_DIR$/lib-recycler/lib-recycler.iml" />
     </modules>
   </component>
 </project>

@@ -64,5 +64,5 @@ dependencies {
      */
 //    compile 'com.zhy:autolayout:+'
 
-    compile project(':bannerlib')
+    compile project(':lib-banner')
 }

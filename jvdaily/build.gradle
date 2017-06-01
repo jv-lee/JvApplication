@@ -70,6 +70,6 @@ dependencies {
 //    compile 'com.solid.skin:skinlibrary:+'
     //greenDao ORM框架
     compile 'org.greenrobot:greendao:3.0.1'
-    compile project(':bannerlib')
-    compile project(':recyclerlib')
+    compile project(':lib-banner')
+    compile project(':lib-recycler')
 }

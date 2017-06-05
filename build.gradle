@@ -7,36 +7,38 @@ ext {
              vcode     : 1,
              vname     : "1.0"]
     versions = [libSupport    : "25.1.1",
+                constraint    : "1.0.0-beta4",
                 libButterKnife: "8.4.0",
-                libRxJava     : "2.0.7",
-                libRxAndroid  : "2.0.1",
-                libRetrofit   : "2.2.0",
+                libRxJava     : "1.1.0",
+                libRxAndroid  : "1.1.0",
+                libRetrofit   : "2.0.0-beta4",
                 libOkhttp     : "3.6.0",
                 libGson       : "2.6.2",
                 libGlide      : "3.7.0",
                 libButterknife: "8.4.0",
                 libOkhttp3    : "3.3.1",
                 libGreendao   : "3.2.0",
-                libDagger     : "2.6"]
+                libDagger     : "2.6",
+                libBaseAdapter: "2.9.18"]
+    key = [keyAlias     : "zhumeng",
+           keyPassword  : "zhumeng",
+           storeFile    : "C:/Users/Administrator/Documents/签名文件/apk/apk.keystore",
+           storePassword: "zhumeng"]
 }
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath "com.android.tools.build:gradle:2.3.2"
         //接入butterknife 插件库配置
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath "com.neenbedankt.gradle.plugins:android-apt:1.8"
         //tinker热更新插件库配置
         classpath "com.tencent.tinker:tinker-patch-gradle-plugin:${TINKER_VERSION}"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-
         //greenDao 插件
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.0.0'
-
+        classpath "org.greenrobot:greendao-gradle-plugin:3.0.0"
         //degger2 依赖
-        classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
+        classpath "com.jakewharton.hugo:hugo-plugin:1.2.1"
     }
 }
 
@@ -45,7 +47,7 @@ allprojects {
         jcenter()
         //接入jitpack 代码中央仓库
         maven {
-            url"https://jitpack.io"
+            url "https://jitpack.io"
             "https://s3.amazonaws.com/repo.commonsware.com"
         }
     }

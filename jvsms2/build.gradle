@@ -2,70 +2,35 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.tencent.tinker.patch' //接入tinker热更新
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-
-    compile 'com.android.support:design:25.1.1'
-    compile 'com.android.support:cardview-v7:25.1.1'
-    // RxJava 库
-    compile 'io.reactivex:rxjava:1.1.0'
-    compile 'io.reactivex:rxandroid:1.1.0'
-    //谷歌图片 加载库
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    /**
-     * butterknife 依赖
-     */
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    /**
-     * 依赖注入库
-     */
-    compile 'com.google.dagger:dagger:2.6'
-    apt 'com.google.dagger:dagger-compiler:2.6'
-
-//    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:+'
-    //添加侧滑删除依赖库
-    compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.2.5'
-    //添加emoj表情库
-    compile 'com.github.jv-lee:EmojLibrary:v1.0'
-    // tinker热更新依赖库
-    compile("com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}") { changing = true }
-    provided("com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
-    compile 'com.android.support:multidex:1.0.1'
-}
-
 android {
-    signingConfigs {
-        config {
-            keyAlias 'zhumeng'
-            keyPassword 'zhumeng'
-            storeFile file('C:/Users/Administrator/Documents/签名文件/apk/apk.keystore')
-            storePassword 'zhumeng'
-        }
-    }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    compileSdkVersion rootProject.setup.compileSdk
+    buildToolsVersion rootProject.setup.buildTools
     defaultConfig {
         applicationId "com.jv.sms"
-        minSdkVersion 19
-        targetSdkVersion 21
+        minSdkVersion rootProject.setup.minSdk
+        targetSdkVersion rootProject.setup.targetSdk
+        versionCode rootProject.setup.vcode
+        versionName rootProject.setup.vname
         multiDexEnabled true
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled true
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             debuggable true
             minifyEnabled false
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
+        }
+    }
+    signingConfigs {
+        config {
+            keyAlias rootProject.key.keyAlias
+            keyPassword rootProject.key.keyPassword
+            storeFile file(rootProject.key.storeFile)
+            storePassword rootProject.key.storePassword
         }
     }
     sourceSets {
@@ -73,6 +38,36 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection GradleCompatible
+    compile "com.android.support:appcompat-v7:$rootProject.versions.libSupport"
+    compile "com.android.support:design:$rootProject.versions.libSupport"
+    compile "com.android.support:cardview-v7:$rootProject.versions.libSupport"
+    compile "com.android.support.constraint:constraint-layout:$rootProject.versions.constraint"
+    // RxJava 库
+    compile "io.reactivex:rxjava:$rootProject.versions.libRxJava"
+    compile "io.reactivex:rxandroid:$rootProject.versions.libRxAndroid"
+    //谷歌图片 加载库
+    compile "com.github.bumptech.glide:glide:$rootProject.versions.libGlide"
+    // butterknife 依赖
+    compile "com.jakewharton:butterknife:$rootProject.versions.libButterknife"
+    apt "com.jakewharton:butterknife-compiler:$rootProject.versions.libButterknife"
+    //依赖注入
+    compile "com.google.dagger:dagger:$rootProject.versions.libDagger"
+    apt "com.google.dagger:dagger-compiler:$rootProject.versions.libDagger"
+    //添加侧滑删除依赖库
+    compile "com.github.mcxtzhang:SwipeDelMenuLayout:V1.2.5"
+    //添加emoj表情库
+    compile "com.github.jv-lee:EmojLibrary:v1.0"
+    //Rv 适配器
+//    compile "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.versions.libBaseAdapter"
+    // tinker热更新依赖库
+    compile("com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}") { changing = true }
+    provided("com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
+    compile "com.android.support:multidex:1.0.1"
 }
 
 def javaVersion = JavaVersion.VERSION_1_7

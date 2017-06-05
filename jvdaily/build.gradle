@@ -2,43 +2,38 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
 android {
+    compileSdkVersion rootProject.setup.compileSdk
+    buildToolsVersion rootProject.setup.buildTools
 
-    lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
-        abortOnError false
-    }
-
-    signingConfigs {
-        config {
-            keyAlias 'key'
-            keyPassword '123456'
-            storeFile file('C:/Users/Administrator/Desktop/jvdaily.jks')
-            storePassword '123456'
-        }
-    }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.jv.daily"
-        minSdkVersion 19
-        targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion rootProject.setup.minSdk
+        targetSdkVersion rootProject.setup.targetSdk
+        versionCode rootProject.setup.vcode
+        versionName rootProject.setup.vname
 
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
         }
     }
     dataBinding {
         enabled true
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    signingConfigs {
+        config {
+            keyAlias rootProject.key.keyAlias
+            keyPassword rootProject.key.keyPassword
+            storeFile file(rootProject.key.storeFile)
+            storePassword rootProject.key.storePassword
+        }
     }
     greendao {
         targetGenDir 'src/main/java/'
@@ -48,28 +43,24 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:design:25.1.1'
-    compile 'com.android.support:cardview-v7:25.1.1'
+    compile "com.android.support:appcompat-v7:$rootProject.versions.libSupport"
+    compile "com.android.support:design:$rootProject.versions.libSupport"
+    compile "com.android.support:cardview-v7:$rootProject.versions.libSupport"
     // RxJava 库
-    compile 'io.reactivex:rxjava:1.1.0'
-    compile 'io.reactivex:rxandroid:1.1.0'
+    compile "io.reactivex:rxjava:$rootProject.versions.libRxJava"
+    compile "io.reactivex:rxandroid:$rootProject.versions.libRxAndroid"
     //retrofit 网络库
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
+    compile "com.squareup.retrofit2:retrofit:$rootProject.versions.libRetrofit"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.versions.libRetrofit"
+    compile "com.squareup.retrofit2:adapter-rxjava:$rootProject.versions.libRetrofit"
     //谷歌Json 解析库
-    compile 'com.google.code.gson:gson:2.6.2'
+    compile "com.google.code.gson:gson:$rootProject.versions.libGson"
     //谷歌图片 加载库
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    //广告轮播 及 第三方开源刷新 RecyclerView
-    //    compile 'com.youth.banner:banner:1.4.9'
-    //    compile 'com.jcodecraeer:xrecyclerview:+'
+    compile "com.github.bumptech.glide:glide:$rootProject.versions.libGlide"
+    //greenDao ORM框架
+    compile "org.greenrobot:greendao:$rootProject.versions.libGreendao"
     //换肤库
 //    compile 'com.solid.skin:skinlibrary:+'
-    //greenDao ORM框架
-    compile 'org.greenrobot:greendao:3.0.1'
     compile project(':lib-banner')
     compile project(':lib-recycler')
 }

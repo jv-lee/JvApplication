@@ -4,15 +4,17 @@ import com.jv.daily.api.NewsService;
 import com.jv.daily.mvp.module.NewsBean;
 import com.jv.daily.mvp.module.NewsContentBean;
 
+
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/2/24.
@@ -32,7 +34,7 @@ public class RetrofitUtils {
 
         retrofit = new Retrofit.Builder().client(httpClientBuilder)
                 .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(BASE_URL)
                 .build();
 
@@ -49,21 +51,21 @@ public class RetrofitUtils {
         return SingletonHolder.INSTANCE;
     }
 
-    public void getNewsLatest(Subscriber<NewsBean> subscriber) {
+    public void getNewsLatest(Observer<NewsBean> subscriber) {
         newsService.getNewsLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
     }
 
-    public void getNewsBeforeByDate(Subscriber<NewsBean> subscriber, String date) {
+    public void getNewsBeforeByDate(Observer<NewsBean> subscriber, String date) {
         newsService.getNewsBeforeByDate(date)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
     }
 
-    public void getNewsContentById(Subscriber<NewsContentBean> subscriber, String id) {
+    public void getNewsContentById(Observer<NewsContentBean> subscriber, String id) {
         newsService.getNewsContent(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

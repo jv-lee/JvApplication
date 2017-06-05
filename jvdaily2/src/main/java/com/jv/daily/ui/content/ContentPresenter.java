@@ -2,17 +2,17 @@ package com.jv.daily.ui.content;
 
 import android.util.Log;
 
-import com.jv.daily.base.module.ServiceModule;
 import com.jv.daily.base.mvp.BasePresenter;
 import com.jv.daily.base.scope.ActivityScope;
 import com.jv.daily.entity.NewsContentBean;
 
 import javax.inject.Inject;
 
-import rx.Scheduler;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by 64118 on 2017/4/16.
@@ -33,15 +33,22 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
         mModel.loadWebBean(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<NewsContentBean>() {
+                .subscribe(new Observer<NewsContentBean>() {
                     @Override
-                    public void onCompleted() {
+                    public void onComplete() {
 
                     }
 
                     @Override
                     public void onError(Throwable e) {
 
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override

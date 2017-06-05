@@ -3,9 +3,9 @@ package com.jv.daily.api;
 import com.jv.daily.mvp.module.NewsBean;
 import com.jv.daily.mvp.module.NewsContentBean;
 
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
-import rx.Observable;
 
 /**
  * Created by Administrator on 2017/2/24.

@@ -17,7 +17,7 @@ ext {
                 libGlide      : "3.7.0",
                 libButterknife: "8.4.0",
                 libOkhttp3    : "3.3.1",
-                libGreendao   : "3.2.0",
+                libGreendao   : "3.1.0",
                 libDagger     : "2.6",
                 libBaseAdapter: "2.9.18"]
     key = [keyAlias     : "zhumeng",

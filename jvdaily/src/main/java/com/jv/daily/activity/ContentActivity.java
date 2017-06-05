@@ -21,6 +21,9 @@ import com.jv.daily.net.RetrofitSubscriber;
 import com.jv.daily.net.RetrofitUtils;
 import com.jv.daily.utils.ShareUtil;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
 
 public class ContentActivity extends AppCompatActivity {
 
@@ -44,7 +47,13 @@ public class ContentActivity extends AppCompatActivity {
 //        initSwipeBackLayout();
         initWebView();
 
-        contentApi = new RetrofitSubscriber<>(new RetrofitSubscriber.SubscriberOnNextListener<NewsContentBean>() {
+        RetrofitUtils.getInstance().getNewsContentById(new Observer<NewsContentBean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                if (d.isDisposed()) {
+                    d.dispose();
+                }
+            }
 
             @Override
             public void onNext(NewsContentBean newsContentBean) {
@@ -56,16 +65,16 @@ public class ContentActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(String msg) {
-
+            public void onError(Throwable e) {
+                Toast.makeText(ContentActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
 
             @Override
-            public void onCompleted() {
+            public void onComplete() {
 
             }
-        });
-        RetrofitUtils.getInstance().getNewsContentById(contentApi, id);
+        }, id);
 
     }
 

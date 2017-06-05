@@ -22,6 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
 import static com.jv.daily.app.MyApplication.hasFist;
 
 /**
@@ -89,9 +92,14 @@ public class MainPresenter {
             SPUtil.save(Constant.BEFORE_DATE, TimeUtil.milliseconds2StringSimple(System.currentTimeMillis()));
             return;
         }
-
-        //本地数据为空执行网络请求
-        newsRefreshApi = new RetrofitSubscriber<>(new RetrofitSubscriber.SubscriberOnNextListener<NewsBean>() {
+        //获取日前信息
+        RetrofitUtils.getInstance().getNewsLatest(new Observer<NewsBean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                if (d.isDisposed()) {
+                    d.dispose();
+                }
+            }
 
             @Override
             public void onNext(NewsBean newsBean) {
@@ -130,17 +138,15 @@ public class MainPresenter {
             }
 
             @Override
-            public void onError(String msg) {
+            public void onError(Throwable e) {
                 mainView.errorBannerView();
             }
 
             @Override
-            public void onCompleted() {
+            public void onComplete() {
 
             }
-
         });
-        RetrofitUtils.getInstance().getNewsLatest(newsRefreshApi);
 
 
     }
@@ -166,7 +172,13 @@ public class MainPresenter {
         }
 
         //获取前日信息
-        newsLoadApi = new RetrofitSubscriber<>(new RetrofitSubscriber.SubscriberOnNextListener<NewsBean>() {
+        RetrofitUtils.getInstance().getNewsBeforeByDate(new Observer<NewsBean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                if (d.isDisposed()) {
+                    d.dispose();
+                }
+            }
 
             @Override
             public void onNext(NewsBean newsBean) {
@@ -189,17 +201,15 @@ public class MainPresenter {
             }
 
             @Override
-            public void onError(String msg) {
-                Log.e("ERROR", msg);
+            public void onError(Throwable e) {
+                Log.e("ERROR", e.getMessage());
             }
 
             @Override
-            public void onCompleted() {
+            public void onComplete() {
 
             }
-        });
-
-        RetrofitUtils.getInstance().getNewsBeforeByDate(newsLoadApi, time);
+        }, time);
     }
 
 }

@@ -5,15 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.jv.daily.R;
 import com.jv.daily.base.app.App;
-import com.jv.daily.base.app.AppComponent;
 import com.jv.daily.entity.LaunchBean;
 import com.jv.daily.service.NewsService;
 import com.jv.daily.ui.main.MainActivity;
@@ -23,9 +20,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/4/18.
@@ -47,22 +45,30 @@ public class WelcomeActivity extends Activity {
         newsService.getLaunch("1080", "1920")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<LaunchBean>() {
+                .subscribe(new Observer<LaunchBean>() {
                     @Override
-                    public void onCompleted() {
-                        startMainActivity();
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Glide.with(WelcomeActivity.this).load(R.drawable.welcome_icon).into(ivBg);
-                        onCompleted();
+                        onComplete();
                     }
 
                     @Override
                     public void onNext(LaunchBean launchBean) {
                         Log.w("WelcomeActivity", "onNext");
                         Glide.with(WelcomeActivity.this).load(launchBean.getCreatives().get(0).getUrl()).error(R.drawable.welcome_icon).into(ivBg);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        startMainActivity();
+                        Log.d("WelcomeActivity", "onComplete()");
                     }
                 });
     }

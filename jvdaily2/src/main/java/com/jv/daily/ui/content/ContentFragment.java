@@ -19,8 +19,6 @@ import com.jv.daily.R;
 import com.jv.daily.base.app.AppComponent;
 import com.jv.daily.base.mvp.BaseFragment;
 import com.jv.daily.entity.NewsContentBean;
-import com.jv.daily.ui.content.inject.ContentModule;
-import com.jv.daily.ui.content.inject.DaggerContentComponent;
 import com.jv.daily.utils.ShareUtil;
 
 import butterknife.BindView;
@@ -42,11 +40,6 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
 
     @Override
     protected void componentInject(AppComponent appComponent) {
-//        DaggerContentComponent.builder()
-//                .appComponent(appComponent)
-//                .contentModule(new ContentModule(this))
-//                .build()
-//                .inject((ContentActivity) mActivity);
     }
 
     @Override

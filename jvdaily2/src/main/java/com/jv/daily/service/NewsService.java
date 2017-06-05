@@ -5,9 +5,9 @@ import com.jv.daily.entity.LaunchBean;
 import com.jv.daily.entity.NewsBean;
 import com.jv.daily.entity.NewsContentBean;
 
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
-import rx.Observable;
 
 /**
  * Created by Administrator on 2017/2/24.

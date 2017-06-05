@@ -2,14 +2,16 @@ package com.jv.daily.net;
 
 import android.content.Context;
 
-import rx.Subscriber;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 
 /**
  * Created by Administrator on 2017/2/24.
  * 提供网络请求 订阅类
  */
 
-public class RetrofitSubscriber<T> extends Subscriber<T> implements CancelNetWorkListener {
+public class RetrofitSubscriber<T> implements CancelNetWorkListener, Subscriber<T> {
 
     private SubscriberOnNextListener mSubscriberOnNextListener;
 
@@ -17,19 +19,19 @@ public class RetrofitSubscriber<T> extends Subscriber<T> implements CancelNetWor
         this.mSubscriberOnNextListener = subscriberOnNextListener;
     }
 
-
     @Override
-    public void onStart() {
+    public void onError(Throwable e) {
+        mSubscriberOnNextListener.onError(e.getMessage());
     }
 
     @Override
-    public void onCompleted() {
+    public void onComplete() {
         mSubscriberOnNextListener.onCompleted();
     }
 
     @Override
-    public void onError(Throwable e) {
-        mSubscriberOnNextListener.onError(e.getMessage());
+    public void onSubscribe(Subscription s) {
+
     }
 
     @Override
@@ -39,10 +41,10 @@ public class RetrofitSubscriber<T> extends Subscriber<T> implements CancelNetWor
 
     @Override
     public void onCancelProgress() {
-        //在这里取消订阅
-        if (!this.isUnsubscribed()) {
-            this.unsubscribe();
-        }
+//        //在这里取消订阅
+//        if (!this.isUnsubscribed()) {
+//            this.unsubscribe();
+//        }
     }
 
 

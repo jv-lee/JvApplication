@@ -13,21 +13,25 @@ import com.jv.daily.utils.NetworkUtils;
 import com.jv.daily.utils.SPUtil;
 import com.jv.daily.utils.TimeUtil;
 
-import java.sql.Time;
+import org.reactivestreams.Subscriber;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by Administrator on 2017/4/11.
@@ -68,23 +72,30 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
         if (mModel.findRefreshDataCount(date) > 0) {
 
             Log.w(TAG, "into local refresh data .");
-
-            Observable.just(date).map(new Func1<String, NewsBean>() {
+            Observable.just(date).map(new Function<String, NewsBean>() {
                 @Override
-                public NewsBean call(String s) {
+                public NewsBean apply(@NonNull String s) throws Exception {
                     return mModel.refreshDataToDb(s);
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<NewsBean>() {
-                        @Override
-                        public void onCompleted() {
-                            mView.refreshEvent(Constant.REFRESH_COMPLETE, null);
-                        }
+                    .subscribe(new Observer<NewsBean>() {
 
                         @Override
                         public void onError(Throwable e) {
                             mView.refreshEvent(Constant.REFRESH_FAIL, e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            mView.refreshEvent(Constant.REFRESH_COMPLETE, null);
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            if (d.isDisposed()) {
+                                d.dispose();
+                            }
                         }
 
                         @Override
@@ -108,10 +119,9 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                 mView.refreshEvent(Constant.REFRESH_FAIL, "网络未连接");
                 return;
             }
-
-            mModel.refreshData().map(new Func1<NewsBean, NewsBean>() {
+            mModel.refreshData().map(new Function<NewsBean, NewsBean>() {
                 @Override
-                public NewsBean call(NewsBean newsBean) {
+                public NewsBean apply(NewsBean newsBean) {
                     Log.d(TAG, "network date -> " + newsBean.getDate());
 
                     for (TopStoriesBean top : newsBean.getTop_stories()) {
@@ -130,15 +140,23 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
             })
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<NewsBean>() {
-                        @Override
-                        public void onCompleted() {
-                            mView.refreshEvent(Constant.REFRESH_COMPLETE, "onCompleted()");
-                        }
+                    .subscribe(new Observer<NewsBean>() {
 
                         @Override
                         public void onError(Throwable e) {
                             mView.refreshEvent(Constant.REFRESH_FAIL, e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            mView.refreshEvent(Constant.REFRESH_COMPLETE, "onCompleted()");
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            if (d.isDisposed()) {
+                                d.dispose();
+                            }
                         }
 
                         @Override
@@ -165,24 +183,32 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
         if (mModel.findLoadDataCount(LoadDate) > 0) {
             Log.w(TAG, "into local load data");
             Observable.just(LoadDate)
-                    .map(new Func1<String, List<StoriesBean>>() {
+                    .map(new Function<String, List<StoriesBean>>() {
                         @Override
-                        public List<StoriesBean> call(String s) {
+                        public List<StoriesBean> apply(String s) {
                             return mModel.loadDataToDb(s);
                         }
                     }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<List<StoriesBean>>() {
+                    .subscribe(new Observer<List<StoriesBean>>() {
+
                         @Override
-                        public void onCompleted() {
+                        public void onError(Throwable e) {
+                            mView.refreshEvent(Constant.LOAD_FAIL, e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
                             //加载成功后把下次刷新时间保存
                             SPUtil.save(Constant.SELECT_DATE, TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate)));
                             mView.refreshEvent(Constant.LOAD_COMPLETE, "onCompleted()");
                         }
 
                         @Override
-                        public void onError(Throwable e) {
-                            mView.refreshEvent(Constant.LOAD_FAIL, e.getMessage());
+                        public void onSubscribe(Disposable d) {
+                            if (d.isDisposed()) {
+                                d.dispose();
+                            }
                         }
 
                         @Override
@@ -203,9 +229,9 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
 
 //            Log.w(TAG, TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) + ConstUtil.DAY));
             mModel.loadNews(TimeUtil.milliseconds2StringSimple(TimeUtil.string2MillisecondsSimple(LoadDate) + ConstUtil.DAY))
-                    .map(new Func1<NewsBean, List<StoriesBean>>() {
+                    .map(new Function<NewsBean, List<StoriesBean>>() {
                         @Override
-                        public List<StoriesBean> call(NewsBean newsBean) {
+                        public List<StoriesBean> apply(NewsBean newsBean) {
                             //网络获取数据后做磁盘存储
                             boolean bo1 = mModel.insertDataToDb(newsBean.getStories(), newsBean.getDate());
                             Log.w(TAG, "insert stories - date " + newsBean.getDate() + " is ->" + bo1);
@@ -217,9 +243,9 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                     })
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<List<StoriesBean>>() {
+                    .subscribe(new Observer<List<StoriesBean>>() {
                         @Override
-                        public void onCompleted() {
+                        public void onComplete() {
                             SPUtil.save(Constant.SELECT_DATE, LoadDate);
                             mView.refreshEvent(Constant.LOAD_COMPLETE, "loadCompleted()");
                         }
@@ -229,12 +255,19 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                             Observable.timer(1, TimeUnit.SECONDS)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<Long>() {
+                                    .subscribe(new Consumer<Long>() {
                                         @Override
-                                        public void call(Long aLong) {
+                                        public void accept(@NonNull Long aLong) throws Exception {
                                             mView.refreshEvent(Constant.LOAD_FAIL, e.getMessage());
                                         }
                                     });
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            if (d.isDisposed()) {
+                                d.dispose();
+                            }
                         }
 
                         @Override

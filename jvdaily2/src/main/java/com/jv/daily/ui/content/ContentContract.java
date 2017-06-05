@@ -5,7 +5,8 @@ import com.jv.daily.base.mvp.IPresenter;
 import com.jv.daily.base.mvp.IView;
 import com.jv.daily.entity.NewsContentBean;
 
-import rx.Observable;
+import io.reactivex.Observable;
+
 
 /**
  * Created by 64118 on 2017/4/16.

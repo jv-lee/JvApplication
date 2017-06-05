@@ -7,7 +7,8 @@ import com.jv.daily.service.NewsService;
 
 import javax.inject.Inject;
 
-import rx.Observable;
+import io.reactivex.Observable;
+
 
 /**
  * Created by 64118 on 2017/4/17.

@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Created by Administrator on 2017/4/10.

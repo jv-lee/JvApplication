@@ -12,10 +12,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/5/3.
@@ -34,17 +37,19 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Model, Set
 
     @Override
     public void findSettingBeans() {
-        Observable.create(new Observable.OnSubscribe<List<SettingBean>>() {
+        Observable.create(new ObservableOnSubscribe<List<SettingBean>>() {
             @Override
-            public void call(Subscriber<? super List<SettingBean>> subscriber) {
-                subscriber.onNext(mModel.findSettingBeans());
+            public void subscribe(ObservableEmitter<List<SettingBean>> e) throws Exception {
+                e.onNext(mModel.findSettingBeans());
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<SettingBean>>() {
+                .subscribe(new Observer<List<SettingBean>>() {
                     @Override
-                    public void onCompleted() {
-
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override
@@ -56,22 +61,29 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Model, Set
                     public void onNext(List<SettingBean> settingBeen) {
                         mView.setSettingsBeans(settingBeen);
                     }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete()");
+                    }
                 });
     }
 
     @Override
     public void clickDefaultSmsApplication() {
-        Observable.create(new Observable.OnSubscribe<List<SmsAppBean>>() {
+        Observable.create(new ObservableOnSubscribe<List<SmsAppBean>>() {
             @Override
-            public void call(Subscriber<? super List<SmsAppBean>> subscriber) {
-                subscriber.onNext(mModel.hasDefaultSmsApplication());
+            public void subscribe(ObservableEmitter<List<SmsAppBean>> e) throws Exception {
+                e.onNext(mModel.hasDefaultSmsApplication());
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<SmsAppBean>>() {
+                .subscribe(new Observer<List<SmsAppBean>>() {
                     @Override
-                    public void onCompleted() {
-
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override
@@ -86,6 +98,11 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Model, Set
                         } else {
                             mView.isDefaultApplication(smsAppBeans);
                         }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete()");
                     }
                 });
     }

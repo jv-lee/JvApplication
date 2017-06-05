@@ -25,8 +25,7 @@ import com.jv.sms.utils.SmsUtil;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.Observable;
-import com.jv.sms.swipe.SwipeBackLayout;
+import io.reactivex.Observable;
 
 /**
  * Created by Administrator on 2017/4/28.

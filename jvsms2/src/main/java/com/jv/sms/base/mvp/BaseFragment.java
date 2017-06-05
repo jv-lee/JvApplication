@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jv.sms.base.app.App;
-import com.jv.sms.base.app.AppComponent;
 import com.jv.sms.rx.EventBase;
 import com.jv.sms.rx.RxBus;
 
@@ -17,7 +15,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Created by Administrator on 2017/4/10.

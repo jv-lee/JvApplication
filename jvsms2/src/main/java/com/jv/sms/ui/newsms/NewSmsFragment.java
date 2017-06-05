@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnEditorAction;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Created by Administrator on 2017/5/3.

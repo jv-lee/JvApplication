@@ -8,12 +8,11 @@ import com.jv.sms.R;
 import com.jv.sms.base.app.AppComponent;
 import com.jv.sms.base.mvp.BaseActivity;
 import com.jv.sms.rx.EventBase;
-import com.jv.sms.swipe.SwipeBackLayout;
 import com.jv.sms.ui.newsms.inject.DaggerNewSmsComponent;
 import com.jv.sms.ui.newsms.inject.NewSmsModule;
 
 import butterknife.BindView;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Created by Administrator on 2017/4/28.

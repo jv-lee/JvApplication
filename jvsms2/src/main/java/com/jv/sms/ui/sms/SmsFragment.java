@@ -37,9 +37,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DefaultObserver;
+import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by Administrator on 2017/4/28.
@@ -99,9 +102,16 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
     @Override
     protected void rxEvent() {
         mObservable.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<EventBase>() {
+                .subscribe(new Observer<EventBase>() {
                     @Override
-                    public void call(final EventBase eventBase) {
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(EventBase eventBase) {
                         //接受到删除通知 执行逻辑
                         if (((String) eventBase.getOption()).equals(Config.RX_CODE_DELETE_THREAD_ID)) {
                             mAdapter.deleteByThreadId((String) eventBase.getObj());
@@ -126,6 +136,14 @@ public class SmsFragment extends BaseFragment<SmsContract.Presenter> implements 
                                 mPresenter.getNewSms();
                             }
                         }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
                     }
                 });
     }

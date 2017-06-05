@@ -26,13 +26,13 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.versions.libSupport"
     compile "com.android.support:design:$rootProject.versions.libSupport"
     compile "com.android.support:cardview-v7:$rootProject.versions.libSupport"
-    // RxJava 库
-    compile "io.reactivex:rxjava:$rootProject.versions.libRxJava"
-    compile "io.reactivex:rxandroid:$rootProject.versions.libRxAndroid"
-    //retrofit 网络库
+    //retrofit
     compile "com.squareup.retrofit2:retrofit:$rootProject.versions.libRetrofit"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.versions.libRetrofit"
-    compile "com.squareup.retrofit2:adapter-rxjava:$rootProject.versions.libRetrofit"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$rootProject.versions.libRetrofit"
+    //rxJava
+    compile "io.reactivex.rxjava2:rxjava:$rootProject.versions.libRxJava"
+    compile "io.reactivex.rxjava2:rxandroid:$rootProject.versions.libRxAndroid"
     //谷歌Json 解析库
     compile "com.google.code.gson:gson:$rootProject.versions.libGson"
     //谷歌图片 加载库

@@ -12,11 +12,16 @@ import java.util.LinkedList;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by Administrator on 2017/4/28.
@@ -36,17 +41,23 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
     @Override
     public void findSmsBeansAll(String thread_id) {
         Observable.just(thread_id)
-                .map(new Func1<String, LinkedList<SmsBean>>() {
+                .map(new Function<String, LinkedList<SmsBean>>() {
                     @Override
-                    public LinkedList<SmsBean> call(String thread_id) {
-                        return mModel.findSmsBeansAll(thread_id);
+                    public LinkedList<SmsBean> apply(@NonNull String s) throws Exception {
+                        return mModel.findSmsBeansAll(s);
                     }
-                })
-                .subscribeOn(Schedulers.io())
+                }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<LinkedList<SmsBean>>() {
+                .subscribe(new Observer<LinkedList<SmsBean>>() {
                     @Override
-                    public void onCompleted() {
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.showSmsListSuccess();
                     }
 
@@ -74,18 +85,24 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
     @Override
     public void sendSms(final PendingIntent sentPI, final String phoneNumber, final String content, final long time) {
-        Observable.create(new Observable.OnSubscribe<SmsBean>() {
+        Observable.create(new ObservableOnSubscribe<SmsBean>() {
             @Override
-            public void call(Subscriber<? super SmsBean> subscriber) {
-                subscriber.onNext(mModel.sendSms(sentPI, phoneNumber, content, time));
-                subscriber.onCompleted();
+            public void subscribe(ObservableEmitter<SmsBean> e) throws Exception {
+                e.onNext(mModel.sendSms(sentPI, phoneNumber, content, time));
             }
-        })
-                .subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SmsBean>() {
+                .subscribe(new Observer<SmsBean>() {
                     @Override
-                    public void onCompleted() {
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(SmsBean smsBean) {
+                        mView.sendSmsLoading(smsBean);
                     }
 
                     @Override
@@ -95,8 +112,8 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
                     }
 
                     @Override
-                    public void onNext(SmsBean smsBean) {
-                        mView.sendSmsLoading(smsBean);
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete()");
                     }
                 });
     }
@@ -108,17 +125,19 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
     @Override
     public void sendSmsError(final SmsBean smsbean) {
-        Observable.create(new Observable.OnSubscribe<SmsBean>() {
+        Observable.create(new ObservableOnSubscribe<SmsBean>() {
             @Override
-            public void call(Subscriber<? super SmsBean> subscriber) {
-                subscriber.onNext(mModel.updateSmsStatus(smsbean));
+            public void subscribe(ObservableEmitter<SmsBean> e) throws Exception {
+                e.onNext(mModel.updateSmsStatus(smsbean));
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SmsBean>() {
+                .subscribe(new Observer<SmsBean>() {
                     @Override
-                    public void onCompleted() {
-
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override
@@ -131,27 +150,41 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
                     public void onNext(SmsBean smsBean) {
                         mView.sendSmsError(smsbean);
                     }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete()");
+                    }
                 });
     }
 
     @Override
     public void deleteSmsByThreadId(final String thread_id) {
-        Observable.create(new Observable.OnSubscribe<Boolean>() {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
+
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                subscriber.onNext(mModel.removeSmsByThreadId(thread_id));
-                subscriber.onCompleted();
+            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+                e.onNext(mModel.removeSmsByThreadId(thread_id));
+                e.onComplete();
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
+                .subscribe(new Observer<Boolean>() {
                     @Override
                     public void onError(Throwable e) {
                         mView.deleteThreadError();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete()");
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override
@@ -167,22 +200,30 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
     @Override
     public void reSendSms(final String id, final int position) {
-        Observable.create(new Observable.OnSubscribe<Boolean>() {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                subscriber.onNext(mModel.deleteSmsListById(id));
+            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+                e.onNext(mModel.deleteSmsListById(id));
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new Observer<Boolean>() {
 
                     @Override
                     public void onError(Throwable e) {
                         Toast.makeText(mApplication, "重发短信 删除失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete()");
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override

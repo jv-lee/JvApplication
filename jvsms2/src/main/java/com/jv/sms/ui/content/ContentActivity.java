@@ -13,7 +13,6 @@ import com.jv.sms.base.mvp.BaseActivity;
 import com.jv.sms.Config;
 import com.jv.sms.interfaces.ToolbarSetListener;
 import com.jv.sms.rx.EventBase;
-import com.jv.sms.swipe.SwipeBackLayout;
 import com.jv.sms.ui.content.inject.ContentModule;
 import com.jv.sms.ui.content.inject.DaggerContentComponent;
 import com.jv.sms.utils.KeyboardUtil;
@@ -23,7 +22,7 @@ import com.rockerhieu.emojicon.emoji.Emojicon;
 
 
 import butterknife.BindView;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Created by Administrator on 2017/4/28.

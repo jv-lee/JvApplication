@@ -5,9 +5,10 @@ import android.support.annotation.NonNull;
 
 import java.util.Vector;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-import rx.subjects.Subject;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
+
 
 /**
  * Created by Administrator on 2016/11/29.
@@ -34,7 +35,7 @@ public class RxBus {
     }
 
     public synchronized <T> Observable<T> register(@NonNull Object object) {
-        Subject<T, T> subject = PublishSubject.create();
+        Subject<T> subject = PublishSubject.create();
         mSubjects.add(subject);
         return subject;
     }

@@ -8,15 +8,20 @@ import com.jv.sms.entity.ContactsBean;
 import com.jv.sms.entity.LinkmanBean;
 import com.jv.sms.entity.SmsBean;
 
+
 import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/5/3.
@@ -36,19 +41,20 @@ public class NewSmsPresenter extends BasePresenter<NewSmsContract.Model, NewSmsC
 
     @Override
     public void findContactsAll() {
-
-        Observable.create(new Observable.OnSubscribe<List<ContactsBean>>() {
+        Observable.create(new ObservableOnSubscribe<List<ContactsBean>>() {
             @Override
-            public void call(Subscriber<? super List<ContactsBean>> subscriber) {
-                subscriber.onNext(mModel.findContactsAll());
-                subscriber.onCompleted();
+            public void subscribe(ObservableEmitter<List<ContactsBean>> e) throws Exception {
+                e.onNext(mModel.findContactsAll());
+                e.onComplete();
             }
-        })
-                .subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<ContactsBean>>() {
+                .subscribe(new Observer<List<ContactsBean>>() {
                     @Override
-                    public void onCompleted() {
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override
@@ -61,23 +67,30 @@ public class NewSmsPresenter extends BasePresenter<NewSmsContract.Model, NewSmsC
                     public void onNext(List<ContactsBean> contactsBeen) {
                         mView.setContactsAll(contactsBeen);
                     }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete()");
+                    }
                 });
     }
 
     @Override
     public void findLinkmanAll() {
-        Observable.create(new Observable.OnSubscribe<List<LinkmanBean>>() {
+        Observable.create(new ObservableOnSubscribe<List<LinkmanBean>>() {
             @Override
-            public void call(Subscriber<? super List<LinkmanBean>> subscriber) {
-                subscriber.onNext(mModel.findLinkmanAll());
-                subscriber.onCompleted();
+            public void subscribe(ObservableEmitter<List<LinkmanBean>> e) throws Exception {
+                e.onNext(mModel.findLinkmanAll());
+                e.onComplete();
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<LinkmanBean>>() {
+                .subscribe(new Observer<List<LinkmanBean>>() {
                     @Override
-                    public void onCompleted() {
-
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override
@@ -90,21 +103,30 @@ public class NewSmsPresenter extends BasePresenter<NewSmsContract.Model, NewSmsC
                     public void onNext(List<LinkmanBean> linkmanBeen) {
                         mView.setLinkmanAll(linkmanBeen);
                     }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete()");
+                    }
                 });
     }
 
     @Override
-    public void findLinkmanByPhoneNumber(final String phoneNumber) {
-        Observable.just(phoneNumber).map(new Func1<String, SmsBean>() {
-            @Override
-            public SmsBean call(String s) {
-                return mModel.findLinkmanByPhoneNumber(phoneNumber);
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SmsBean>() {
+    public void findLinkmanByPhoneNumber(String phoneNumber) {
+        Observable.just(phoneNumber)
+                .map(new Function<String, SmsBean>() {
                     @Override
-                    public void onCompleted() {
+                    public SmsBean apply(@NonNull String s) throws Exception {
+                        return mModel.findLinkmanByPhoneNumber(s);
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SmsBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        if (d.isDisposed()) {
+                            d.dispose();
+                        }
                     }
 
                     @Override
@@ -115,6 +137,11 @@ public class NewSmsPresenter extends BasePresenter<NewSmsContract.Model, NewSmsC
                     @Override
                     public void onNext(SmsBean smsBean) {
                         mView.startListSmsBySms(smsBean);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete()");
                     }
                 });
     }

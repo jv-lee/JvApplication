@@ -59,9 +59,10 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Administrator on 2017/4/28.
@@ -239,12 +240,24 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     @Override
     protected void rxEvent() {
         mObservable.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<EventBase>() {
+                .subscribe(new Observer<EventBase>() {
                     @Override
-                    public void call(EventBase eventBase) { //收到新增短信通知 判断会话号码 做逻辑操作
+                    public void onSubscribe(Disposable d) {
+
+                    }
+                    @Override//收到新增短信通知 判断会话号码 做逻辑操作
+                    public void onNext(EventBase eventBase) {
                         if (eventBase.getOption().equals(bean.getPhoneNumber())) {
                             mAdapter.insertSmsListUi((SmsBean) eventBase.getObj());
                         }
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }

@@ -9,6 +9,8 @@ import com.jv.sms.entity.SmsBean;
 
 import java.util.LinkedList;
 
+import io.reactivex.Observable;
+
 /**
  * Created by Administrator on 2017/4/28.
  */
@@ -62,7 +64,7 @@ public interface ContentContract {
          * @param id
          * @return
          */
-        boolean deleteSmsListById(String id);
+        Observable<Boolean> deleteSmsListById(String id);
 
         /**
          * 查询点击后会话thread_id 搜索出的短信会话列表
@@ -70,7 +72,7 @@ public interface ContentContract {
          * @param thread_id
          * @return
          */
-        LinkedList<SmsBean> findSmsBeansAll(String thread_id);
+        Observable<LinkedList<SmsBean>> findSmsBeansAll(String thread_id);
 
         /**
          * 发送短信 保存至系统contentProvider
@@ -80,7 +82,7 @@ public interface ContentContract {
          * @param content
          * @return
          */
-        SmsBean sendSms(PendingIntent sentPI, String phoneNumber, String content, long time);
+        Observable<SmsBean> sendSms(PendingIntent sentPI, String phoneNumber, String content, long time);
 
         /**
          * 根据会话ID thread_id 删除当前会话列表所有内容
@@ -88,9 +90,9 @@ public interface ContentContract {
          * @param thread_id
          * @return
          */
-        boolean removeSmsByThreadId(String thread_id);
+        Observable<Boolean> removeSmsByThreadId(String thread_id);
 
-        SmsBean updateSmsStatus(SmsBean smsBean);
+        Observable<SmsBean> updateSmsStatus(SmsBean smsBean);
     }
 
 }

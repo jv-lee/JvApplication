@@ -18,6 +18,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by Administrator on 2017/5/3.
  */
@@ -31,35 +37,48 @@ public class SettingsModel extends BaseModel implements SettingsContract.Model {
     }
 
     @Override
-    public List<SettingBean> findSettingBeans() {
+    public Observable<List<SettingBean>> findSettingBeans() {
+        return Observable.create(new ObservableOnSubscribe<List<SettingBean>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<SettingBean>> e) throws Exception {
+                List<SettingBean> settingBeans = new ArrayList<>();
 
-        List<SettingBean> settingBeans = new ArrayList<>();
-
-        for (int i = 0; i < settingOps.length; i++) {
-            settingBeans.add(getSettingBean(i));
-        }
-        return settingBeans;
+                for (int i = 0; i < settingOps.length; i++) {
+                    settingBeans.add(getSettingBean(i));
+                }
+                e.onNext(settingBeans);
+                e.onComplete();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @SuppressWarnings("WrongConstant")
     @Override
-    public List<SmsAppBean> hasDefaultSmsApplication() {
-        List<SmsAppBean> smsAppBeans = new ArrayList<>();
+    public Observable<List<SmsAppBean>> hasDefaultSmsApplication() {
+        return Observable.create(new ObservableOnSubscribe<List<SmsAppBean>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<SmsAppBean>> e) throws Exception {
+                List<SmsAppBean> smsAppBeans = new ArrayList<>();
 
-        //是默认应用返回应用列表 提供选择
-        if (Telephony.Sms.getDefaultSmsPackage(mApplication).equals(mApplication.getPackageName())) {
-            PackageManager packageManager = mApplication.getPackageManager();
-            Intent intent = new Intent();
-            intent.setAction("android.provider.Telephony.SMS_DELIVER");
-            List<ResolveInfo> resolveInfos = packageManager.queryBroadcastReceivers(intent, PackageManager.GET_INTENT_FILTERS);
+                //是默认应用返回应用列表 提供选择
+                if (Telephony.Sms.getDefaultSmsPackage(mApplication).equals(mApplication.getPackageName())) {
+                    PackageManager packageManager = mApplication.getPackageManager();
+                    Intent intent = new Intent();
+                    intent.setAction("android.provider.Telephony.SMS_DELIVER");
+                    List<ResolveInfo> resolveInfos = packageManager.queryBroadcastReceivers(intent, PackageManager.GET_INTENT_FILTERS);
 
-            for (ResolveInfo res : resolveInfos) {
-                smsAppBeans.add(new SmsAppBean(res.activityInfo.loadLabel(mApplication.getPackageManager()).toString(), res.activityInfo.packageName, res.activityInfo.loadIcon(mApplication.getPackageManager())));
+                    for (ResolveInfo res : resolveInfos) {
+                        smsAppBeans.add(new SmsAppBean(res.activityInfo.loadLabel(mApplication.getPackageManager()).toString(), res.activityInfo.packageName, res.activityInfo.loadIcon(mApplication.getPackageManager())));
+                    }
+                    e.onNext(smsAppBeans);
+                } else { //非默认应用返回空 使其设置
+                    e.onNext(null);
+                }
+                e.onComplete();
             }
-            return smsAppBeans;
-        } else { //非默认应用返回空 使其设置
-            return null;
-        }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**

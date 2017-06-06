@@ -15,6 +15,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -46,19 +50,34 @@ public class MainModel extends BaseModel implements MainContract.Model {
     }
 
     @Override
-    public NewsBean refreshDataToDb(String date) {
-        List<TopStoriesBean> topList = dao.findTopStoriesAll(date);
-        List<StoriesBean> storiesList = dao.findStoriesAll(date);
-        NewsBean newsBean = new NewsBean();
-        newsBean.setDate(date);
-        newsBean.setStories(storiesList);
-        newsBean.setTop_stories(topList);
-        return newsBean;
+    public Observable<NewsBean> refreshDataToDb(String date) {
+        return Observable.just(date)
+                .map(new Function<String, NewsBean>() {
+                    @Override
+                    public NewsBean apply(@NonNull String s) throws Exception {
+                        List<TopStoriesBean> topList = dao.findTopStoriesAll(s);
+                        List<StoriesBean> storiesList = dao.findStoriesAll(s);
+                        NewsBean newsBean = new NewsBean();
+                        newsBean.setDate(s);
+                        newsBean.setStories(storiesList);
+                        newsBean.setTop_stories(topList);
+                        return newsBean;
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public List<StoriesBean> loadDataToDb(String date) {
-        return dao.findStoriesAll(date);
+    public Observable<List<StoriesBean>> loadDataToDb(String date) {
+        return Observable.just(date)
+                .map(new Function<String, List<StoriesBean>>() {
+                    @Override
+                    public List<StoriesBean> apply(@NonNull String s) throws Exception {
+                        return dao.findStoriesAll(s);
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
     }
 
     @Override

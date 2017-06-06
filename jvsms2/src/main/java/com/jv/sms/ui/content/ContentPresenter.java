@@ -19,6 +19,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -40,14 +41,7 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
     @Override
     public void findSmsBeansAll(String thread_id) {
-        Observable.just(thread_id)
-                .map(new Function<String, LinkedList<SmsBean>>() {
-                    @Override
-                    public LinkedList<SmsBean> apply(@NonNull String s) throws Exception {
-                        return mModel.findSmsBeansAll(s);
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.findSmsBeansAll(thread_id)
                 .subscribe(new Observer<LinkedList<SmsBean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -76,22 +70,21 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
     @Override
     public void removeSmsById(String id) {
-        if (mModel.deleteSmsListById(id)) {
-            mView.deleteSmsSuccess();
-        } else {
-            mView.deleteSmsError();
-        }
+        mModel.deleteSmsListById(id).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(@NonNull Boolean aBoolean) throws Exception {
+                if (aBoolean) {
+                    mView.deleteSmsSuccess();
+                } else {
+                    mView.deleteSmsError();
+                }
+            }
+        });
     }
 
     @Override
     public void sendSms(final PendingIntent sentPI, final String phoneNumber, final String content, final long time) {
-        Observable.create(new ObservableOnSubscribe<SmsBean>() {
-            @Override
-            public void subscribe(ObservableEmitter<SmsBean> e) throws Exception {
-                e.onNext(mModel.sendSms(sentPI, phoneNumber, content, time));
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.sendSms(sentPI, phoneNumber, content, time)
                 .subscribe(new Observer<SmsBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -125,13 +118,7 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
     @Override
     public void sendSmsError(final SmsBean smsbean) {
-        Observable.create(new ObservableOnSubscribe<SmsBean>() {
-            @Override
-            public void subscribe(ObservableEmitter<SmsBean> e) throws Exception {
-                e.onNext(mModel.updateSmsStatus(smsbean));
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.updateSmsStatus(smsbean)
                 .subscribe(new Observer<SmsBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -160,15 +147,7 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
     @Override
     public void deleteSmsByThreadId(final String thread_id) {
-        Observable.create(new ObservableOnSubscribe<Boolean>() {
-
-            @Override
-            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                e.onNext(mModel.removeSmsByThreadId(thread_id));
-                e.onComplete();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.removeSmsByThreadId(thread_id)
                 .subscribe(new Observer<Boolean>() {
                     @Override
                     public void onError(Throwable e) {
@@ -200,13 +179,7 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
     @Override
     public void reSendSms(final String id, final int position) {
-        Observable.create(new ObservableOnSubscribe<Boolean>() {
-            @Override
-            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                e.onNext(mModel.deleteSmsListById(id));
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.deleteSmsListById(id)
                 .subscribe(new Observer<Boolean>() {
 
                     @Override

@@ -8,6 +8,8 @@ import com.jv.sms.entity.SmsAppBean;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * Created by Administrator on 2017/5/3.
  */
@@ -22,9 +24,9 @@ public interface SettingsContract {
     }
 
     interface Model extends IModel {
-        List<SettingBean> findSettingBeans();
+        Observable<List<SettingBean>> findSettingBeans();
 
-        List<SmsAppBean> hasDefaultSmsApplication();
+        Observable<List<SmsAppBean>> hasDefaultSmsApplication();
     }
 
     interface Presenter extends IPresenter {

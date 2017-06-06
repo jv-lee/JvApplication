@@ -37,13 +37,7 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Model, Set
 
     @Override
     public void findSettingBeans() {
-        Observable.create(new ObservableOnSubscribe<List<SettingBean>>() {
-            @Override
-            public void subscribe(ObservableEmitter<List<SettingBean>> e) throws Exception {
-                e.onNext(mModel.findSettingBeans());
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.findSettingBeans()
                 .subscribe(new Observer<List<SettingBean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -71,13 +65,7 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Model, Set
 
     @Override
     public void clickDefaultSmsApplication() {
-        Observable.create(new ObservableOnSubscribe<List<SmsAppBean>>() {
-            @Override
-            public void subscribe(ObservableEmitter<List<SmsAppBean>> e) throws Exception {
-                e.onNext(mModel.hasDefaultSmsApplication());
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.hasDefaultSmsApplication()
                 .subscribe(new Observer<List<SmsAppBean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {

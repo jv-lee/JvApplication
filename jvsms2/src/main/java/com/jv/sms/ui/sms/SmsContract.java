@@ -9,6 +9,8 @@ import com.jv.sms.entity.SmsBean;
 
 import java.util.LinkedList;
 
+import io.reactivex.Observable;
+
 /**
  * Created by Administrator on 2017/4/28.
  */
@@ -54,7 +56,7 @@ public interface SmsContract {
          * @param context
          * @return
          */
-        LinkedList<SmsBean> findSmsAll(Context context);
+        Observable<LinkedList<SmsBean>> findSmsAll(Context context);
 
         /**
          * 主界面删除当前会话
@@ -62,14 +64,14 @@ public interface SmsContract {
          * @param id
          * @return
          */
-        boolean removeSmsByThreadId(String id);
+        Observable<Boolean> removeSmsByThreadId(String id);
 
         /**
          * 发送新的短信后 或 接收到新的短信 后 获取最新的会话 增加至主界面 增对于以前没有的会话内容 新增会话项
          *
          * @return
          */
-        SmsBean getNewSms();
+        Observable<SmsBean> getNewSms();
 
         /**
          * 更改短信会话读取状态

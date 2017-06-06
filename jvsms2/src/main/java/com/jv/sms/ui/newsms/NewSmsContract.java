@@ -9,6 +9,8 @@ import com.jv.sms.entity.SmsBean;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * Created by Administrator on 2017/5/3.
  */
@@ -33,16 +35,16 @@ public interface NewSmsContract {
          *
          * @return
          */
-        List<ContactsBean> findContactsAll();
+        Observable<List<ContactsBean>> findContactsAll();
 
         /**
          * 用于新增短信 联系人输入时搜索提示显示列表
          *
          * @return
          */
-        List<LinkmanBean> findLinkmanAll();
+        Observable<List<LinkmanBean>> findLinkmanAll();
 
-        SmsBean findLinkmanByPhoneNumber(String phoneNumber);
+        Observable<SmsBean> findLinkmanByPhoneNumber(String phoneNumber);
     }
 
     interface Presenter extends IPresenter{

@@ -21,6 +21,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -43,14 +44,7 @@ public class SmsPresenter extends BasePresenter<SmsContract.Model, SmsContract.V
 
     @Override
     public void findSmsAll() {
-        Observable.just(mApplication)
-                .map(new Function<Context, LinkedList<SmsBean>>() {
-                    @Override
-                    public LinkedList<SmsBean> apply(@NonNull Context context) throws Exception {
-                        return mModel.findSmsAll(context);
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.findSmsAll(mApplication)
                 .subscribe(new Observer<LinkedList<SmsBean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -84,23 +78,23 @@ public class SmsPresenter extends BasePresenter<SmsContract.Model, SmsContract.V
     }
 
     @Override
-    public void removeSmsByThreadId(String id, int position) {
-        if (mModel.removeSmsByThreadId(id)) {
-            mView.removeDataSuccess(position);
-        } else {
-            mView.removeDataError();
-        }
+    public void removeSmsByThreadId(String id, final int position) {
+        mModel.removeSmsByThreadId(id)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(@NonNull Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            mView.removeDataSuccess(position);
+                        } else {
+                            mView.removeDataError();
+                        }
+                    }
+                });
     }
 
     @Override
     public void getNewSms() {
-        Observable.create(new ObservableOnSubscribe<SmsBean>() {
-            @Override
-            public void subscribe(ObservableEmitter<SmsBean> e) throws Exception {
-                e.onNext(mModel.getNewSms());
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.getNewSms()
                 .subscribe(new Observer<SmsBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -136,13 +130,12 @@ public class SmsPresenter extends BasePresenter<SmsContract.Model, SmsContract.V
 
     @Override
     public void insertSmsNotification(String[] ids) {
-        Observable.just(ids)
-                .map(new Function<String[], Boolean>() {
-                    @Override
-                    public Boolean apply(@NonNull String[] strings) throws Exception {
-                        return mModel.insertSmsDB(strings);
-                    }
-                }).subscribeOn(Schedulers.io())
+        Observable.just(ids).map(new Function<String[], Boolean>() {
+            @Override
+            public Boolean apply(@NonNull String[] strings) throws Exception {
+                return mModel.insertSmsDB(strings);
+            }
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Boolean>() {
                     @Override

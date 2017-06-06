@@ -40,9 +40,9 @@ public interface MainContract {
 
         boolean insertDataToDb(List<StoriesBean> list, String date);
 
-        NewsBean refreshDataToDb(String date);
+        Observable<NewsBean> refreshDataToDb(String date);
 
-        List<StoriesBean> loadDataToDb(String date);
+        Observable<List<StoriesBean>> loadDataToDb(String date);
 
         int findRefreshDataCount(String date);
 

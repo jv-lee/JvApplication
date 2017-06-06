@@ -72,13 +72,7 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
         if (mModel.findRefreshDataCount(date) > 0) {
 
             Log.w(TAG, "into local refresh data .");
-            Observable.just(date).map(new Function<String, NewsBean>() {
-                @Override
-                public NewsBean apply(@NonNull String s) throws Exception {
-                    return mModel.refreshDataToDb(s);
-                }
-            }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            mModel.refreshDataToDb(date)
                     .subscribe(new Observer<NewsBean>() {
 
                         @Override
@@ -182,14 +176,7 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
         //判断当前数据库是否有当前日期数据存储
         if (mModel.findLoadDataCount(LoadDate) > 0) {
             Log.w(TAG, "into local load data");
-            Observable.just(LoadDate)
-                    .map(new Function<String, List<StoriesBean>>() {
-                        @Override
-                        public List<StoriesBean> apply(String s) {
-                            return mModel.loadDataToDb(s);
-                        }
-                    }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            mModel.loadDataToDb(LoadDate)
                     .subscribe(new Observer<List<StoriesBean>>() {
 
                         @Override

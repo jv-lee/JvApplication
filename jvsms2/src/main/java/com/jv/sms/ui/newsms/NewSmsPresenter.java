@@ -41,14 +41,7 @@ public class NewSmsPresenter extends BasePresenter<NewSmsContract.Model, NewSmsC
 
     @Override
     public void findContactsAll() {
-        Observable.create(new ObservableOnSubscribe<List<ContactsBean>>() {
-            @Override
-            public void subscribe(ObservableEmitter<List<ContactsBean>> e) throws Exception {
-                e.onNext(mModel.findContactsAll());
-                e.onComplete();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.findContactsAll()
                 .subscribe(new Observer<List<ContactsBean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -77,14 +70,7 @@ public class NewSmsPresenter extends BasePresenter<NewSmsContract.Model, NewSmsC
 
     @Override
     public void findLinkmanAll() {
-        Observable.create(new ObservableOnSubscribe<List<LinkmanBean>>() {
-            @Override
-            public void subscribe(ObservableEmitter<List<LinkmanBean>> e) throws Exception {
-                e.onNext(mModel.findLinkmanAll());
-                e.onComplete();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.findLinkmanAll()
                 .subscribe(new Observer<List<LinkmanBean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -113,14 +99,7 @@ public class NewSmsPresenter extends BasePresenter<NewSmsContract.Model, NewSmsC
 
     @Override
     public void findLinkmanByPhoneNumber(String phoneNumber) {
-        Observable.just(phoneNumber)
-                .map(new Function<String, SmsBean>() {
-                    @Override
-                    public SmsBean apply(@NonNull String s) throws Exception {
-                        return mModel.findLinkmanByPhoneNumber(s);
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mModel.findLinkmanByPhoneNumber(phoneNumber)
                 .subscribe(new Observer<SmsBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {

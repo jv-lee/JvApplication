@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -26,12 +27,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jv.sms.R;
@@ -44,6 +49,7 @@ import com.jv.sms.ui.content.adapter.ContentAdapter;
 import com.jv.sms.ui.content.adapter.ForwardDialogAdapter;
 import com.jv.sms.ui.newsms.NewSmsActivity;
 import com.jv.sms.utils.ClickUtil;
+import com.jv.sms.utils.KeyboardUtil;
 import com.jv.sms.utils.ShareUtil;
 import com.jv.sms.utils.SizeUtil;
 import com.jv.sms.utils.SmsUtil;
@@ -58,6 +64,7 @@ import java.util.LinkedList;
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -86,6 +93,8 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     ImageView ivSendSms;
     @BindView(R.id.fl_emojFragment_container)
     FrameLayout flEjmoContainer;
+    @BindView(R.id.ll_rootLayout)
+    LinearLayout llRootLayout;
 
     //弹窗View
     private PopupWindow mPopupWindow;
@@ -212,7 +221,18 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     protected void bindData(Bundle savedInstanceState) {
         initPopupView(); //初始化长按弹窗
         ivAddSms.setColorFilter(ContextCompat.getColor(mActivity, Config.icon_theme_darkColors[bean.getColorPosition()])); //设置添加按钮颜色
-
+        etSmsContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOrHideEt();
+            }
+        });
+        etSmsContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                showOrHideEt();
+            }
+        });
         //初始化消息显示列表
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);//设置倒叙显示消息列表
@@ -245,16 +265,19 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
                     public void onSubscribe(Disposable d) {
 
                     }
+
                     @Override//收到新增短信通知 判断会话号码 做逻辑操作
                     public void onNext(EventBase eventBase) {
                         if (eventBase.getOption().equals(bean.getPhoneNumber())) {
                             mAdapter.insertSmsListUi((SmsBean) eventBase.getObj());
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
 
                     }
+
                     @Override
                     public void onComplete() {
 
@@ -278,6 +301,7 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
                 Toast.makeText(mActivity, mActivity.getString(R.string.function_not), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.et_smsContent:
+//                showOrHideEt();
                 hideEmotionView(true);
                 break;
         }
@@ -576,14 +600,22 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
         cbEmojiIcon.setChecked(true);
         emotionHeight = SystemUtil.getKeyboardHeight(getActivity());
 
-        SystemUtil.hideSoftInput(mActivity, etSmsContent);
-        flEjmoContainer.getLayoutParams().height = emotionHeight;
-        flEjmoContainer.setVisibility(View.VISIBLE);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         //在5.0有navigationbar的手机，高度高了一个statusBar
         int lockHeight = SystemUtil.getAppContentHeight(getActivity());
         lockContainerHeight(lockHeight);
+
+        SystemUtil.hideSoftInput(mActivity, etSmsContent);
+        flEjmoContainer.getLayoutParams().height = emotionHeight;
+
+        //添加显示动画
+        TranslateAnimation mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+        mShowAction.setDuration(400);
+
+        flEjmoContainer.startAnimation(mShowAction);
+        flEjmoContainer.setVisibility(View.VISIBLE);
     }
 
     private void lockContainerHeight(int paramInt) {
@@ -595,4 +627,23 @@ public class ContentFragment extends BaseFragment<ContentContract.Presenter> imp
     public void unlockContainerHeightDelayed() {
         ((LinearLayout.LayoutParams) llContentLayout.getLayoutParams()).weight = 1.0F;
     }
+
+    private void showOrHideEt() {
+        try {
+            if (getActivity() != null) {
+                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                lockContainerHeight(SystemUtil.getAppContentHeight(getActivity()));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                        unlockContainerHeightDelayed();
+                    }
+                }, 500);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -53,8 +53,7 @@
 
         <activity
             android:name=".ui.content.ContentActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SENDTO" />

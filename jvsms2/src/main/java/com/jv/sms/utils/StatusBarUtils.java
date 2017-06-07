@@ -34,15 +34,15 @@ public class StatusBarUtils {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
         }
-        setMiuiStatusBarDarkMode(context, true);
-        setMeizuStatusBarDarkIcon(context, true);
+        setMiuiStatusBarDarkMode(context, false);
+        setMeizuStatusBarDarkIcon(context, false);
     }
 
     /**
      * 修改魅族手机系统状态栏颜色
      *
      * @param activity
-     * @param dark
+     * @param dark     true为黑色字体 false 为白色字体
      * @return
      */
     public static boolean setMeizuStatusBarDarkIcon(Activity activity, boolean dark) {
@@ -77,7 +77,7 @@ public class StatusBarUtils {
      * 修改小米手机状态栏颜色
      *
      * @param activity
-     * @param darkmode
+     * @param darkmode true为黑色字体 false 为白色字体
      * @return
      */
     public static boolean setMiuiStatusBarDarkMode(Activity activity, boolean darkmode) {

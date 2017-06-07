@@ -3,14 +3,14 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.tencent.tinker.patch' //接入tinker热更新
 
 android {
-    compileSdkVersion rootProject.setup.compileSdk
-    buildToolsVersion rootProject.setup.buildTools
+    compileSdkVersion rootProject.android.compileSdk
+    buildToolsVersion rootProject.android.buildTools
     defaultConfig {
         applicationId "com.jv.sms"
-        minSdkVersion rootProject.setup.minSdk
-        targetSdkVersion rootProject.setup.targetSdk
-        versionCode rootProject.setup.vcode
-        versionName rootProject.setup.vname
+        minSdkVersion rootProject.android.minSdk
+        targetSdkVersion rootProject.android.targetSdk
+        versionCode rootProject.android.vcode
+        versionName rootProject.android.vname
         multiDexEnabled true
     }
     buildTypes {
@@ -43,21 +43,21 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
-    compile "com.android.support:appcompat-v7:$rootProject.versions.libSupport"
-    compile "com.android.support:design:$rootProject.versions.libSupport"
-    compile "com.android.support:cardview-v7:$rootProject.versions.libSupport"
-    compile "com.android.support.constraint:constraint-layout:$rootProject.versions.constraint"
+    compile "com.android.support:appcompat-v7:$rootProject.library.support_version"
+    compile "com.android.support:design:$rootProject.library.support_version"
+    compile "com.android.support:cardview-v7:$rootProject.library.support_version"
+    compile "com.android.support.constraint:constraint-layout:$rootProject.library.constraint_version"
     //rxJava
-    compile "io.reactivex.rxjava2:rxjava:$rootProject.versions.libRxJava"
-    compile "io.reactivex.rxjava2:rxandroid:$rootProject.versions.libRxAndroid"
+    compile "io.reactivex.rxjava2:rxjava:$rootProject.library.rxJava_version"
+    compile "io.reactivex.rxjava2:rxandroid:$rootProject.library.rxAndroid_version"
     //谷歌图片 加载库
-    compile "com.github.bumptech.glide:glide:$rootProject.versions.libGlide"
+    compile "com.github.bumptech.glide:glide:$rootProject.library.glide_version"
     // butterknife 依赖
-    compile "com.jakewharton:butterknife:$rootProject.versions.libButterknife"
-    apt "com.jakewharton:butterknife-compiler:$rootProject.versions.libButterknife"
+    compile "com.jakewharton:butterknife:$rootProject.library.butterknife_version"
+    apt "com.jakewharton:butterknife-compiler:$rootProject.library.butterknife_version"
     //依赖注入
-    compile "com.google.dagger:dagger:$rootProject.versions.libDagger"
-    apt "com.google.dagger:dagger-compiler:$rootProject.versions.libDagger"
+    compile "com.google.dagger:dagger:$rootProject.library.dagger_version"
+    apt "com.google.dagger:dagger-compiler:$rootProject.library.dagger_version"
     //添加侧滑删除依赖库
     compile "com.github.mcxtzhang:SwipeDelMenuLayout:V1.2.5"
     //添加emoj表情库

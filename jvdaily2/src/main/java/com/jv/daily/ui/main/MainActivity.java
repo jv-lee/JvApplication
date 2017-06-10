@@ -18,6 +18,10 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.jv.bannerlib.Banner;
 import com.jv.bannerlib.BannerConfig;
 import com.jv.bannerlib.listener.OnBannerListener;
+import com.jv.bannerlib.transformer.AccordionTransformer;
+import com.jv.bannerlib.transformer.BackgroundToForegroundTransformer;
+import com.jv.bannerlib.transformer.CubeInTransformer;
+import com.jv.bannerlib.view.BannerViewPager;
 import com.jv.daily.R;
 import com.jv.daily.base.app.AppComponent;
 import com.jv.daily.base.mvp.BaseActivity;
@@ -69,6 +73,7 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         newsAdapter.setOnLoadMoreListener(this);
         newsAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
         rvContent.setAdapter(newsAdapter);
+        banner.setPageTransformer(true, new CubeInTransformer());
         initRvListener(rvContent);
         refreshView.post(new Runnable() {
             @Override

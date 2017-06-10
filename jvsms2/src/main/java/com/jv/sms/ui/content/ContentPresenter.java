@@ -100,7 +100,7 @@ public class ContentPresenter extends BasePresenter<ContentContract.Model, Conte
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("错误信息", e.getMessage());
+                        Log.e("错误信息", e.getMessage());
                         Toast.makeText(mApplication, "发送短信启动代码错误", Toast.LENGTH_SHORT).show();
                     }
 

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.jv.bannerlib.listener.OnBannerClickListener;
 import com.jv.bannerlib.listener.OnBannerListener;
 import com.jv.bannerlib.loader.ImageLoaderInterface;
+import com.jv.bannerlib.transformer.DepthPageTransformer;
 import com.jv.bannerlib.view.BannerViewPager;
 
 import java.lang.reflect.Field;

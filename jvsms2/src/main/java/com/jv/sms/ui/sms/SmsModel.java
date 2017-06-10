@@ -115,7 +115,6 @@ public class SmsModel extends BaseModel implements SmsContract.Model {
                     e.onNext(SmsUtil.simpleSmsBean(cur, mApplication));
                     e.onComplete();
                 }
-                Toast.makeText(mApplication, "Null", Toast.LENGTH_SHORT).show();
                 e.onNext(new SmsBean("12", "你好", "10077", "这是一条短信", "2016-12-12", SmsBean.Type.SEND, "2855", SmsBean.ReadType.IS_READ, -1));
                 e.onComplete();
 

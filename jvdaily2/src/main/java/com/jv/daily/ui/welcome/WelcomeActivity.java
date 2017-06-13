@@ -62,7 +62,17 @@ public class WelcomeActivity extends Activity {
                     @Override
                     public void onNext(LaunchBean launchBean) {
                         Log.w("WelcomeActivity", "onNext");
-                        Glide.with(WelcomeActivity.this).load(launchBean.getCreatives().get(0).getUrl()).error(R.drawable.welcome_icon).into(ivBg);
+                        if (launchBean != null) {
+                            if (launchBean.getCreatives() != null) {
+                                if (launchBean.getCreatives().size() > 0) {
+                                    Glide.with(WelcomeActivity.this).load(launchBean.getCreatives().get(0).getUrl()).error(R.drawable.welcome_icon).into(ivBg);
+                                }else{
+                                    onError(new Throwable());
+                                }
+                            }
+
+                        }
+
                     }
 
                     @Override

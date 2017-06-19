@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.jv.daily.base.app.App;
 import com.jv.daily.base.app.AppComponent;
+import com.jv.daily.utils.StatusBarUtils;
 
 import javax.inject.Inject;
 
@@ -31,7 +32,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
         super.onCreate(savedInstanceState);
         mApplication = (App) getApplication();
         mContext = this;
-
+        StatusBarUtils.setStatusBar(this);
         setContentView(bindRootView());
         unBinder = ButterKnife.bind(this);
 

@@ -21,6 +21,7 @@ import com.jv.bannerlib.listener.OnBannerListener;
 import com.jv.bannerlib.transformer.AccordionTransformer;
 import com.jv.bannerlib.transformer.BackgroundToForegroundTransformer;
 import com.jv.bannerlib.transformer.CubeInTransformer;
+import com.jv.bannerlib.transformer.ScaleInOutTransformer;
 import com.jv.bannerlib.view.BannerViewPager;
 import com.jv.daily.R;
 import com.jv.daily.base.app.AppComponent;
@@ -73,7 +74,7 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         newsAdapter.setOnLoadMoreListener(this);
         newsAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
         rvContent.setAdapter(newsAdapter);
-        banner.setPageTransformer(true, new CubeInTransformer());
+        banner.setPageTransformer(true, new ScaleInOutTransformer());
         initRvListener(rvContent);
         refreshView.post(new Runnable() {
             @Override

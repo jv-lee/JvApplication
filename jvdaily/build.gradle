@@ -1,14 +1,12 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 
 android {
-    compileSdkVersion rootProject.android.compileSdk
-    buildToolsVersion rootProject.android.buildTools
+    compileSdkVersion rootProject.android.compile
 
     defaultConfig {
         applicationId "com.jv.daily"
-        minSdkVersion rootProject.android.minSdk
-        targetSdkVersion rootProject.android.targetSdk
+        minSdkVersion rootProject.android.min
+        targetSdkVersion rootProject.android.target
         versionCode rootProject.android.vcode
         versionName rootProject.android.vname
 
@@ -27,40 +25,40 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
-    signingConfigs {
-        config {
-            keyAlias rootProject.key.keyAlias
-            keyPassword rootProject.key.keyPassword
-            storeFile file(rootProject.key.storeFile)
-            storePassword rootProject.key.storePassword
-        }
-    }
-    greendao {
-        targetGenDir 'src/main/java/'
-    }
+//    signingConfigs {
+//        config {
+//            keyAlias rootProject.key.keyAlias
+//            keyPassword rootProject.key.keyPassword
+//            storeFile file(rootProject.key.storeFile)
+//            storePassword rootProject.key.storePassword
+//        }
+//    }
+//    greendao {
+//        targetGenDir 'src/main/java/'
+//    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     //noinspection GradleCompatible
-    compile "com.android.support:appcompat-v7:$rootProject.library.support_version"
-    compile "com.android.support:design:$rootProject.library.support_version"
-    compile "com.android.support:cardview-v7:$rootProject.library.support_version"
+    implementation "com.android.support:appcompat-v7:$rootProject.library.support"
+    implementation "com.android.support:design:$rootProject.library.support"
+    implementation "com.android.support:cardview-v7:$rootProject.library.support"
     //rxJava
-    compile "io.reactivex.rxjava2:rxjava:$rootProject.library.rxJava_version"
-    compile "io.reactivex.rxjava2:rxandroid:$rootProject.library.rxAndroid_version"
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.library.rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.library.rxandroid"
     //retrofit
-    compile "com.squareup.retrofit2:retrofit:$rootProject.library.retrofit_version"
-    compile "com.squareup.retrofit2:converter-gson:$rootProject.library.retrofit_version"
-    compile "com.squareup.retrofit2:adapter-rxjava2:$rootProject.library.retrofit_version"
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.library.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.library.retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.library.retrofit"
     //谷歌Json 解析库
-    compile "com.google.code.gson:gson:$rootProject.library.gson_version"
+    implementation "com.google.code.gson:gson:$rootProject.library.gson"
     //谷歌图片 加载库
-    compile "com.github.bumptech.glide:glide:$rootProject.library.glide_version"
+    implementation "com.github.bumptech.glide:glide:$rootProject.library.glide"
     //greenDao ORM框架
-    compile "org.greenrobot:greendao:$rootProject.library.greendao_version"
+    implementation "org.greenrobot:greendao:$rootProject.library.greendao"
     //换肤库
-//    compile 'com.solid.skin:skinlibrary:+'
-    compile project(':lib-banner')
-    compile project(':lib-recycler')
+//    implementation 'com.solid.skin:skinlibrary:+'
+    implementation project(':lib-banner')
+    implementation project(':lib-recycler')
 }

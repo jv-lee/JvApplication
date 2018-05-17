@@ -155,6 +155,11 @@ public class TopStoriesBeanDao extends AbstractDao<TopStoriesBean, Long> {
     }
 
     @Override
+    protected boolean hasKey(TopStoriesBean entity) {
+        return false;
+    }
+
+    @Override
     protected final boolean isEntityUpdateable() {
         return true;
     }

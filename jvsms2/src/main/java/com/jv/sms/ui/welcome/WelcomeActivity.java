@@ -12,7 +12,6 @@ import com.jv.sms.ui.sms.SmsActivity;
 import com.jv.sms.utils.BarUtil;
 import com.jv.sms.utils.IntentUtil;
 import com.jv.sms.utils.SmsUtil;
-import com.tencent.tinker.lib.tinker.TinkerInstaller;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -37,9 +36,6 @@ public class WelcomeActivity extends BaseActivity {
 
     @Override
     protected void bindData() {
-        //加载热更新补丁
-        TinkerInstaller.onReceiveUpgradePatch(getApplicationContext(),
-                Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
 
         //判断当前应用是否为系统默认应用
         if (SmsUtil.hasDefaultsSmsApplication(mContext)) {

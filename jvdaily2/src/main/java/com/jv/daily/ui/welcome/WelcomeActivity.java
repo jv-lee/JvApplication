@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.jv.daily.R;
 import com.jv.daily.base.app.App;
 import com.jv.daily.entity.LaunchBean;
+import com.jv.daily.glide.GlideHelper;
 import com.jv.daily.service.NewsService;
 import com.jv.daily.ui.main.MainActivity;
 import com.jv.daily.ui.welcome.inject.DaggerWelcomeComponent;
@@ -65,7 +66,8 @@ public class WelcomeActivity extends Activity {
                         if (launchBean != null) {
                             if (launchBean.getCreatives() != null) {
                                 if (launchBean.getCreatives().size() > 0) {
-                                    Glide.with(WelcomeActivity.this).load(launchBean.getCreatives().get(0).getUrl()).error(R.drawable.welcome_icon).into(ivBg);
+                                    GlideHelper.loadImage(launchBean.getCreatives().get(0).getUrl(),ivBg);
+//                                    Glide.with(WelcomeActivity.this).load(launchBean.getCreatives().get(0).getUrl()).error(R.drawable.welcome_icon).into(ivBg);
                                 }else{
                                     onError(new Throwable());
                                 }

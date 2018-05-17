@@ -2,7 +2,6 @@ package com.jv.sms.base.app;
 
 import android.app.Application;
 
-import com.jv.sms.app.JvApplications;
 import com.jv.sms.base.module.AppModule;
 import com.jv.sms.base.module.DbModule;
 import com.jv.sms.base.module.RxModule;
@@ -13,7 +12,7 @@ import com.jv.sms.utils.SPUtil;
  * Created by Administrator on 2017/4/27.
  */
 
-public class App extends JvApplications {
+public class App extends Application {
 
     private AppComponent mAppComponent;
 

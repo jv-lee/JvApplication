@@ -1,7 +1,5 @@
 package com.jv.daily.net;
 
-import android.content.Context;
-
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 

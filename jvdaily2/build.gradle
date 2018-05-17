@@ -1,14 +1,12 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion rootProject.android.compileSdk
-    buildToolsVersion rootProject.android.buildTools
+    compileSdkVersion rootProject.android.compile
 
     defaultConfig {
         applicationId "com.jv.daily"
-        minSdkVersion rootProject.android.minSdk
-        targetSdkVersion rootProject.android.targetSdk
+        minSdkVersion rootProject.android.min
+        targetSdkVersion rootProject.android.target
         versionCode rootProject.android.vcode
         versionName rootProject.android.vname
 
@@ -22,28 +20,28 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:$rootProject.library.support_version"
-    compile "com.android.support:design:$rootProject.library.support_version"
-    compile "com.android.support:cardview-v7:$rootProject.library.support_version"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:$rootProject.library.support"
+    implementation "com.android.support:design:$rootProject.library.support"
+    implementation "com.android.support:cardview-v7:$rootProject.library.support"
     //rxJava
-    compile "io.reactivex.rxjava2:rxjava:$rootProject.library.rxJava_version"
-    compile "io.reactivex.rxjava2:rxandroid:$rootProject.library.rxAndroid_version"
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.library.rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.library.rxandroid"
     //retrofit
-    compile "com.squareup.retrofit2:retrofit:$rootProject.library.retrofit_version"
-    compile "com.squareup.retrofit2:converter-gson:$rootProject.library.retrofit_version"
-    compile "com.squareup.retrofit2:adapter-rxjava2:$rootProject.library.retrofit_version"
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.library.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.library.retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.library.retrofit"
     //谷歌Json 解析库
-    compile "com.google.code.gson:gson:$rootProject.library.gson_version"
+    implementation "com.google.code.gson:gson:$rootProject.library.gson"
     //谷歌图片 加载库
-    compile "com.github.bumptech.glide:glide:$rootProject.library.glide_version"
+    implementation "com.github.bumptech.glide:glide:$rootProject.library.glide"
     // butterknife 依赖
-    compile "com.jakewharton:butterknife:$rootProject.library.butterknife_version"
-    apt "com.jakewharton:butterknife-compiler:$rootProject.library.butterknife_version"
+    implementation "com.jakewharton:butterknife:$rootProject.library.butterknife"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.library.butterknife"
     //依赖注入
-    compile "com.google.dagger:dagger:$rootProject.library.dagger_version"
-    apt "com.google.dagger:dagger-compiler:$rootProject.library.dagger_version"
+    implementation "com.google.dagger:dagger:$rootProject.library.dagger"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.library.dagger"
     //Rv 适配器
-    compile "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.library.baseAdapter_version"
-    compile project(':lib-banner')
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.library.baseadapter"
+    implementation project(':lib-banner')
 }

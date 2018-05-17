@@ -21,6 +21,7 @@ import com.jv.bannerlib.listener.OnBannerListener;
 import com.jv.bannerlib.transformer.AccordionTransformer;
 import com.jv.bannerlib.transformer.BackgroundToForegroundTransformer;
 import com.jv.bannerlib.transformer.CubeInTransformer;
+import com.jv.bannerlib.transformer.FlipVerticalTransformer;
 import com.jv.bannerlib.transformer.ScaleInOutTransformer;
 import com.jv.bannerlib.view.BannerViewPager;
 import com.jv.daily.R;

@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.jv.bannerlib.loader.ImageLoader;
+import com.jv.daily.glide.GlideHelper;
 
 /**
  * Created by Administrator on 2017/2/28.
@@ -21,7 +22,8 @@ public class GlideImageLoader extends ImageLoader {
          切记不要胡乱强转！
          */
         //Glide 加载图片简单用法
-        Glide.with(context).load(path).crossFade().into(imageView);
+        GlideHelper.loadImage(path,imageView);
+//        Glide.with(context).load(path).crossFade().into(imageView);
 
 
     }

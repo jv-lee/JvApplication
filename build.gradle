@@ -5,9 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:2.3.2"
-        //接入butterknife 插件库配置
-        classpath "com.neenbedankt.gradle.plugins:android-apt:1.8"
+        classpath "com.android.tools.build:gradle:3.0.1"
         //tinker热更新插件库配置
         classpath "com.tencent.tinker:tinker-patch-gradle-plugin:${TINKER_VERSION}"
         //greenDao 插件

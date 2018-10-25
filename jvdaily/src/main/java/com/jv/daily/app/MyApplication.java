@@ -3,6 +3,7 @@ package com.jv.daily.app;
 import android.app.Application;
 import android.content.Context;
 
+import com.jv.daily.glide.GlideHelper;
 import com.jv.daily.utils.SPUtil;
 
 
@@ -22,6 +23,7 @@ public class MyApplication extends Application {
             mContext = this;
         }
         SPUtil.getInstance(this);
+        GlideHelper.getInstance(mContext);
 //        SkinConfig.setCanChangeStatusColor(true);
     }
 

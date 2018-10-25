@@ -5,8 +5,8 @@ import android.app.Application;
 import com.jv.daily.base.module.AppModule;
 import com.jv.daily.base.module.DBModule;
 import com.jv.daily.base.module.ServiceModule;
+import com.jv.daily.glide.GlideHelper;
 import com.jv.daily.utils.SPUtil;
-
 
 
 /**
@@ -27,6 +27,7 @@ public class App extends Application {
                 .dBModule(new DBModule())
                 .build();
         SPUtil.getInstance(this);
+        GlideHelper.getInstance(getApplicationContext());
     }
 
 

@@ -2,10 +2,11 @@
 apply from: "conf.gradle"
 buildscript {
     repositories {
+        google()
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:3.0.1"
+        classpath "com.android.tools.build:gradle:3.2.1"
         //tinker热更新插件库配置
         classpath "com.tencent.tinker:tinker-patch-gradle-plugin:${TINKER_VERSION}"
         //greenDao 插件
@@ -17,6 +18,7 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
         jcenter()
         //接入jitpack 代码中央仓库
         maven {

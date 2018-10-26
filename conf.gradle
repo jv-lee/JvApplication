@@ -2,12 +2,12 @@ ext {
     dependencies = [
             gradle: "3.0.1"
     ]
-    android = [compile: 25,
+    android = [compile: 28,
                min    : 19,
                target : 21,
                vcode  : 1,
                vname  : "1.0"]
-    library = [support         : "25.3.1",
+    library = [support         : "28.0.0",
                constraint      : "1.0.2",
                rxjava          : "2.0.7",
                rxandroid       : "2.0.1",
